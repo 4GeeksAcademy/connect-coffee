@@ -1,0 +1,213 @@
+type: collection.insomnia.rest/5.0
+name: 4G
+meta:
+  id: wrk_fc935fa2bbb343e583cf4d8b6ccec85f
+  created: 1748906976807
+  modified: 1751477703208
+  description: ""
+collection:
+  - name: 4G Playground APIs
+    meta:
+      id: fld_77232b6e10164eb3b96d432f6e1c67cc
+      created: 1750175951506
+      modified: 1751478568246
+      sortKey: -1750175951506
+      description: ""
+  - name: 4G-StarWars
+    meta:
+      id: fld_386b601819384863a7335a88da79454c
+      created: 1750944665703
+      modified: 1751478568246
+      sortKey: -1750944665703
+      description: ""
+  - name: 4G-Family
+    meta:
+      id: fld_165a2695e878445d9b2d7d3de73b77b0
+      created: 1750944704884
+      modified: 1751478568246
+      sortKey: -1750944704884
+      description: ""
+  - name: 4G-ToDoList
+    meta:
+      id: fld_9bdbd1b1cb034037b74e6b8b44fdd56b
+      created: 1750944777955
+      modified: 1751478568247
+      sortKey: -1750944777955
+      description: ""
+  - name: JWT
+    meta:
+      id: fld_95cdfc374d784f6598db36c90dbf2fcb
+      created: 1751156882029
+      modified: 1751478568247
+      sortKey: -1751156882029
+      description: ""
+    children:
+      - url: "{{ _.url_jwt }}/api/register"
+        name: Register
+        meta:
+          id: req_e64edf8882834202bd02404d84280a15
+          created: 1751156887061
+          modified: 1751488618592
+          isPrivate: false
+          description: ""
+          sortKey: -1751156887061
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username":"traemesuerte22",
+            	"password":"madeinUSA3212",
+            	"email":"algo@algo.algo3212"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        authentication:
+          disabled: true
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MTE1NzQ5MywianRpIjoiMzJmYWFjYTQtOTg4ZC00ODZlLWE4NjUtOTc0M2I0NzQ3NjJhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MywibmJmIjoxNzUxMTU3NDkzLCJjc3JmIjoiM2Y2NDY3YmYtOWM4MS00NDU3LWE5YmItYTMyY2UzNTZlZjNjIiwiZXhwIjoxNzUxMTU4MzkzfQ._0AL9fVvp2ezxYsqXbkRixKccOSDeYe22u24JN0JdHA
+          type: bearer
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url_jwt }}/api/hello"
+        name: SecureEndpoint
+        meta:
+          id: req_3d9e4abf3a624e2bb2717fc5b3f20e88
+          created: 1751157843391
+          modified: 1751488936030
+          isPrivate: false
+          description: ""
+          sortKey: -1751157843391
+        method: POST
+        headers:
+          - id: pair_2d76aa6f014143f0b47ebb8c8acc0a29
+            name: User-Agent
+            value: insomnia/11.2.0
+          - description: ""
+            disabled: false
+            id: pair_4a68fb877ad14cf4aa8df7fb7bf9b11d
+            name: Content-Type
+            value: application/json
+          - id: pair_ec9c046bed3a44479c7eeb042ab5c9cb
+            name: Authorization
+            value: ""
+            description: ""
+            disabled: true
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_7bab862ee0aa40468c75933d65ec5c3f',
+            'b64::JC5hY2Nlc3NfdG9rZW4=::46b', 'never', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url_jwt }}/api/login"
+        name: Login
+        meta:
+          id: req_7bab862ee0aa40468c75933d65ec5c3f
+          created: 1751157853868
+          modified: 1751670679763
+          isPrivate: false
+          description: ""
+          sortKey: -1751050851384
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username":"traemesuerte22",
+            	"password":"madeinUSA3212"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.2.0
+        authentication:
+          disabled: true
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MTE1NzQ5MywianRpIjoiMzJmYWFjYTQtOTg4ZC00ODZlLWE4NjUtOTc0M2I0NzQ3NjJhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MywibmJmIjoxNzUxMTU3NDkzLCJjc3JmIjoiM2Y2NDY3YmYtOWM4MS00NDU3LWE5YmItYTMyY2UzNTZlZjNjIiwiZXhwIjoxNzUxMTU4MzkzfQ._0AL9fVvp2ezxYsqXbkRixKccOSDeYe22u24JN0JdHA
+          type: bearer
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url_jwt }}/api/admin/users"
+        name: Users
+        meta:
+          id: req_22b5a4e5791e412d80e000dfb103bc94
+          created: 1751158678740
+          modified: 1751478568247
+          isPrivate: false
+          description: ""
+          sortKey: -1751157365226
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.2.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_8cd98710fc2e13c066f0c56e69342ab30bbd9940
+    created: 1751477702290
+    modified: 1751670682365
+  cookies:
+    - key: .Tunnels.Relay.WebForwarding.Cookies
+      value: CfDJ8Cs4yarcs6pKkdu0hlKHsZvX3mPABM1kTC_6m2QbYkiIp48bLBtTv4ZVgrMB26I5mQPZtzFaIZrQZJtJenf9oor3t4qpTnWi9OJMPr6skbOFov_uI3gOIgPZCpzn7lnN5TZSpASygUFGkHBKOa7ZkwLtDpsJnfMWAW02vd2nt0RgRrwaJNp1qeykUFPju7Nh9bTHdTIhVXVwN89lbEjn8Z2zQoMCsZFneeWWs5CZcCTCGDjheSCXRZhThdh7aOBczG-yeznl8p_EfTN7cWY3mMr1XtSeg0Mc_GqsEsl9OcnHs3vPtm6tQCHqui09L7pPY0xAHvuq5KjMeowL7d8cEQRjkZIw-K7urSPznYfhAVg7O1ixXMF9qsBTrDuni5wJBRLojdCg_qegsYyhqSxjUNUBMQd-Iypaeb_aWrD2sl2IrnjTL5MeGrfiY_iaLTCQFw1aaY11H0wg6ufKq4qtSb-HZAym_dQcnEhXcuWWzf2GMDMOTCzVEBnYBq_lVEs00AFsvN7WZUmeOUpB5rj2v6fyw6eSlevxUqiPz-R97Cgn6vs_y-rTkx8ddR_OQTrMkr9IiJ4Y0Ovnqq-3yNyLwY453d-ZXEvz3YqdC64kOjeEpzsg-CkZFBYBYJcGmwZYrdMZ74DiTHPde2oOi7xq-a-WHIdTQDRvco6hjPShZLadqo0rM5gjFAoyS7pE04bniMYolexmt0uDRj53y1BrnDGGBEYvmsLToOJR1A63ZCa37laUV1v8LAsWSu3Heho6koNe-B3bxg4_1dll2qgqT2MJHfWcA_mEWKl_5nUDg5A21ype1Yl2CsSM-aHTo_oPf4VQjlLcZMBq8dh4Hknde3S_r8OYJwBeLGNKLCq1jv94YM9OXNBZpQvUC3xy893bAihjXIhVdWk5lVz8dRqUuPUBdRhnnt3pzgpXbguvRlXz9UCDHaKhS6z-nv9_qY_bsBtFOqpi0UDbamWXiNyWfXJFWMeINltW9AnQUCAMqgU3
+      domain: ominous-pancake-v6wv4vrq4rjphwr66-3001.app.github.dev
+      path: /
+      secure: true
+      extensions:
+        - Partitioned
+      hostOnly: true
+      creation: 2025-07-02T19:55:12.243Z
+      lastAccessed: 2025-07-02T20:42:18.297Z
+      sameSite: none
+      id: 9e4b0295-8061-4bb3-bbed-69ec25ed0e77
+    - key: .Tunnels.Relay.WebForwarding.Cookies
+      value: CfDJ8Cs4yarcs6pKkdu0hlKHsZskuOa63mthv-fmxpZwXv3bA2vifcxI6tGpwli_uGrPPNQY0DhayamecYYmsyQZ4jZslxk7KptMzWUrUPYLGqVUDC7Ld9BBpIxJE79s2raKgDRdPZpCJSlrSZE6CKHm_Y5HNjNY0pYXN75OL1OF445FVex-eU9AWbrIw9qe-_gpXuARewf-ZZNMBeiLarPuDNdNsYhoP5AlZU_P0VEZ6WypDQP7A5nIHlWFuk90JrysXtYf7kXXVuiF7MhMQ0FLfb_mwjFu7I6zNAbDbX2fGAzELY2qC7S2Ir_HQv5mPPH4Q0yLBC1u2Vdw65NTYUDbbHy1BP4Ch05rOLPTP1Zl-OvvjPdbu2bcs2ihl3gsm_jFfzID6X_j1grN0iNRkLNoNghsfEs0XdalIKHPs70s8nvtUZ9LutEdIt7aNb24UafA6xwEII_dmUw_1CVHgJzZUs8TIK00baxi084KVbcosn5IVdyM84iDep9O0iCorFHLIHc4qkyfJ_XtxUMNuXta_Nyj1brhlmsbFbKHNSCtas3dJRLohBBpgpRRQcoW1VdjrF7Bu9pEwLMeiwS6ckll-rLatTpQSRg23EB1_mOrPSW3uMv0m36W-iUKBHjBbko4CyOGAX2orEY1ndaMazgg1Gji6G-wAMAxcUVioUIGEMvpH5dcuUK-CBC_Z1RyC2OJCiqvFyUsfNPPgFjXhpxIEzr3QHBc1o7KJWmUYmopoMe3B-LfDixZkjqukyFThKpZq1qdWX1GTJxzNssWESpzBoAlWKX47d-FY2_oNokscU00TA1YsVItDg_YiMfB2qrKlkqPD7e_eJb2xmI7cMVgY2LDbAZiKJP5kNPLCx7m6qjrnI4oVLj1Z3yuM6M2G1pCPsVGRu5W9dNiJ4vJVOMGMk25_p-Yott9Uwjf8rNtJWobO_nRbGmQEdAoFr4EpAZZbe-q7p94o7pEZ0B_DUhnXLrlFNGTEhAnS0wUq50dqTkg
+      domain: friendly-acorn-jj95657q6g96hpxjw-3001.app.github.dev
+      path: /
+      secure: true
+      extensions:
+        - Partitioned
+      hostOnly: true
+      creation: 2025-07-04T23:08:17.418Z
+      lastAccessed: 2025-07-04T23:11:22.365Z
+      sameSite: none
+      id: 65277109-3160-4dc9-9b2b-dc2405947cae
+environments:
+  name: Base Environment
+  meta:
+    id: env_8cd98710fc2e13c066f0c56e69342ab30bbd9940
+    created: 1748906976814
+    modified: 1751670486802
+    isPrivate: false
+  data:
+    url_todos: https://studious-spork-g49jxw7rqv7fg69.github.dev
+    url_starwars: https://orange-space-fishstick-jj95657q6gg93jj5-3000.app.github.dev
+    url_jwt_mou: https://ominous-pancake-v6wv4vrq4rjphwr66-3001.app.github.dev
+    url_jwt: https://friendly-acorn-jj95657q6g96hpxjw-3001.app.github.dev
