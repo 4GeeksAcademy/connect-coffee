@@ -1,11 +1,43 @@
-export const Footer = () => (
-	<footer className="footer mt-auto py-3 text-center">
-		<p>
-			Check the <a target="_blank" href="https://4geeks.com/docs/start/react-flask-template">template documentation</a> <i className="fa-solid fa-file"></i> for help.
-		</p>
-		<p>
-			Made with <i className="fa fa-heart text-danger" /> by{" "}
-			<a href="http://www.4geeksacademy.com">4Geeks Academy</a>
-		</p>
-	</footer>
-);
+export const Footer = () => {
+	return (
+		<footer className="text-center text-light py-4 mt-5" style={{ backgroundColor: '#AB6B3E' }}>
+			<div className="container">
+				{/* Logo y título */}
+				<div className="mb-3">
+					<i className="fas fa-coffee me-2" style={{ fontSize: '1.2rem', color: '#4e342e' }}></i>
+					<span className="fw-bold" style={{ color: '#F5DEB3' }}>
+						Coffe Connect
+					</span>
+				</div>
+
+				{/* Redes sociales */}
+				<div className="mb-3">
+					<p className="mb-2" style={{ color: '#F5DEB3' }}>¡Síguenos en nuestras redes!</p>
+					<a
+						href="https://instagram.com/coffee-connect"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-decoration-none"
+						style={{ color: '#F5DEB3' }}
+					>
+						<i className="fab fa-instagram me-2" style={{ fontSize: '1.5rem' }}></i>
+						<span className="fw-bold">@Coffee-Connect</span>
+					</a>
+				</div>
+
+				{/* Línea divisoria */}
+				<hr style={{ color: '#D2691E', opacity: '0.3' }} />
+
+				{/* Copyright */}
+				<div className="text-center" style={{ color: '#4e342e', fontSize: '0.9rem' }}>
+					<p className="mb-1">
+						© {new Date().getFullYear()} Coffe Connect. Todos los derechos reservados.
+					</p>
+					<p className="mb-0">
+						<small>Conectando amantes del café con los mejores lugares. </small>
+					</p>
+				</div>
+			</div>
+		</footer>
+	);
+};
