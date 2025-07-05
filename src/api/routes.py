@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint,current_app
-from api.models import db, User
+from api.models import db, User,Store
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
@@ -51,6 +51,7 @@ def register():
     access_token = create_access_token(identity=str(new_user.id))
     return jsonify(access_token=access_token, username=username, ok=True), 201
 
+# Endpoint ADMIN USUARIOS
 @api.route("/admin/users",methods=["GET"])
 def test():
     users = User.query.all()
@@ -69,3 +70,30 @@ def create_token():
 
     access_token = create_access_token(identity=str(user.id))
     return jsonify(access_token=access_token, username=user.username, ok=True ), 200
+
+# Endpoint de creacion de tienda
+@api.route('/store/create', methods=['POST'])
+@jwt_required()
+def store_create():
+    body=json.loads(request.data)
+    if body is None or len(body['nombre']) < 1 or len(body['direccion']) < 1 :
+        return {"msg": "Los datos enviados no son suficientes"}, 400
+    if Store.query.filter((Store.nombre == body['nombre']) | (Store.direccion == body['direccion'])).first():
+        return jsonify({"msg": "No es posible crear una tienda con esos datos"}), 409
+    current_user_id = get_jwt_identity()
+    #user = User.query.get(current_user_id)
+    local_store= Store()
+    local_store.nombre=body['nombre']
+    local_store.user_id=current_user_id
+    local_store.direccion=body['direccion']
+    db.session.add(local_store)
+    db.session.commit()
+    return body
+
+@api.route('/admin/stores/list', methods=['GET'])
+@jwt_required()
+def stores_list():
+    stores = Store.query.all()
+    return jsonify([store.serialize() for store in stores]), 200
+
+#Endpoint de borrado a nivel ADMIN -HACER MADE-
