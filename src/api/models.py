@@ -53,6 +53,12 @@ class Store(db.Model):
     #images = relationship("Image", back_populates="store")
     #points = relationship("UserPoint", back_populates="store")
 
+    def serialize(self):
+        return {
+            "nombre": self.nombre,
+            "direccion": self.direccion
+            # do not serialize the password, its a security breach
+        }
 
 class Category(db.Model):
     __tablename__ = "categories"
