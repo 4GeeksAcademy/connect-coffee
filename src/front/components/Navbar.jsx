@@ -139,7 +139,7 @@ export const Navbar = () => {
 						</div>
 
 						{/* Botones de usuario */}
-						<Link to="/LoginForm">
+						<Link to="/Login">
 							<button
 								className="btn btn-sm me-2 px-3 py-2"
 								style={{

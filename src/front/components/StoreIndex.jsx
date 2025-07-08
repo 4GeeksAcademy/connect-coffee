@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+
 const StoreIndex = () => {
   const [cafeterias, setCafeterias] = useState([]);
 
-  // Datos básicos
+  // Datos básicos (Mock)
   const mockCafeterias = [
     {
       id: 1,
