@@ -1,8 +1,7 @@
 import React, { useEffect } from "react"
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import LoginForm from '../components/LoginForm';
 import StoreIndex from '../components/StoreIndex.jsx';
-import { Store } from "lucide-react";
+
 
 export const Home = () => {
 
@@ -35,8 +34,11 @@ export const Home = () => {
 	}, [])
 
 	return (
-		
-		<StoreIndex />
+		<>
+			<StoreIndex />
+
+		</>
+
 
 	);
 }; 
