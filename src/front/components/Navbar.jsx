@@ -80,6 +80,7 @@ export const Navbar = () => {
 								Inicio
 							</Link>
 						</li>
+						{ (location.pathname !== '/') && (
 						<li className="nav-item">
 							<Link
 								to="/cafeterias"
@@ -102,6 +103,7 @@ export const Navbar = () => {
 								Cafeterías
 							</Link>
 						</li>
+						)}
 						<li className="nav-item">
 							<Link
 								to="/about"
@@ -155,7 +157,7 @@ export const Navbar = () => {
 						{ !store?.token ? (
 							<>
 								{ (location.pathname !== '/login') && (
-									<Link to="/Login">
+									<Link to="/login">
 										<button
 											className="btn btn-sm me-2 px-3 py-2"
 											style={{
@@ -181,7 +183,7 @@ export const Navbar = () => {
 									</Link>
 								)}
 								{ (location.pathname !== '/signup') && ( 
-									<Link to="/register">
+									<Link to="/signup">
 										<button
 											className="btn btn-sm me-2 px-3 py-2"
 											style={{backgroundColor: '#d4a574',color: '#6b4423', border: 'none',borderRadius: '6px', fontWeight: '500',	transition: 'all 0.2s ease'	}}
