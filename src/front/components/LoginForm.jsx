@@ -3,6 +3,7 @@ import { getToken } from "../services/api";
 import { useNavigate } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useLocation } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export const LoginForm = ({ setToken }) => {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ export const LoginForm = ({ setToken }) => {
                     <button className="btn btn-secondary my-2 w-100 text-white custom-bg-brown my-4" type="submit" >Iniciar sesion</button>
                     {error && <p style={{ color: "red" }}>{error}</p>}
                   </form>
-                   <p>¿Ya tienes cuenta? <a className="text-decoration-none link-warning custom-fg-brown mb-2" href="/login">Inicia Sesión</a> </p> 
+                  <p>¿No tienes cuenta? <Link to="/signup" className="text-decoration-none link-warning custom-fg-brown mb-2">Regístrate</Link></p> 
                 </div>
               </div>
             ) : (  

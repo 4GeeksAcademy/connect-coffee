@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { registerUser } from "../services/api";
 import { useNavigate } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link } from "react-router-dom";
 
 export const RegisterForm = ({ setToken }) => {
   const [form, setForm] = useState({ username: "", password: "", email: "" });
@@ -61,7 +62,8 @@ export const RegisterForm = ({ setToken }) => {
             </div>
             <button className="btn btn-secondary my-2 w-100 text-white custom-bg-brown my-4" type="submit">Crear Cuenta</button>
             {message && <p>{message}</p>}
-             <p>¿No tienes cuenta? <a className="text-decoration-none link-warning custom-fg-brown mb-2" href="/signup">Regístrate</a> </p> 
+            <p>¿Ya tienes cuenta?  <Link to="/login" className="text-decoration-none link-warning custom-fg-brown mb-2">Inicia Sesión</Link> </p> 
+             
           </form>
         </div>
       </div>

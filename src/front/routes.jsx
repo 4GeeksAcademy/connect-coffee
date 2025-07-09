@@ -11,6 +11,7 @@ import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import {About} from "./pages/About";
 
 
 
@@ -29,8 +30,9 @@ export const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/signup" element={<Register />} />
       <Route path="/demo" element={<Demo />} />
+      <Route path="/about" element={<About />} />
     </Route>
   )
 );
