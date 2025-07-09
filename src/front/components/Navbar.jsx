@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useLocation } from 'react-router-dom';
+
 
 export const Navbar = () => {
+	const {store, dispatch} =useGlobalReducer();
+	const location = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const handleLogout = () => {
+		localStorage.removeItem("user");
+		localStorage.removeItem("token");
+		localStorage.removeItem("message");
+		dispatch({type:"get_token", payload:"" });
+		dispatch({type:"get_hello", payload:"" });
+		dispatch({type:"get_user", payload:"" });
+		navigate('/login')
+		}
 
 	return (
 		<nav
@@ -137,57 +151,60 @@ export const Navbar = () => {
 								<i className="fas fa-search"></i>
 							</button>
 						</div>
-
 						{/* Botones de usuario */}
-						<Link to="/Login">
-							<button
-								className="btn btn-sm me-2 px-3 py-2"
-								style={{
-									backgroundColor: 'transparent',
-									color: '#8b4513',
-									border: '1px solid #d4a574',
-									borderRadius: '6px',
-									fontWeight: '500',
-									transition: 'all 0.2s ease'
-								}}
-								onMouseEnter={(e) => {
-									e.target.style.backgroundColor = '#d4a574';
-									e.target.style.color = '#6b4423';
-								}}
-								onMouseLeave={(e) => {
-									e.target.style.backgroundColor = 'transparent';
-									e.target.style.color = '#8b4513';
-								}}
-							>
-								<i className="fas fa-sign-in-alt me-1"></i>
-								Iniciar Sesión
-							</button>
-						</Link>
-
-						<Link to="/register">
-							<button
-								className="btn btn-sm me-2 px-3 py-2"
-								style={{
-									backgroundColor: '#d4a574',
-									color: '#6b4423',
-									border: 'none',
-									borderRadius: '6px',
-									fontWeight: '500',
-									transition: 'all 0.2s ease'
-								}}
-								onMouseEnter={(e) => {
-									e.target.style.backgroundColor = '#c19660';
-								}}
-								onMouseLeave={(e) => {
-									e.target.style.backgroundColor = '#d4a574';
-								}}
-							>
-								<i className="fas fa-user-plus me-1"></i>
-								Registrarse
-							</button>
-						</Link>
-
-						{/* Botón para proveedores */}
+						{ !store?.token ? (
+							<>
+								{ (location.pathname !== '/login') && (
+									<Link to="/Login">
+										<button
+											className="btn btn-sm me-2 px-3 py-2"
+											style={{
+												backgroundColor: 'transparent',
+												color: '#8b4513',
+												border: '1px solid #d4a574',
+												borderRadius: '6px',
+												fontWeight: '500',
+												transition: 'all 0.2s ease'
+											}}
+											onMouseEnter={(e) => {
+												e.target.style.backgroundColor = '#d4a574';
+												e.target.style.color = '#6b4423';
+											}}
+											onMouseLeave={(e) => {
+												e.target.style.backgroundColor = 'transparent';
+												e.target.style.color = '#8b4513';
+											}}
+											>
+											<i className="fas fa-sign-in-alt me-1"></i>
+											Iniciar Sesión
+										</button>
+									</Link>
+								)}
+								{ (location.pathname !== '/signup') && ( 
+									<Link to="/register">
+										<button
+											className="btn btn-sm me-2 px-3 py-2"
+											style={{backgroundColor: '#d4a574',color: '#6b4423', border: 'none',borderRadius: '6px', fontWeight: '500',	transition: 'all 0.2s ease'	}}
+											onMouseEnter={(e) => {
+												e.target.style.backgroundColor = '#c19660';
+											}}
+											onMouseLeave={(e) => {
+												e.target.style.backgroundColor = '#d4a574';
+											}}
+											>
+											<i className="fas fa-user-plus me-1"></i>
+											Registrarse
+										</button>
+									</Link>
+								)}
+							</>
+						):( 
+							<>
+								<Link to="/userprofile/me"> <span className="me-2"> <i className="fa-solid fa-user display-6 me-2"></i>{store.user} </span> </Link>
+								<button className="btn btn-secondary my-1 w-100" onClick={handleLogout}>Logout</button>
+							</>
+						)}
+{/* Botón para proveedores */}
 						<div className="dropdown">
 							<button
 								className="btn btn-sm dropdown-toggle px-3 py-2"
