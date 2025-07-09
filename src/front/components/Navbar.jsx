@@ -199,9 +199,12 @@ export const Navbar = () => {
 								)}
 							</>
 						):( 
-							<>
-								<Link to="/userprofile/me"> <span className="me-2"> <i className="fa-solid fa-user display-6 me-2"></i>{store.user} </span> </Link>
-								<button className="btn btn-secondary my-1 w-100" onClick={handleLogout}>Logout</button>
+							<> 
+							<Link to="/userprofile/me" className="d-flex align-items-center text-decoration-none link-warning mx-3">
+								<i className="fa-solid fa-user fs-4 me-2 custom-fg-brown"></i>
+								<span className="fw-bold custom-fg-brown ">{store.user}</span>
+							</Link>
+								<button className="btn btn-outline-secondary my-1 w-25" onClick={handleLogout}><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
 							</>
 						)}
 {/* Botón para proveedores */}
