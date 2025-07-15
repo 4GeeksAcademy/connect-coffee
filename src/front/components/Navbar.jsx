@@ -5,18 +5,18 @@ import { useLocation } from 'react-router-dom';
 
 
 export const Navbar = () => {
-	const {store, dispatch} =useGlobalReducer();
+	const { store, dispatch } = useGlobalReducer();
 	const location = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const handleLogout = () => {
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
 		localStorage.removeItem("message");
-		dispatch({type:"get_token", payload:"" });
-		dispatch({type:"get_hello", payload:"" });
-		dispatch({type:"get_user", payload:"" });
+		dispatch({ type: "get_token", payload: "" });
+		dispatch({ type: "get_hello", payload: "" });
+		dispatch({ type: "get_user", payload: "" });
 		navigate('/login')
-		}
+	}
 
 	return (
 		<nav
@@ -80,29 +80,29 @@ export const Navbar = () => {
 								Inicio
 							</Link>
 						</li>
-						{ (location.pathname !== '/') && (
-						<li className="nav-item">
-							<Link
-								to="/cafeterias"
-								className="nav-link px-3 py-2 rounded"
-								style={{
-									color: '#6b4423',
-									fontWeight: '500',
-									transition: 'all 0.2s ease'
-								}}
-								onMouseEnter={(e) => {
-									e.target.style.backgroundColor = '#e8d5c4';
-									e.target.style.color = '#8b4513';
-								}}
-								onMouseLeave={(e) => {
-									e.target.style.backgroundColor = 'transparent';
-									e.target.style.color = '#6b4423';
-								}}
-							>
-								<i className="fas fa-store me-1"></i>
-								Cafeterías
-							</Link>
-						</li>
+						{(location.pathname !== '/') && (
+							<li className="nav-item">
+								<Link
+									to="/CafeDetails"
+									className="nav-link px-3 py-2 rounded"
+									style={{
+										color: '#6b4423',
+										fontWeight: '500',
+										transition: 'all 0.2s ease'
+									}}
+									onMouseEnter={(e) => {
+										e.target.style.backgroundColor = '#e8d5c4';
+										e.target.style.color = '#8b4513';
+									}}
+									onMouseLeave={(e) => {
+										e.target.style.backgroundColor = 'transparent';
+										e.target.style.color = '#6b4423';
+									}}
+								>
+									<i className="fas fa-store me-1"></i>
+									Cafeterías
+								</Link>
+							</li>
 						)}
 						<li className="nav-item">
 							<Link
@@ -130,33 +130,10 @@ export const Navbar = () => {
 
 					{/* Botones de acción */}
 					<div className="d-flex align-items-center gap-2">
-						{/* Buscador */}
-						<div className="input-group me-3" style={{ width: '260px' }}>
-							<input
-								type="text"
-								className="form-control border-0"
-								placeholder="Buscar cafeterías..."
-								style={{
-									backgroundColor: '#f5e6d3',
-									color: '#6b4423',
-									fontSize: '0.9rem'
-								}}
-							/>
-							<button
-								className="btn border-0"
-								type="button"
-								style={{
-									backgroundColor: '#d4a574',
-									color: '#6b4423'
-								}}
-							>
-								<i className="fas fa-search"></i>
-							</button>
-						</div>
 						{/* Botones de usuario */}
-						{ !store?.token ? (
+						{!store?.token ? (
 							<>
-								{ (location.pathname !== '/login') && (
+								{(location.pathname !== '/login') && (
 									<Link to="/login">
 										<button
 											className="btn btn-sm me-2 px-3 py-2"
@@ -176,40 +153,40 @@ export const Navbar = () => {
 												e.target.style.backgroundColor = 'transparent';
 												e.target.style.color = '#8b4513';
 											}}
-											>
+										>
 											<i className="fas fa-sign-in-alt me-1"></i>
 											Iniciar Sesión
 										</button>
 									</Link>
 								)}
-								{ (location.pathname !== '/signup') && ( 
+								{(location.pathname !== '/signup') && (
 									<Link to="/signup">
 										<button
 											className="btn btn-sm me-2 px-3 py-2"
-											style={{backgroundColor: '#d4a574',color: '#6b4423', border: 'none',borderRadius: '6px', fontWeight: '500',	transition: 'all 0.2s ease'	}}
+											style={{ backgroundColor: '#d4a574', color: '#6b4423', border: 'none', borderRadius: '6px', fontWeight: '500', transition: 'all 0.2s ease' }}
 											onMouseEnter={(e) => {
 												e.target.style.backgroundColor = '#c19660';
 											}}
 											onMouseLeave={(e) => {
 												e.target.style.backgroundColor = '#d4a574';
 											}}
-											>
+										>
 											<i className="fas fa-user-plus me-1"></i>
 											Registrarse
 										</button>
 									</Link>
 								)}
 							</>
-						):( 
-							<> 
-							<Link to="/userprofile/me" className="d-flex align-items-center text-decoration-none link-warning mx-3">
-								<i className="fa-solid fa-user fs-4 me-2 custom-fg-brown"></i>
-								<span className="fw-bold custom-fg-brown ">{store.user}</span>
-							</Link>
+						) : (
+							<>
+								<Link to="/userprofile/me" className="d-flex align-items-center text-decoration-none link-warning mx-3">
+									<i className="fa-solid fa-user fs-4 me-2 custom-fg-brown"></i>
+									<span className="fw-bold custom-fg-brown ">{store.user}</span>
+								</Link>
 								<button className="btn btn-outline-secondary my-1 w-25" onClick={handleLogout}><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
 							</>
 						)}
-{/* Botón para proveedores */}
+						{/* Botón para proveedores */}
 						<div className="dropdown">
 							<button
 								className="btn btn-sm dropdown-toggle px-3 py-2"
@@ -245,7 +222,7 @@ export const Navbar = () => {
 							>
 								<li>
 									<Link
-										to="/provider/register"
+										to="/CafeDetails"
 										className="dropdown-item rounded d-flex align-items-center"
 										style={{
 											color: '#6b4423',
@@ -262,12 +239,12 @@ export const Navbar = () => {
 										}}
 									>
 										<i className="fas fa-store me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-										<span>Registrar Cafetería</span>
+										<span>Cafe Details</span>
 									</Link>
 								</li>
 								<li>
 									<Link
-										to="/provider/login"
+										to="/provider"
 										className="dropdown-item rounded d-flex align-items-center"
 										style={{
 											color: '#6b4423',
@@ -284,7 +261,7 @@ export const Navbar = () => {
 										}}
 									>
 										<i className="fas fa-sign-in-alt me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-										<span>Acceso Proveedores</span>
+										<span>View Provider</span>
 									</Link>
 								</li>
 								<li>
