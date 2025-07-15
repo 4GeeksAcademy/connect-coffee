@@ -13,14 +13,27 @@ export const Footer = () => {
 				{/* Redes sociales */}
 				<div className="mb-3">
 					<p className="mb-2" style={{ color: '#F5DEB3' }}>¡Síguenos en nuestras redes!</p>
+					{/* Instagram */}
 					<a
 						href="https://instagram.com/coffee-connect"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="text-decoration-none"
-						style={{ color: '#F5DEB3' }}
+						style={{ color: '#F5DEB3', marginRight: '20px' }}
 					>
 						<i className="fab fa-instagram me-2" style={{ fontSize: '1.5rem' }}></i>
+						<span className="fw-bold">@Coffee-Connect</span>
+					</a>
+
+					{/* Facebook */}
+					<a
+						href="https://facebook.com/coffee-connect"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-decoration-none"
+						style={{ color: '#F5DEB3' }}
+					>
+						<i className="fab fa-facebook me-2" style={{ fontSize: '1.5rem' }}></i>
 						<span className="fw-bold">@Coffee-Connect</span>
 					</a>
 				</div>

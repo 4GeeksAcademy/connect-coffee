@@ -5,13 +5,9 @@ import StoreIndex from '../components/StoreIndex.jsx';
 
 export const Home = () => {
 
-
 	return (
 		<>
 			<StoreIndex />
-
 		</>
-
-
 	);
 }; 

@@ -1,0 +1,164 @@
+/* ProviderDashboard.css */
+
+/* Variables de color del proyecto */
+:root {
+  --primary-bg-color: #fff5eb;
+  --secondary-bg-color: #f5e6d3;
+  --card-bg-color: #ffffff;
+  --text-primary: #6b3410;
+  --text-secondary: #8b5a3c;
+  --accent-color: #d2691e;
+  --cafe-brown: #8b4513;
+}
+
+/* Aplicar color de fondo consistente */
+body {
+  background-color: var(--primary-bg-color) !important;
+}
+
+/* Estilo para el contenedor principal */
+.min-vh-100 {
+  background-color: var(--primary-bg-color) !important;
+}
+
+/* Personalización de Bootstrap para mantener consistencia */
+.btn-warning {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #b8601a;
+  border-color: #b8601a;
+}
+
+.btn-primary {
+  background-color: var(--cafe-brown);
+  border-color: var(--cafe-brown);
+}
+
+.btn-primary:hover {
+  background-color: #6b3410;
+  border-color: #6b3410;
+}
+
+/* Estilos del editor de menú */
+.card {
+  background-color: var(--card-bg-color);
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: var(--text-primary);
+}
+
+/* Tabla personalizada */
+.table {
+  color: var(--text-primary);
+}
+
+.table-light > tr > th {
+  background-color: var(--secondary-bg-color);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Form controls */
+.form-control,
+.form-select {
+  border-color: #ddd;
+  color: var(--text-primary);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem rgba(210, 105, 30, 0.25);
+}
+
+/* Badges personalizados */
+.badge {
+  font-weight: normal;
+  padding: 0.35em 0.65em;
+}
+
+/* Vista previa del menú */
+.modal-content.bg-dark {
+  background-color: #1a1a1a !important;
+  color: white;
+}
+
+.modal-content h1 {
+  font-family: "Georgia", serif;
+  letter-spacing: 3px;
+}
+
+.modal-content h4 {
+  font-size: 1.1rem;
+  color: #f8f9fa;
+}
+
+/* Animaciones suaves */
+.btn,
+.card,
+.form-control,
+.form-select {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Switch personalizado */
+.form-check-input:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Navbar */
+.navbar {
+  background-color: white !important;
+}
+
+/* Tabs */
+.nav-tabs .nav-link {
+  color: var(--text-secondary);
+  border: none;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-color);
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--text-primary);
+  background-color: transparent;
+  border-color: transparent;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+
+  .table {
+    font-size: 0.9rem;
+  }
+
+  .btn-sm {
+    font-size: 0.8rem;
+  }
+}
