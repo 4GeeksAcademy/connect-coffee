@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 
 
 export const Navbar = () => {
 	const {store, dispatch} =useGlobalReducer();
 	const location = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const navigate = useNavigate();
 	const handleLogout = () => {
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
@@ -206,7 +207,7 @@ export const Navbar = () => {
 								<i className="fa-solid fa-user fs-4 me-2 custom-fg-brown"></i>
 								<span className="fw-bold custom-fg-brown ">{store.user}</span>
 							</Link>
-								<button className="btn btn-outline-secondary my-1 w-25" onClick={handleLogout}><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+								<button className="btn btn-outline-secondary my-1 w-25" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
 							</>
 						)}
 {/* Botón para proveedores */}
