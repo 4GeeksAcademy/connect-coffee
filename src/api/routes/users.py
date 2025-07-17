@@ -41,11 +41,10 @@ def register():
     # Si viene un rol lo validamos y lo incorporamos sino va por el default
     if data is not None and "role" in data and len(data['role']) > 1:
         # Validar el ROLE
-        valid_types = [ ROLE_USER, ROLE_STORE,ROLE_ADMIN]
+        valid_types = [ f"{ROLE_USER}", f"{ROLE_STORE}",f"{ROLE_ADMIN}"]
         if data['role'] in valid_types:
-            new_user.role=data['role']
-        else:
-            return jsonify({"msg":f"test {ROLE_STORE} {data['role']}"}),400
+            new_user.role=data['role'].capitalize()
+
     db.session.add(new_user)
     db.session.commit()
 
@@ -63,7 +62,7 @@ def register():
 @routes_user.route("/admin/list",methods=["GET"])
 def test():
     users = User.query.all()
-    return jsonify([user.serialize() for user in users]), 200
+    return jsonify([user.serialize_register() for user in users]), 200
 
 # Endpoint de Logout
 @routes_user.route("/login", methods=["POST"])
