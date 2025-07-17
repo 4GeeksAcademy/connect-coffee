@@ -11,9 +11,11 @@ import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import {About} from "./pages/About";
+import { About } from "./pages/About";
+import { Provider } from "./pages/Provider";
+import CafeDetails from "./pages/CafeDetails";
 
-
+// Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +35,8 @@ export const router = createBrowserRouter(
       <Route path="/signup" element={<Register />} />
       <Route path="/demo" element={<Demo />} />
       <Route path="/about" element={<About />} />
+      <Route path="/provider" element={<Provider />} />
+      <Route path="/cafedetails" element={<CafeDetails />} />
     </Route>
   )
 );
