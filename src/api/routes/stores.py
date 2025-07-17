@@ -9,6 +9,7 @@ from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
 from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE
+from sqlalchemy import or_
 
 routes_store = Blueprint('stores', __name__,url_prefix='/api/store')
 
@@ -21,14 +22,22 @@ CORS(routes_store)
 @routes_store.route('/create', methods=['POST'])
 @jwt_required()
 def store_create():
+    # Access the identity of the current user with get_jwt_identity    
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    #Se valida el Rol (no seria necesario) y que este activo
+    valid_types = [ ROLE_STORE, ROLE_ADMIN ]
+    if user.role.capitalize() not in valid_types or not user.is_active:
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401
+    
     body=json.loads(request.data)
     if body is None or len(body['nombre']) < 1 or len(body['direccion']) < 1 :
         return jsonify({"msg": "Los datos enviados no son suficientes"}), 400
-    if Store.query.filter((Store.nombre == body['nombre']) | (Store.direccion == body['direccion'])).first():
+    
+
+    if Store.query.filter(or_(Store.nombre == body['nombre'],Store.direccion == body['direccion']),Store.user_id == current_user_id).first():
         return jsonify({"msg": "No es posible crear una tienda con esos datos"}), 409
     
-    # Access the identity of the current user with get_jwt_identity    
-    current_user_id = get_jwt_identity()
 
     local_store= Store()
     local_store.nombre=body['nombre']
@@ -54,9 +63,9 @@ def stores_list():
     user = User.query.get(current_user_id)
 
     #Se valida el Rol (no seria necesario) y que este activo
-    valid_types = [ ROLE_USER, ROLE_STORE,ROLE_ADMIN]
-    if user.role not in valid_types or not user.is_active:
-        return jsonify({"msg": "Usuario no autorizado","ok": False}),401
+    valid_types = [ ROLE_USER, ROLE_STORE, ROLE_ADMIN ]
+    if user.role.capitalize() not in valid_types or not user.is_active:
+        return jsonify({"msg": f"Usuario no autorizado {user.role}","ok": False}),401
     
     stores = Store.query.filter_by(is_active=True, user_id=user.id).all()
     # Aramamos la respuesta
