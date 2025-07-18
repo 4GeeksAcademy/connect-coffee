@@ -1,6 +1,6 @@
 export const Footer = () => {
 	return (
-		<footer className="text-center text-light py-4 mt-5" style={{ backgroundColor: '#AB6B3E' }}>
+		<footer className="footer mt-auto text-center text-light py-4 mt-5" style={{ backgroundColor: '#AB6B3E' }}>
 			<div className="container">
 				{/* Logo y título */}
 				<div className="mb-3">

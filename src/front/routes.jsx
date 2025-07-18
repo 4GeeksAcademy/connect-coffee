@@ -14,6 +14,8 @@ import Register from "./pages/Register";
 import { About } from "./pages/About";
 import { Provider } from "./pages/Provider";
 import CafeDetails from "./pages/CafeDetails";
+import  StoreIndex  from "./components/StoreIndex.jsx";
+import  NotFound  from "./pages/NotFound.jsx";
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
 
@@ -29,7 +31,7 @@ export const router = createBrowserRouter(
     <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
 
       {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<StoreIndex />} />
       <Route path="/single/:theId" element={<Single />} />  {/* Dynamic route for single items */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Register />} />
@@ -37,6 +39,7 @@ export const router = createBrowserRouter(
       <Route path="/about" element={<About />} />
       <Route path="/provider" element={<Provider />} />
       <Route path="/cafedetails" element={<CafeDetails />} />
+      <Route path="/*" element={<NotFound />} />
     </Route>
   )
 );
