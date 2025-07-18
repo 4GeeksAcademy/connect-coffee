@@ -2,20 +2,16 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useLocation,useNavigate } from 'react-router-dom';
-
+import { useGlobalHelpers } from "../hooks/useGlobalHelpers";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
 	const location = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const navigate = useNavigate();
+	const { logoutUser } = useGlobalHelpers();
 	const handleLogout = () => {
-		localStorage.removeItem("user");
-		localStorage.removeItem("token");
-		localStorage.removeItem("message");
-		dispatch({ type: "get_token", payload: "" });
-		dispatch({ type: "get_hello", payload: "" });
-		dispatch({ type: "get_user", payload: "" });
+		logoutUser();
 		navigate('/login')
 	}
 

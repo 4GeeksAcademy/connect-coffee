@@ -25,3 +25,11 @@ body{
 .input-group-text{
     height: 40px;
 }
+/* footer sticky */
+html, body {
+    height: 100%;
+    margin:0;
+}
+footer {
+    flex-shrink: 0 ; /* No se encoge */
+}
