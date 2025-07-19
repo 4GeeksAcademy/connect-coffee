@@ -16,7 +16,7 @@ from api.routes.menus import routes_menu
 from api.routes.userpoints import routes_userpoint
 from api.admin import setup_admin
 from api.commands import setup_commands
-from flask_jwt_extended import JWTManager,create_access_token
+from flask_jwt_extended import JWTManager, create_access_token
 
 
 

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 const CafeDetail = () => {
+    const { store, dispatch } = useGlobalReducer();
     const [activeTab, setActiveTab] = useState('menu');
     const [isFavorite, setIsFavorite] = useState(false);
 
