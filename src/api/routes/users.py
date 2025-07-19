@@ -62,8 +62,28 @@ def register():
 
 
 @routes_user.route("/admin/list", methods=["GET"])
-def test():
+@jwt_required()
+def list_admin():
+    # Access the identity of the current user with get_jwt_identity
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    # Consistencia en id de usuario
+    if user.id is None or not isinstance(user.id,int):
+        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+    
+    # Solo Role Admin
+    if user.role != ROLE_ADMIN : 
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401   
+
     users = User.query.all()
+     # Aramamos la respuesta
+    response=jsonify({
+        "msg": "Listado de usuario",
+        "ok": True,
+        "data": [user.serialize_register() for user in users]
+    })
+    return response,200
     return jsonify([user.serialize_register() for user in users]), 200
 
 # Endpoint de Login
