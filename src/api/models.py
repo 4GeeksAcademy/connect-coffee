@@ -84,6 +84,7 @@ class Store(db.Model):
             "images": [img.serialize_store() for img in self.images],
             "points": [point.serialize() for point in self.points],
             "total_points":self.total_points,
+            "categories": [cat.serialize_base() for cat in self.categories],
             "is_active": self.is_active
         }
     def serialize_menu(self):
@@ -99,6 +100,18 @@ class Category(db.Model):
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     stores: Mapped[List[Store]] = relationship("Store", secondary=store_category_asociation, back_populates="categories")
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "stores":[store.serialize_menu() for store in self.stores]
+        }
+    def serialize_base(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
 
 class Menu(db.Model):
     __tablename__ = "menus"

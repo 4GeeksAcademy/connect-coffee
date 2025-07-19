@@ -7,7 +7,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
-from api.constants import ROLE_ADMIN
+from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE
 
 routes_image = Blueprint('images', __name__,url_prefix='/api/image')
 
@@ -132,6 +132,20 @@ def add_image_admin():
 @routes_image.route('/create', methods=['POST'])
 @jwt_required()
 def add_image():
+  # Access the identity of the current user with get_jwt_identity
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    # Solo Role Admin y Store
+    if user.role != ROLE_ADMIN and  user.role != ROLE_STORE : 
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401   
+    user_id=user.id
+    
+    # Consistencia en id de usuario
+    if user.id is None or not isinstance(user.id,int):
+        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+
+
     body=json.loads(request.data)
     owner_type=body['owner_type'] # Store, User, Product, Menu
     owner_id=body['owner_id']
@@ -140,9 +154,6 @@ def add_image():
     url=body['url']
     position=body['position']
 
-    # Access the identity of the current user with get_jwt_identity
-    current_user_id = get_jwt_identity()
-    user = User.query.get(current_user_id)
 
     # Validar tipo de entidad
     valid_types = ['store', 'product', 'user', 'menu']
@@ -197,20 +208,61 @@ def add_image():
 
 
 # Image Get 
-@routes_image.route("/<string:entity_type>/<int:entity_id>", methods=["GET"])
+@routes_image.route("/<string:entity_type>/<int:image_id>", methods=["GET"])
 @jwt_required()
-def get_images_for(entity_type: str, entity_id: int):
-    image=Image.query.filter_by(owner_type=entity_type, owner_id=entity_id).all()
-    if image:
-        return jsonify(image.serialize())
+def get_images_for(entity_type: str, image_id: int):
+    # Access the identity of the current user with get_jwt_identity
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    # Solo Role Admin y Store
+    if user.role != ROLE_ADMIN and  user.role != ROLE_STORE : 
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401   
+    user_id=user.id
+    
+    # Consistencia en id de usuario
+    if user.id is None or not isinstance(user.id,int):
+        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+
+    # Existencia de Imagen
+    image_exists=Image.query.filter_by(id=image_id,user_id=user.id).first()
+    if not image_exists:
+            return jsonify({"msg":f"No existe una imagen con ID {image_id}.","ok":False}) , 400
+    
+
+    # images=Image.query.filter_by(owner_type=entity_type,user_id=user.id).all()
+    if image_exists:
+        # Aramamos la respuesta
+        response=jsonify({
+            "msg": "Imagen encontrada",
+            "ok": True,
+            "data": [img.serialize() for img in image_exists]
+        })
+    return response,200
+    return jsonify({"msg":f"No se pudo procesar la solicitud","ok":False}) , 400
+
 
 # Image Delete 
 @routes_image.route("/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_image_for(id: int):
+     # Access the identity of the current user with get_jwt_identity
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    
+    # Solo Role Admin y Store
+    if user.role != ROLE_ADMIN and  user.role != ROLE_STORE : 
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401   
+    user_id=user.id
+    
+    # Consistencia en id de usuario
+    if user.id is None or not isinstance(user.id,int):
+        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+
+    # Existencia de Imagen
     image_exists=Image.query.filter_by(id=id).first()
     if not image_exists:
-            return jsonify({"msg":f"No existe una imagen con ID {id}.","ok":False}) , 400
+        return jsonify({"msg":f"No existe una imagen con ID {id}.","ok":False}) , 400
     
     db.session.delete(image_exists)
     db.session.commit()

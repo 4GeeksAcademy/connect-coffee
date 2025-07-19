@@ -1,5 +1,5 @@
 # Roles
-ROLE_ADMIN = "SuperAdmin"
+ROLE_ADMIN = "Superadmin"
 ROLE_STORE = "Store"
 ROLE_USER = "User"
 

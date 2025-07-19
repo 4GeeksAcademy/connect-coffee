@@ -14,9 +14,10 @@ from api.routes.users import routes_user
 from api.routes.products import routes_product
 from api.routes.menus import routes_menu
 from api.routes.userpoints import routes_userpoint
+from api.routes.categories import routes_category
 from api.admin import setup_admin
 from api.commands import setup_commands
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager,create_access_token
 
 
 
@@ -58,6 +59,7 @@ app.register_blueprint(routes_user) # /api/users
 app.register_blueprint(routes_product) # /api/product
 app.register_blueprint(routes_menu) # /api/menu
 app.register_blueprint(routes_userpoint) # /api/userpoint
+app.register_blueprint(routes_category) # /api/category
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
