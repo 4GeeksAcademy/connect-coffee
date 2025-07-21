@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalHelpers } from "../hooks/useGlobalHelpers";
+import { getStoreIndex } from "../services/api_store";
 
 const StoreIndex = () => {
+  const [index, setindex] = useState(''); // Ejemplo para obtener listado de tiendas de back
   // Datos básicos (Mock)
   const { mockCafeterias } = useGlobalHelpers();
   const [cafeterias, setCafeterias] = useState(mockCafeterias);
@@ -24,9 +26,15 @@ const StoreIndex = () => {
     espaciosTranquilos: { icon: '💙', label: 'Espacios Tranquilos', color: 'info' }
   };
 
+  // Ejemplo para obtener listado de tiendas de back
+  const getIndex=async ()=>{
+    setindex(await getStoreIndex());
+  }
+
   useEffect(() => {
     setCafeterias(mockCafeterias);
     setFilteredCafeterias(mockCafeterias);
+    getIndex();// Ejemplo para obtener listado de tiendas de back
   }, []);
 
   useEffect(() => {
@@ -222,6 +230,12 @@ const StoreIndex = () => {
           </div>
         )}
       </div>
+      { index && ( 
+        <div>Ejemplo para obtener listado de tiendas de back 
+        <pre style={{ background: '#eee', padding: '1em', marginTop: '1em' }}>
+        {JSON.stringify(index.data, null, 2) }
+        </pre>
+      </div>)}
     </div>
   );
 };

@@ -110,7 +110,8 @@ class Category(db.Model):
     def serialize_base(self):
         return {
             "id": self.id,
-            "name": self.name
+            "name": self.name,
+            "description": self.description
         }
 
 class Menu(db.Model):
@@ -132,7 +133,7 @@ class Menu(db.Model):
         return {
             "id": self.id,
             "description": self.description,
-            "store": self.store.serialize(),
+            "store": self.store.serialize_menu(),
             "products": [product.serialize_menu() for product in self.products],
             "images": [img.serialize_store() for img in self.images]
         }
@@ -164,6 +165,14 @@ class Product(db.Model):
             "category": self.category,
             "menu_id": self.menu_id,
             "images": [img.serialize() for img in self.images],
+            "price": self.price
+        }
+    def serialize_menu(self):
+        return {
+            "id": self.id,
+            "category": self.category,
+            "name": self.name,
+            "description": self.description,
             "price": self.price
         }
 
