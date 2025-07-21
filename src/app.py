@@ -7,14 +7,13 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db,User
+
+#Importacion de rutas
 from api.base import api
-from api.routes.images import routes_image
-from api.routes.stores import routes_store
-from api.routes.users import routes_user
-from api.routes.products import routes_product
-from api.routes.menus import routes_menu
-from api.routes.userpoints import routes_userpoint
-from api.routes.categories import routes_category
+from api.routes import *  # Import __all__ modules
+from api import routes     # Needed to access __all__
+
+
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager,create_access_token
@@ -51,18 +50,19 @@ setup_admin(app)
 # add the admin
 setup_commands(app)
 
+# Itero los blueprint declarados en init y los registro
+for name in routes.__all__:
+    blueprint=getattr(routes,name)
+    print(f"🧩 Registrando blueprint 🔗 {blueprint.name} ({name})")
+    app.register_blueprint(blueprint)
 
 
-app.register_blueprint(routes_image) # /api/images
-app.register_blueprint(routes_store) # /api/stores
-app.register_blueprint(routes_user) # /api/users
-app.register_blueprint(routes_product) # /api/product
-app.register_blueprint(routes_menu) # /api/menu
-app.register_blueprint(routes_userpoint) # /api/userpoint
-app.register_blueprint(routes_category) # /api/category
+
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
+from api.routes import *  # Import __all__ modules
+from api import routes     # Needed to access __all__
 
 # Handle/serialize errors like a JSON object
 

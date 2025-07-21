@@ -8,7 +8,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
-from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE
+from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE,APIKEY
 from sqlalchemy import or_
 
 routes_store = Blueprint('stores', __name__,url_prefix='/api/store')
@@ -147,4 +147,48 @@ def deactivate_store_for(id: int):
         "ok": True,
         "data": store_exists.serialize()
     })
+    return response,200
+
+
+# Vistas Front
+## STORES ##
+# Endpoint de listado de tiendas
+
+@routes_store.route('/list/index', methods=['GET'])
+def front_stores_list():  
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+    
+    stores = Store.query.filter_by(is_active=True).all()
+    # Aramamos la respuesta
+    response=jsonify({
+        "msg": "Listado de Stores", 
+        "ok": True,
+        "data": [store.serialize() for store in stores]
+    })
+    return response,200
+
+
+
+
+# Store Get 
+@routes_store.route("/<int:store_id>/detail", methods=["GET"])
+def front_get_storedetail_for(store_id: int):
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
+    store_exists=Store.query.filter_by(id=store_id).first()
+    # Existencia de Store
+    if not store_exists:
+            return jsonify({"msg":f"No existe una tienda con ID {store_id}.","ok":False}) , 400
+    
+    if store_exists:
+        # Aramamos la respuesta
+        response=jsonify({
+            "msg": f"Tienda {store_exists.nombre}",
+            "ok": True,
+            "data": store_exists.serialize()
+        })
     return response,200

@@ -40,6 +40,7 @@ export const router = createBrowserRouter(
       <Route path="/demo" element={<Demo />} />
       <Route path="/about" element={<About />} />
       <Route path="/provider" element={<Provider />} />
+      <Route path="/provider/:id" element={<Provider />} />
       <Route path="/cafedetails" element={<CafeDetails />} />
       <Route path="/userdetails" element={<UserDetails />} />
       <Route path="/*" element={<NotFound />} />

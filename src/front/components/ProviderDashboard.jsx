@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getStoreDetail } from "../services/api_store";
+import { getStoreMenu } from "../services/api_menu";
+import { useParams } from 'react-router-dom';
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 
 const ProviderDashboard = () => {
@@ -6,7 +10,10 @@ const ProviderDashboard = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [editingMenu, setEditingMenu] = useState(false);
   const [menuPreview, setMenuPreview] = useState(false);
-
+  const { id } = useParams();   //validar ID
+  const [storeDetails, setStoreDetails] = useState("");
+  const [storeMenu, setStoreMenu] = useState("");
+  const { store, dispatch } = useGlobalReducer();
   // Estado para la información del restaurante
   const [restaurantInfo, setRestaurantInfo] = useState({
     name: "Café Central",
@@ -194,7 +201,16 @@ const ProviderDashboard = () => {
       reader.readAsDataURL(file);
     }
   };
-
+   const handleGetStoreDetail= async()=>{
+      setStoreDetails(await getStoreDetail(id))
+   }
+   const handleGetStoreMenu= async()=>{
+      setStoreMenu(await getStoreMenu(store.token))
+   }
+   useEffect(() => {
+      handleGetStoreDetail();// Ejemplo para obtener detalle de la tienda de back
+      handleGetStoreMenu();// Ejemplo para obtener menu de la tienda de back
+    }, []);
   // Componente de vista previa del menú
   const MenuPreview = () => (
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
@@ -264,7 +280,8 @@ const ProviderDashboard = () => {
           <div className="d-flex align-items-center">
             <i className="fas fa-coffee me-2" style={{ fontSize: '1.4rem', color: '#8b4513' }}></i>
             <div>
-              <h5 className="mb-0 fw-bold">{cafeData.name}</h5>
+              <h5 className="mb-0 fw-bold">Panel Proveedor</h5>
+              <small className="text-muted">{storeDetails.data ? storeDetails.data.name : cafeData.name } </small>
             </div>
           </div>
 
@@ -631,6 +648,18 @@ const ProviderDashboard = () => {
 
       {/* Vista previa del menú */}
       {menuPreview && <MenuPreview />}
+       { storeDetails && ( 
+        <div>Ejemplo para obtener listado de la tienda de back 
+        <pre style={{ background: '#eee', padding: '1em', marginTop: '1em' }}>
+        {JSON.stringify(storeDetails.data, null, 2) }
+        </pre>
+      </div>)}
+       { storeMenu ? ( 
+        <div>Ejemplo para obtener Menu de la tienda de back 
+        <pre style={{ background: '#eee', padding: '1em', marginTop: '1em' }}>
+        {JSON.stringify(storeMenu.data, null, 2) }
+        </pre>
+      </div>) : (JSON.stringify(storeMenu.msg, null, 2)) }
     </div>
   );
 };

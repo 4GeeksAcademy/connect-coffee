@@ -173,12 +173,36 @@ def add_image():
     target_enity=db.session.get(entity_model, owner_id)
     if not target_enity:
         return jsonify({"msg":f"{owner_type.capitalize()} con ID {owner_id} no existe.","ok":False}),400
+
     
+    # Existencia de Store
+    store_exists=Store.query.filter_by(user_id=user.id,is_active=True).first()
+    if not store_exists:
+        return jsonify({"msg":f"No existe una Tienda para el usuario con ID {user.id}","ok":False}) , 400
+    if store_exists.id !=owner_id:
+        return jsonify({"msg":f"La tienda no pertenece al usuario con ID {user.id}","ok":False}) , 400
+
+    if owner_type == "menu":
+        menu_exists=Menu.query.filter_by(store_id=store_exists.id).first()
+        if not menu_exists:
+            return jsonify({"msg":f"No existe un Menu para la Tienda con ID {store_exists.id}","ok":False}) , 400
+        if menu_exists.id !=owner_id:
+            return jsonify({"msg":f"La tienda no pertenece al usuario con ID {user.id}","ok":False}) , 400
+
+
+
     # solo aceptamos una imagen index
     if img_type == 'index':
         existing_index = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='index').first()
         if existing_index:
             return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
+
+    # solo aceptamos una imagen menugit push
+    if img_type == 'menu':
+        existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
+        if existing_menu:
+            return jsonify({"msg":f"Ya existe una imagen de tipo 'menu' para {owner_type} con ID {owner_id}.","ok":False}),400
+
 
     # Crear imagen
     image = Image(
@@ -208,9 +232,10 @@ def add_image():
 
 
 # Image Get 
-@routes_image.route("/<string:entity_type>/<int:image_id>", methods=["GET"])
+@routes_image.route("/admin/<int:image_id>", methods=["GET"])
+@routes_image.route("/<int:image_id>", methods=["GET"])
 @jwt_required()
-def get_images_for(entity_type: str, image_id: int):
+def get_images_for(image_id: int):
     # Access the identity of the current user with get_jwt_identity
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
@@ -223,26 +248,32 @@ def get_images_for(entity_type: str, image_id: int):
     # Consistencia en id de usuario
     if user.id is None or not isinstance(user.id,int):
         return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+    
+    # ROLE STORE DEFAULT
+    image_exists=Image.query.filter_by(id=image_id,user_id=user.id).first()
+    msg = f"No existe una imagen con ID {image_id} para el usuario {user.id}"
+
+    if user.role ==ROLE_ADMIN:
+        image_exists=Image.query.filter_by(id=image_id).first()
+        msg = f"No existe una imagen con ID {image_id}."
 
     # Existencia de Imagen
-    image_exists=Image.query.filter_by(id=image_id,user_id=user.id).first()
     if not image_exists:
-            return jsonify({"msg":f"No existe una imagen con ID {image_id}.","ok":False}) , 400
+            return jsonify({"msg":msg,"ok":False}) , 400
     
-
-    # images=Image.query.filter_by(owner_type=entity_type,user_id=user.id).all()
     if image_exists:
         # Aramamos la respuesta
         response=jsonify({
             "msg": "Imagen encontrada",
             "ok": True,
-            "data": [img.serialize() for img in image_exists]
+            "data": image_exists.serialize()
         })
     return response,200
-    return jsonify({"msg":f"No se pudo procesar la solicitud","ok":False}) , 400
+
 
 
 # Image Delete 
+@routes_image.route("/admin/<int:id>", methods=["DELETE"])
 @routes_image.route("/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_image_for(id: int):
@@ -260,9 +291,17 @@ def delete_image_for(id: int):
         return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
 
     # Existencia de Imagen
-    image_exists=Image.query.filter_by(id=id).first()
+    if user.role ==ROLE_ADMIN:
+        image_exists=Image.query.filter_by(id=id).first()
+        msg = f"No existe una imagen con ID {id}."
+
+    if user.role ==ROLE_STORE:
+        image_exists=Image.query.filter_by(id=id,user_id=user.id).first()
+        msg = f"No existe una imagen con ID {id} para el usuario {user.id}"
+
+    
     if not image_exists:
-        return jsonify({"msg":f"No existe una imagen con ID {id}.","ok":False}) , 400
+        return jsonify({"msg":msg,"ok":False}) , 400
     
     db.session.delete(image_exists)
     db.session.commit()

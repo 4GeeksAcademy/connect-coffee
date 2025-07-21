@@ -143,7 +143,8 @@ def set_category(store_id):
         "msg": f"Se preocesaron las categorias {len(category_ids)} con éxito",
         "ok": True,
         "added": added,
-        "skipped": skipped
+        "skipped": skipped,
+        "store_id":store_id
     })
     return response,200
 
