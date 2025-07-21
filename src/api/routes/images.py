@@ -208,9 +208,9 @@ def add_image():
 
 
 # Image Get 
-@routes_image.route("/<string:entity_type>/<int:image_id>", methods=["GET"])
+@routes_image.route("/<int:image_id>", methods=["GET"])
 @jwt_required()
-def get_images_for(entity_type: str, image_id: int):
+def get_images_for(image_id: int):
     # Access the identity of the current user with get_jwt_identity
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
@@ -223,20 +223,20 @@ def get_images_for(entity_type: str, image_id: int):
     # Consistencia en id de usuario
     if user.id is None or not isinstance(user.id,int):
         return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
-
+    
     # Existencia de Imagen
     image_exists=Image.query.filter_by(id=image_id,user_id=user.id).first()
     if not image_exists:
-            return jsonify({"msg":f"No existe una imagen con ID {image_id}.","ok":False}) , 400
+            return jsonify({"msg":f"No existe una imagen con ID {image_id} para el usuario {user.id}","ok":False}) , 400
     
 
-    # images=Image.query.filter_by(owner_type=entity_type,user_id=user.id).all()
+    # images=Image.query.filter_by(owner_type=image_type,user_id=user.id).all()
     if image_exists:
         # Aramamos la respuesta
         response=jsonify({
             "msg": "Imagen encontrada",
             "ok": True,
-            "data": [img.serialize() for img in image_exists]
+            "data": image_exists.serialize()
         })
     return response,200
     return jsonify({"msg":f"No se pudo procesar la solicitud","ok":False}) , 400

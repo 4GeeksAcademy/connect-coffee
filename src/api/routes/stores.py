@@ -8,7 +8,7 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
-from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE
+from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE,APIKEY
 from sqlalchemy import or_
 
 routes_store = Blueprint('stores', __name__,url_prefix='/api/store')
@@ -146,5 +146,25 @@ def deactivate_store_for(id: int):
         "msg": f"Tienda {store_exists.nombre} deshabilitada con exito",
         "ok": True,
         "data": store_exists.serialize()
+    })
+    return response,200
+
+
+# Vistas Front
+## STORES ##
+# Endpoint de listado de tiendas
+
+@routes_store.route('/list/front', methods=['GET'])
+def stores_pub_list():  
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+    
+    stores = Store.query.filter_by(is_active=True).all()
+    # Aramamos la respuesta
+    response=jsonify({
+        "msg": "Listado de Stores", 
+        "ok": True,
+        "data": [store.serialize() for store in stores]
     })
     return response,200
