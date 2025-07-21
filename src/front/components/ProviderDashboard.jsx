@@ -4,6 +4,7 @@ import { getStoreMenu } from "../services/api_menu";
 import { useParams } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
+
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('cafe');
   const [showProfile, setShowProfile] = useState(false);
@@ -308,7 +309,6 @@ const ProviderDashboard = () => {
                   <div className="dropdown-header">
                     <strong>{provider.name}</strong><br />
                     <small>{provider.email}</small><br />
-                    <small>Miembro desde {provider.memberSince}</small>
                   </div>
                   <div className="dropdown-divider"></div>
                   <button className="dropdown-item">👤 Mi Perfil</button>

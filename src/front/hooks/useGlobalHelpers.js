@@ -15,6 +15,7 @@ export function useGlobalHelpers() {
   }
 
   
+  
   function isLoggedIn() {
     return !!store.user;
   }

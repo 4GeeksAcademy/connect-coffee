@@ -17,6 +17,7 @@ import CafeDetails from "./pages/CafeDetails";
 import UserDetails from "./pages/UserDetails";
 import StoreIndex from "./components/StoreIndex.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import { Terms } from "./pages/Terms";
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
 
@@ -43,6 +44,7 @@ export const router = createBrowserRouter(
       <Route path="/cafedetails" element={<CafeDetails />} />
       <Route path="/userdetails" element={<UserDetails />} />
       <Route path="/*" element={<NotFound />} />
+      <Route path="/terms" element={<Terms />} />
     </Route>
   )
 );
