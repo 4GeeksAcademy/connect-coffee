@@ -154,8 +154,8 @@ def deactivate_store_for(id: int):
 ## STORES ##
 # Endpoint de listado de tiendas
 
-@routes_store.route('/list/front', methods=['GET'])
-def stores_pub_list():  
+@routes_store.route('/list/index', methods=['GET'])
+def front_stores_list():  
     apikey = request.headers.get('x-api-key')
     if apikey != APIKEY:
         return jsonify({"msg": "Usuario no autorizado"}), 400
@@ -167,4 +167,28 @@ def stores_pub_list():
         "ok": True,
         "data": [store.serialize() for store in stores]
     })
+    return response,200
+
+
+
+
+# Store Get 
+@routes_store.route("/<int:store_id>/detail", methods=["GET"])
+def front_get_storedetail_for(store_id: int):
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
+    store_exists=Store.query.filter_by(id=store_id).first()
+    # Existencia de Store
+    if not store_exists:
+            return jsonify({"msg":f"No existe una tienda con ID {store_id}.","ok":False}) , 400
+    
+    if store_exists:
+        # Aramamos la respuesta
+        response=jsonify({
+            "msg": f"Tienda {store_exists.nombre}",
+            "ok": True,
+            "data": store_exists.serialize()
+        })
     return response,200

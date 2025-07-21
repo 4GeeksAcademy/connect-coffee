@@ -196,6 +196,7 @@ class Image(db.Model):
         return {
             "url": self.url,
             "position": self.position,
+            "type":self.type
         }
 
 class UserPoint(db.Model):
