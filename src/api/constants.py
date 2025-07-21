@@ -3,6 +3,8 @@ ROLE_ADMIN = "SuperAdmin"
 ROLE_STORE = "Store"
 ROLE_USER = "User"
 
+# Nombre cafeterias
+
 # Tipos de imagen
 IMAGE_TYPE_MENU = "menu"
 IMAGE_TYPE_STORE = "store"

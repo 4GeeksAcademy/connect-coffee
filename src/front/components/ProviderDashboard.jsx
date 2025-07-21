@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('cafe');
   const [showProfile, setShowProfile] = useState(false);
@@ -263,8 +264,7 @@ const ProviderDashboard = () => {
           <div className="d-flex align-items-center">
             <i className="fas fa-coffee me-2" style={{ fontSize: '1.4rem', color: '#8b4513' }}></i>
             <div>
-              <h5 className="mb-0 fw-bold">Panel Proveedor</h5>
-              <small className="text-muted">{cafeData.name}</small>
+              <h5 className="mb-0 fw-bold">{cafeData.name}</h5>
             </div>
           </div>
 
@@ -292,7 +292,6 @@ const ProviderDashboard = () => {
                   <div className="dropdown-header">
                     <strong>{provider.name}</strong><br />
                     <small>{provider.email}</small><br />
-                    <small>Miembro desde {provider.memberSince}</small>
                   </div>
                   <div className="dropdown-divider"></div>
                   <button className="dropdown-item">👤 Mi Perfil</button>
