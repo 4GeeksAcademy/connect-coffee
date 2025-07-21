@@ -197,7 +197,7 @@ def add_image():
         if existing_index:
             return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
 
-    # solo aceptamos una imagen menu
+    # solo aceptamos una imagen menugit push
     if img_type == 'menu':
         existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
         if existing_menu:
