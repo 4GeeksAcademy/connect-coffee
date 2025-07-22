@@ -1,0 +1,125 @@
+/* Estilos base */
+:root {
+  --primary-bg-color: #fff5eb;
+  --secondary-bg-color: #f5e6d3;
+  --card-bg-color: #ffffff;
+  --text-primary: #6b3410;
+  --text-secondary: #8b5a3c;
+  --accent-color: #d2691e;
+  --cafe-brown: #8b4513;
+}
+
+/* Estilos para el hero */
+.about-hero {
+  background-image: url('https://plus.unsplash.com/premium_photo-1726754628951-0ebd834300f1?q=80&w=1139&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: linear-gradient(135deg, rgba(107, 52, 16, 0.397) 0%, rgba(139, 69, 19, 0.224) 100%);
+}
+
+/* Estilos para las imágenes */
+.about-img {
+  transition: transform 0.5s ease;
+  height: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.about-img img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+
+.about-img:hover img {
+  transform: scale(1.05);
+}
+
+.benefit-img {
+  height: 200px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.benefit-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.benefit-card:hover .benefit-img img {
+  transform: scale(1.1);
+}
+
+/* Estilos para las tarjetas de beneficios */
+.benefit-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(210, 105, 30, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.benefit-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(107, 52, 16, 0.1);
+  border-color: rgba(210, 105, 30, 0.3);
+}
+
+/* Lista de características */
+.feature-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.feature-list li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.feature-list li i {
+  margin-right: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+/* Cita final */
+.quote-icon {
+  opacity: 0.2;
+  line-height: 0;
+  font-size: 3rem;
+}
+
+/* Botón */
+.btn-custom {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.btn-custom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(210, 105, 30, 0.3);
+  background-color: var(--cafe-brown);
+  color: white;
+}

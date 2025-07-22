@@ -1,7 +1,8 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 export const getToken = async (form) => {
-    const response = await fetch(backendUrl + "/api/login",  {
+    const response = await fetch(backendUrl + "/api/user/login",  {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
@@ -12,7 +13,7 @@ export const getToken = async (form) => {
 
 
 export const registerUser = async (form) => {
-    const response = await fetch(backendUrl + "/api/register",  {
+    const response = await fetch(backendUrl + "/api/user/register",  {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
