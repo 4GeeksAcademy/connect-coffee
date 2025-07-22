@@ -9,6 +9,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import json
 import yaml
 from api.constants import ROLE_ADMIN, ROLE_STORE, ROLE_USER
+from datetime import timedelta
 
 routes_user = Blueprint('users', __name__, url_prefix='/api/user')
 
@@ -99,5 +100,5 @@ def create_token():
     if not user or not user.check_password(password):
         return jsonify({"msg": "Credenciales inválidas", "ok": False}), 401
 
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id),expires_delta=timedelta(hours=12))
     return jsonify(access_token=access_token, username=user.username, role=user.role, ok=True,id=user.id), 200
