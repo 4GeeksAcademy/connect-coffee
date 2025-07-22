@@ -3,6 +3,7 @@ import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGlobalHelpers } from "../hooks/useGlobalHelpers";
+import { useGlobalButtons } from "../hooks/useGlobalButtons.jsx";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
@@ -11,6 +12,7 @@ export const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const navigate = useNavigate();
 	const { logoutUser } = useGlobalHelpers();
+	const { BotonDonar } = useGlobalButtons();
 	const handleLogout = () => {
 		logoutUser();
 		navigate('/login')
@@ -286,6 +288,7 @@ export const Navbar = () => {
 												</li>
 											</ul>
 										</div>
+
 									</>
 								) : (
 									<>
@@ -313,7 +316,6 @@ export const Navbar = () => {
 												</div>
 											)}
 										</div>
-
 									</>
 								)}
 								{/* Botón Views - Solo para SuperAdmin */}
@@ -454,6 +456,7 @@ export const Navbar = () => {
 								)}
 							</div>
 						</div>
+						<div className="d-flex align-items-center"> {BotonDonar()}</div>
 					</div>
 				</nav>
 

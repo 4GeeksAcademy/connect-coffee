@@ -16,6 +16,7 @@ import { Provider } from "./pages/Provider";
 import CafeDetails from "./pages/CafeDetails";
 import UserDetails from "./pages/UserDetails";
 import StoreIndex from "./components/StoreIndex.jsx";
+import Donations from "./pages/Donations.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import { Terms } from "./pages/Terms";
 import Hero from "./pages/Hero.jsx";
@@ -47,6 +48,9 @@ export const router = createBrowserRouter(
       <Route path="/userdetails" element={<UserDetails />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/hero" element={<Hero />} />
+      <Route path="/donations" element={<Donations />} />
+      <Route path="/success" element={<div>✅ ¡Gracias por tu donación!</div>} />
+      <Route path="/cancel" element={<div>❌ Cancelaste la donación.</div>} />
       <Route path="/*" element={<NotFound />} />
 
     </Route>
