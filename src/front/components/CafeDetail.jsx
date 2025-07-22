@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 const CafeDetail = () => {
-  const [activeTab, setActiveTab] = useState("menu");
-  const [isFavorite, setIsFavorite] = useState(false);
+    const { store, dispatch } = useGlobalReducer();
+    const [activeTab, setActiveTab] = useState('menu');
+    const [isFavorite, setIsFavorite] = useState(false);
 
   // Mock data - vendría de props o API
   const cafeData = {

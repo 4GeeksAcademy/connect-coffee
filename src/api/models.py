@@ -84,6 +84,7 @@ class Store(db.Model):
             "images": [img.serialize_store() for img in self.images],
             "points": [point.serialize() for point in self.points],
             "total_points":self.total_points,
+            "categories": [cat.serialize_base() for cat in self.categories],
             "is_active": self.is_active
         }
     def serialize_menu(self):
@@ -99,6 +100,19 @@ class Category(db.Model):
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     stores: Mapped[List[Store]] = relationship("Store", secondary=store_category_asociation, back_populates="categories")
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "stores":[store.serialize_menu() for store in self.stores]
+        }
+    def serialize_base(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+        }
 
 class Menu(db.Model):
     __tablename__ = "menus"
@@ -116,12 +130,14 @@ class Menu(db.Model):
         viewonly=True
     )
     def serialize(self):
+        menu_images = [img for img in self.images if img.type == 'menu']
+        last_menu_image = max(menu_images, key=lambda img: img.id, default=None)
         return {
             "id": self.id,
             "description": self.description,
-            "store": self.store.serialize(),
+            "store": self.store.serialize_menu(),
             "products": [product.serialize_menu() for product in self.products],
-            "images": [img.serialize_store() for img in self.images]
+            "images": [last_menu_image.serialize_store()] if last_menu_image else []
         }
 
 class Product(db.Model):
@@ -151,6 +167,14 @@ class Product(db.Model):
             "category": self.category,
             "menu_id": self.menu_id,
             "images": [img.serialize() for img in self.images],
+            "price": self.price
+        }
+    def serialize_menu(self):
+        return {
+            "id": self.id,
+            "category": self.category,
+            "name": self.name,
+            "description": self.description,
             "price": self.price
         }
 
@@ -183,6 +207,7 @@ class Image(db.Model):
         return {
             "url": self.url,
             "position": self.position,
+            "type":self.type
         }
 
 class UserPoint(db.Model):

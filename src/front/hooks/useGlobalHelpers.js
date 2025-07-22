@@ -14,6 +14,8 @@ export function useGlobalHelpers() {
       dispatch({type:"user", payload:"" });
   }
 
+  
+  
   function isLoggedIn() {
     return !!store.user;
   }
