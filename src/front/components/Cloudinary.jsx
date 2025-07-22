@@ -5,7 +5,7 @@ import { setImageByType } from "../services/api_image";
 
 const Cloudinary = ({preset=null,image_type="store",owner_id=null}) => {
                                                             // VER DONDE VA EL APIKEY 718551838712191
-    const preset_name = (preset) ? preset : "testcc";                         //16 Pegamos el "name" rescatado en el punto 24
+    const preset_name = (preset) ? preset : "width400";                         //16 Pegamos el "name" rescatado en el punto 24
     const cloud_name = "dliwcwhd9"                          //16.2 Pegamos el cloud_name rescatado en punto 20
 
     const [ image, setImage ] = useState('');       //12 Creamos estado local que guarde la url de la imagen subida
@@ -44,16 +44,17 @@ const Cloudinary = ({preset=null,image_type="store",owner_id=null}) => {
 
   return (
     <div>
-        <h1>Upload Image</h1>
-
         {/*1 - El siguiente input type file envia la imagen por el evento al handler uploadImage */}
+   
+                <label className="form-label">Logo del Restaurante</label>        
+                <input type="file"
+                name="file"
+                placeholder='Upload an image'
+                className="form-control"
+                // accept='image/png, image/jpeg' 
+                onChange={(e)=>uploadImage(e)}
+                />
 
-        <input type="file"
-        name="file"
-        placeholder='Upload an image'
-        // accept='image/png, image/jpeg' 
-        onChange={(e)=>uploadImage(e)}
-        />
 
         {/* ------------------------------------------------------------------------------------ */}
 
@@ -62,7 +63,7 @@ const Cloudinary = ({preset=null,image_type="store",owner_id=null}) => {
         {loading ? (
             <h3>Loading...</h3>
         ) : (
-        <img src={image} alt="imagen subida"/>
+        <div className='p-3'> <img src={image} width={"200px"} alt="imagen subida"/></div>
         )}
         {/* ------------------------------------------------------------------------------------ */}
 

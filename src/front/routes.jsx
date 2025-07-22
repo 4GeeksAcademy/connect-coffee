@@ -20,6 +20,7 @@ import Donations from "./pages/Donations.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import { Terms } from "./pages/Terms";
 import Hero from "./pages/Hero.jsx";
+import MenuPreview from "./components/MenuPreview.jsx";
 
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
@@ -51,6 +52,7 @@ export const router = createBrowserRouter(
       <Route path="/donations" element={<Donations />} />
       <Route path="/success" element={<div>✅ ¡Gracias por tu donación!</div>} />
       <Route path="/cancel" element={<div>❌ Cancelaste la donación.</div>} />
+      <Route path="/menu/:id" element={<MenuPreview />} />
       <Route path="/*" element={<NotFound />} />
 
     </Route>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getStoreDetail } from "../services/api_store";
 import { getStoreMenu } from "../services/api_menu";
 import { useParams } from 'react-router-dom';
+import MenuPreview from "./MenuPreview.jsx"
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import Cloudinary from './Cloudinary.jsx';
 
@@ -211,66 +212,6 @@ const ProviderDashboard = () => {
       handleGetStoreDetail();// Ejemplo para obtener detalle de la tienda de back
       handleGetStoreMenu();// Ejemplo para obtener menu de la tienda de back
     }, []);
-  // Componente de vista previa del menú
-  const MenuPreview = () => (
-    <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
-      <div className="modal-dialog modal-lg modal-dialog-centered">
-        <div className="modal-content bg-dark text-white">
-          <div className="modal-header border-0">
-            <button className="btn-close btn-close-white" onClick={() => setMenuPreview(false)}></button>
-          </div>
-          <div className="modal-body p-5">
-            {/* Logo y título */}
-            <div className="text-center mb-5">
-              {restaurantInfo.logo && (
-                <img src={restaurantInfo.logo} alt="Logo" className="mb-3" style={{
-                  maxHeight: '60px',
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  objectFit: 'cover'
-                }} />
-              )}
-              <h1 className="display-4 mb-3">MENU</h1>
-              <p className="text-muted">{restaurantInfo.name}</p>
-            </div>
-
-            {/* Menú en dos columnas */}
-            <div className="row">
-              {menuCategories.map((category, index) => (
-                <div key={category.id} className={`col-md-6 mb-4 ${index % 2 === 0 ? 'pe-4' : 'ps-4'}`}>
-                  <h4 className="mb-3 text-uppercase" style={{ letterSpacing: '2px' }}>
-                    {category.name}
-                  </h4>
-                  {category.items.map(item => (
-                    <div key={item.id} className="d-flex justify-content-between mb-2">
-                      <span className={item.available ? '' : 'text-decoration-line-through text-muted'}>
-                        {item.name}
-                      </span>
-                      <span className="text-muted">
-                        ........ ${item.price}
-                      </span>
-                    </div>
-                  ))}
-                  {category.items.length === 0 && (
-                    <p className="text-muted fst-italic">Sin productos</p>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Pie de página */}
-            <div className="text-center mt-5 pt-4 border-top border-secondary">
-              <p className="mb-1">AVAILABLE ON YOUR FOOD</p>
-              <p className="text-muted small">
-                312-692-6732 | www.companyname.com
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-vh-100" style={{ backgroundColor: '#FFF5EB' }}>
@@ -433,7 +374,7 @@ const ProviderDashboard = () => {
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h3>Menú</h3>
               <div>
-                <button className="btn btn-primary me-2" onClick={() => setMenuPreview(true)}>
+                <button className="btn btn-primary me-2" onClick={() => dispatch({ type: "menu_preview", payload: true })}>
                   👁️ Vista Previa
                 </button>
                 <button
@@ -453,20 +394,9 @@ const ProviderDashboard = () => {
 
                   {/* Carga de imágenes */}
                   <div className="row mb-4">
-                    <div className="col-md-6">
-                      <label className="form-label">Logo del Restaurante</label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        accept="image/*"
-                        onChange={(e) => handleImageUpload(e, "logo")}
-                      />
+                     <div className="col-md-6">
                       {storeMenu.data[0].id && (<Cloudinary preset="width100" image_type="menu" owner_id={storeMenu.data[0].id} /> )}
-                     <p>{store.image_menu}</p>
-                      {restaurantInfo.logo && (
-                        <img src={restaurantInfo.logo} alt="Logo preview" className="mt-2" style={{ maxHeight: '60px' }} />
-                      )}
-                    </div>
+                     </div>
                     {/* Nombre de Tienda */}
                     <div className="col-md-6">
                       <label className="form-label">Nombre de la Tienda</label>
@@ -650,7 +580,7 @@ const ProviderDashboard = () => {
       </div>
 
       {/* Vista previa del menú */}
-      {menuPreview && <MenuPreview />}
+       {store.menu_preview && storeMenu.data && <MenuPreview menu_id={storeMenu.data[0].id}/>}
        { storeDetails && ( 
         <div>Ejemplo para obtener listado de la tienda de back 
         <pre style={{ background: '#eee', padding: '1em', marginTop: '1em' }}>
