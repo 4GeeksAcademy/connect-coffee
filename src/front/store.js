@@ -2,13 +2,13 @@ export const initialStore = () => {
   return {
     message: null,
     token: localStorage.getItem("token") || null,
-    user: localStorage.getItem("user") || null,
+    user: localStorage.getItem("user") || null
   };
 };
 
 export default function storeReducer(store, action = {}) {
   //v2
-  const { type, payload } = action;
+  const { type, payload } = action; //destructuring
   if (typeof type !== "string") return store;
 
   if (payload === undefined || payload === null) {

@@ -3,6 +3,7 @@ import { getStoreDetail } from "../services/api_store";
 import { getStoreMenu } from "../services/api_menu";
 import { useParams } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import Cloudinary from './Cloudinary.jsx';
 
 
 const ProviderDashboard = () => {
@@ -187,7 +188,6 @@ const ProviderDashboard = () => {
     });
     setMenuCategories(updatedCategories);
   };
-
   const handleImageUpload = (e, type) => {
     const file = e.target.files[0];
     if (file) {
@@ -459,14 +459,17 @@ const ProviderDashboard = () => {
                         type="file"
                         className="form-control"
                         accept="image/*"
-                        onChange={(e) => handleImageUpload(e, 'logo')}
+                        onChange={(e) => handleImageUpload(e, "logo")}
                       />
+                      {storeMenu.data[0].id && (<Cloudinary preset="width100" image_type="menu" owner_id={storeMenu.data[0].id} /> )}
+                     <p>{store.image_menu}</p>
                       {restaurantInfo.logo && (
                         <img src={restaurantInfo.logo} alt="Logo preview" className="mt-2" style={{ maxHeight: '60px' }} />
                       )}
                     </div>
+                    {/* Nombre de Tienda */}
                     <div className="col-md-6">
-                      <label className="form-label">Nombre del Restaurante</label>
+                      <label className="form-label">Nombre de la Tienda</label>
                       <input
                         type="text"
                         className="form-control"
