@@ -100,4 +100,4 @@ def create_token():
         return jsonify({"msg": "Credenciales inválidas", "ok": False}), 401
 
     access_token = create_access_token(identity=str(user.id))
-    return jsonify(access_token=access_token, username=user.username, role=user.role, ok=True), 200
+    return jsonify(access_token=access_token, username=user.username, role=user.role, ok=True,id=user.id), 200

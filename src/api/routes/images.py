@@ -179,7 +179,7 @@ def add_image():
     store_exists=Store.query.filter_by(user_id=user.id,is_active=True).first()
     if not store_exists:
         return jsonify({"msg":f"No existe una Tienda para el usuario con ID {user.id}","ok":False}) , 400
-    if store_exists.id !=owner_id:
+    if owner_type == "store" and store_exists.id !=owner_id:
         return jsonify({"msg":f"La tienda no pertenece al usuario con ID {user.id}","ok":False}) , 400
 
     if owner_type == "menu":
@@ -197,11 +197,11 @@ def add_image():
         if existing_index:
             return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
 
-    # solo aceptamos una imagen menugit push
-    if img_type == 'menu':
-        existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
-        if existing_menu:
-            return jsonify({"msg":f"Ya existe una imagen de tipo 'menu' para {owner_type} con ID {owner_id}.","ok":False}),400
+    # solo aceptamos una imagen menu
+    # if img_type == 'menu':
+    #     existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
+    #     if existing_menu:
+    #         return jsonify({"msg":f"Ya existe una imagen de tipo 'menu' para {owner_type} con ID {owner_id}.","ok":False}),400
 
 
     # Crear imagen

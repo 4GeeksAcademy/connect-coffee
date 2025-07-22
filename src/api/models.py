@@ -130,12 +130,14 @@ class Menu(db.Model):
         viewonly=True
     )
     def serialize(self):
+        menu_images = [img for img in self.images if img.type == 'menu']
+        last_menu_image = max(menu_images, key=lambda img: img.id, default=None)
         return {
             "id": self.id,
             "description": self.description,
             "store": self.store.serialize_menu(),
             "products": [product.serialize_menu() for product in self.products],
-            "images": [img.serialize_store() for img in self.images]
+            "images": [last_menu_image.serialize_store()] if last_menu_image else []
         }
 
 class Product(db.Model):

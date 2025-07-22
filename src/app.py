@@ -61,8 +61,8 @@ for name in routes.__all__:
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
-from api.routes import *  # Import __all__ modules
-from api import routes     # Needed to access __all__
+#from api.routes import *  # Import __all__ modules
+#from api import routes     # Needed to access __all__
 
 # Handle/serialize errors like a JSON object
 
