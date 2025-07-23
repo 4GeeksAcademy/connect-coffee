@@ -72,5 +72,6 @@ export function useGlobalHelpers() {
         ];
     } 
 
+   
   return { store, dispatch, logoutUser, isLoggedIn, mockCafeterias };
 }

@@ -88,9 +88,6 @@ def menus_list():
     })
     return response, 200
 
-
-#  SEGUIR ACA
-
 ## MENUS ## ADMIN ##
 # Endpoint ADMIN de listado de Menues
 @routes_menu.route('/admin/list', methods=['GET'])
@@ -111,27 +108,24 @@ def menus_list_admin():
         "data": [menu.serialize() for menu in menus]
     })
     return response, 200
+## SEGUIR ACA 
 
+# Menu Get 
+# @routes_menu.route("/<string:entity_type>/<int:entity_id>", methods=["GET"])
+# @jwt_required()
+# def get_menus_for(entity_type: str, entity_id: int):
+#     menu=Menu.query.filter_by(owner_type=entity_type, owner_id=entity_id).all()
+#     if menu:
+#         return jsonify(menu.serialize())
 
-# Menu Get
-@routes_menu.route("/<string:entity_type>/<int:entity_id>", methods=["GET"])
-@jwt_required()
-def get_menus_for(entity_type: str, entity_id: int):
-    menu = Menu.query.filter_by(
-        owner_type=entity_type, owner_id=entity_id).all()
-    if menu:
-        return jsonify(menu.serialize())
-
-# Menu Delete
-
-
-@routes_menu.route("/<int:id>", methods=["DELETE"])
-@jwt_required()
-def delete_menu_for(id: int):
-    menu_exists = Menu.query.filter_by(id=id).first()
-    if not menu_exists:
-        return jsonify({"msg": f"No existe una menu con ID {id}.", "ok": False}), 400
-
-    db.session.delete(menu_exists)
-    db.session.commit()
-    return jsonify({"msg": "Menu eliminada con exito", "ok": True}), 200
+# # Menu Delete 
+# @routes_menu.route("/<int:id>", methods=["DELETE"])
+# @jwt_required()
+# def delete_menu_for(id: int):
+#     menu_exists=Menu.query.filter_by(id=id).first()
+#     if not menu_exists:
+#             return jsonify({"msg":f"No existe una menu con ID {id}.","ok":False}) , 400
+    
+#     db.session.delete(menu_exists)
+#     db.session.commit()
+#     return jsonify({"msg":"Menu eliminada con exito","ok":True}),200
