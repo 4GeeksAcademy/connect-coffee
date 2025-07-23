@@ -8,6 +8,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [menuData, setMenuData] = useState({});
     const [loading, setLoading] = useState(false);
+
     // Cargar menú desde la API cuando se monta el componente ** //
     useEffect(() => {
         if (cafeData?.id && store.token) {
@@ -208,17 +209,23 @@ const CafeDetail = ({ cafeData, onBack }) => {
                                         ))}
                                     </div>
                                 </div>
-                  <div className="d-flex flex-wrap gap-2 mb-3">
-                    {cafeData.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="badge"
-                        style={{ backgroundColor: "#D2B48C", color: "#8B4513" }}
-                      >
-                        {filterConfig[tag]?.icon} {filterConfig[tag]?.label}
-                      </span>
-                    ))}
-                  </div>
+
+                                <div className="d-flex gap-2">
+                                    <button
+                                        className="btn flex-fill"
+                                        style={{
+                                            backgroundColor: '#8B4513',
+                                            color: 'white',
+                                            border: 'none'
+                                        }}
+                                        onClick={toggleFavorite}
+                                    >
+                                        {isFavorite ? '❤️ En Favoritos' : '🤍 Agregar a Favoritos'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Tabs de navegación */}
@@ -245,10 +252,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                         ))}
                     </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
                 {/* Contenido de tabs */}
                 {activeTab === 'info' && (
                     <div className="row">
@@ -280,20 +284,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                                 </div>
                             </div>
                         </div>
-                        <span
-                          className="fw-bold ms-3"
-                          style={{ color: "#8B4513" }}
-                        >
-                          {formatCurrency(item.price)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+
                         <div className="col-md-6 mb-4">
                             <div className="card border-0 shadow-sm">
                                 <div className="card-header" style={{ backgroundColor: '#8B4513', color: 'white' }}>
@@ -316,10 +307,8 @@ const CafeDetail = ({ cafeData, onBack }) => {
                             </div>
                         </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+                )}
+
                 {activeTab === 'menu' && (
                     <div className="row">
                         {loading ? (
@@ -426,52 +415,10 @@ const CafeDetail = ({ cafeData, onBack }) => {
                             </div>
                         )}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="card border-0 shadow-sm mt-4">
-                <div
-                  className="card-header"
-                  style={{ backgroundColor: "#8B4513", color: "white" }}
-                >
-                  <h5 className="mb-0">📞 Contacto</h5>
-                </div>
-                <div className="card-body">
-                  <p className="mb-2">
-                    <strong>Teléfono:</strong> {cafeData.contact.phone}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Email:</strong> {cafeData.contact.email}
-                  </p>
-                  <p className="mb-0">
-                    <strong>Web:</strong> {cafeData.contact.website}
-                  </p>
-                </div>
-              </div>
+                )}
             </div>
-          </div>
-        )}
-
-        {activeTab === "photos" && (
-          <div className="row">
-            {cafeData.images.map((image, index) => (
-              <div key={index} className="col-md-4 mb-4">
-                <div className="card border-0 shadow-sm">
-                  <img
-                    src={image}
-                    className="card-img-top"
-                    alt={`${cafeData.name} - Foto ${index + 1}`}
-                    style={{ height: "250px", objectFit: "cover" }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default CafeDetail;
