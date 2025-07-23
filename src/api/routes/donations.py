@@ -24,7 +24,8 @@ def create_checkout_session():
                     'currency': 'usd',
                     'unit_amount': amount,
                     'product_data': {
-                        'name': 'Donación a CoffeeConnect',
+                        'name': 'Suscripción pago único CoffeeConnect ',
+                        'description':'TTA:4242 4242 4242 4242 | Exp: 12/34'
                     },
                 },
                 'quantity': 1,

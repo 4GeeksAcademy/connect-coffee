@@ -7,7 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
-from api.constants import ROLE_ADMIN
+from api.constants import ROLE_ADMIN,ROLE_STORE
+from api.helpers.users import user_has_role
 
 routes_product = Blueprint('products', __name__,url_prefix='/api/product')
 
@@ -184,17 +185,49 @@ def add_product_admin():
 #### SEGUIR DE ACA
 
 # Product Get 
-@routes_product.route("/<string:entity_type>/<int:entity_id>", methods=["GET"])
+@routes_product.route("/<int:entity_id>", methods=["GET"])
 @jwt_required()
-def get_products_for(entity_type: str, entity_id: int):
-    product=Product.query.filter_by(owner_type=entity_type, owner_id=entity_id).all()
-    if product:
-        return jsonify(product.serialize())
+def get_product( entity_id: int):
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user_has_role(user,[ROLE_STORE]):
+        return jsonify({"msg":"Usuario no autorizado","ok":False}),400 
+    
+    
+    product=Product.query.filter_by( id=entity_id).first()
+    if not product:
+        return jsonify({"msg":f"No se pudo encontrar el producto","ok":False}),400
+    existing_menu=Menu.query.filter_by( id=product.menu_id).first()
+    if not existing_menu:
+        return jsonify({"msg":f"No se pudo encontrar el menu","ok":False}),400
+    existing_store=Store.query.filter_by( id=existing_menu.store_id).first()
+    if not existing_store:
+        return jsonify({"msg":f"No se pudo encontrar la tienda","ok":False}),400
+    
+    if not existing_store.user_id == user.id:
+        return jsonify({"msg":f"El producto no existe o no le pertenece","ok":False}),400
+
+    response=jsonify({
+        "msg": "Producto obtenido con exito",
+        "ok": True,
+        "data": product.serialize()
+    })
+    return response,200
 
 # Product Delete 
 @routes_product.route("/<int:id>", methods=["DELETE"])
 @jwt_required()
 def delete_product_for(id: int):
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if user.role != ROLE_STORE and user.role != ROLE_ADMIN :
+        return jsonify({"msg": "Usuario no autorizado","ok": False}),401
+
+    # Consistencia en id de usuario
+    if user.id is None or not isinstance(user.id,int):
+        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
+    
     product_exists=Product.query.filter_by(id=id).first()
     if not product_exists:
             return jsonify({"msg":f"No existe una producto con ID {id}.","ok":False}) , 400
