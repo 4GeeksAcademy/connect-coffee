@@ -32,3 +32,36 @@ export const setImageByType = async (token, imageUrl, type, owner_id) => {
     console.error(error);
   }
 };
+
+
+export const setImage = async (token, imageUrl, entity, entity_id, type) => {
+  // hace case para index
+  try {
+    if (!token) {
+      return { msg: "Debe iniciar sesion para gestionar la tienda", ok: False };
+    }
+    const request_body = {
+      owner_type: entity,
+      owner_id: entity_id,
+      name: type,
+      img_type: type,
+      url: imageUrl,
+      position: "1",
+    };
+    const response = await fetch(backendUrl + "/api/image/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify(request_body)
+    });
+    if (!response.ok) {
+      throw new Error(`Error Detectado ${response.status}: ${response.statusText}`);
+    }
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (error) {
+    console.error(error);
+  }
+};

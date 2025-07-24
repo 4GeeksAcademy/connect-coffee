@@ -12,7 +12,7 @@ export const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const navigate = useNavigate();
 	const { logoutUser } = useGlobalHelpers();
-	const { BotonDonar } = useGlobalButtons();
+	const { BotonDonar,BotonSuscribir } = useGlobalButtons();
 	const handleLogout = () => {
 		logoutUser();
 		navigate('/login')
@@ -456,7 +456,7 @@ export const Navbar = () => {
 								)}
 							</div>
 						</div>
-						<div className="d-flex align-items-center"> {BotonDonar()}</div>
+						{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
 					</div>
 				</nav>
 

@@ -94,8 +94,8 @@ export const LoginForm = ({ setToken }) => {
         showAlert('¡Inicio de sesión exitoso!', 'success');
 
         setTimeout(() => {
-          if (res.role === 'Store') {
-            navigate('/Provider');
+          if (res.role === 'Store') { 
+            navigate('/store-builder');
           } else if (res.role === 'SuperAdmin') {
             navigate('/');
           } else {

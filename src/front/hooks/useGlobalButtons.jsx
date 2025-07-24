@@ -10,5 +10,14 @@ const BotonDonar = () => (
         ❤️ Donar Ahora
       </Link>
     );
-    return { BotonDonar };
+    const BotonSuscribir = () => (
+          <Link
+            to="/payment"
+            className="btn custom-bg-brown px-4 py-2 mt-3 shadow d-flex align-items-center"
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            Suscribirse
+          </Link>
+        );
+    return { BotonDonar,BotonSuscribir };
 }

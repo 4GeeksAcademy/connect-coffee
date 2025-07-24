@@ -395,7 +395,7 @@ const ProviderDashboard = () => {
                   {/* Carga de imágenes */}
                   <div className="row mb-4">
                      <div className="col-md-6">
-                      {storeMenu.data[0].id && (<Cloudinary preset="width100" image_type="menu" owner_id={storeMenu.data[0].id} /> )}
+                      {storeMenu.data[0].id && (<Cloudinary preset="width100" image_type="menu" owner_id={storeMenu.data[0].id} label="Logo de la Tienda" /> )}
                      </div>
                     {/* Nombre de Tienda */}
                     <div className="col-md-6">
