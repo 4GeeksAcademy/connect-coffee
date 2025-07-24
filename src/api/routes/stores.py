@@ -34,9 +34,11 @@ def store_create():
     if body is None or len(body['nombre']) < 1 or len(body['direccion']) < 1 :
         return jsonify({"msg": "Los datos enviados no son suficientes"}), 400
     
-
-    if Store.query.filter(or_(Store.nombre == body['nombre'],Store.direccion == body['direccion']),Store.user_id == current_user_id).first():
-        return jsonify({"msg": "No es posible crear una tienda con esos datos"}), 409
+   # existing_store=Store.query.filter(or_(Store.nombre == body['nombre'],Store.direccion == body['direccion']),Store.user_id == current_user_id).first()
+        #return jsonify({"msg": "No es posible crear una tienda con esos datos","ok":False,"id": existing_store.id}), 409
+    existing_store=Store.query.filter(Store.user_id == current_user_id).first()
+    if existing_store:
+        return jsonify({"msg": "El usuario ya tiene una tienda","ok":False,"id": existing_store.id}), 409
     
 
     local_store= Store()
@@ -67,7 +69,7 @@ def stores_list():
     if user.role.capitalize() not in valid_types or not user.is_active:
         return jsonify({"msg": f"Usuario no autorizado {user.role}","ok": False}),401
     
-    stores = Store.query.filter_by(is_active=True, user_id=user.id).all()
+    stores = Store.query.filter_by(user_id=user.id).all()
     # Aramamos la respuesta
     response=jsonify({
         "msg": f"Listado de Stores de {user.username}", 
@@ -144,6 +146,30 @@ def deactivate_store_for(id: int):
     # Aramamos la respuesta
     response=jsonify({
         "msg": f"Tienda {store_exists.nombre} deshabilitada con exito",
+        "ok": True,
+        "data": store_exists.serialize()
+    })
+    return response,200
+
+# Store Deactivate
+@routes_store.route("/<int:id>/activate", methods=["PATCH"])
+def front_activate_store_for(id: int):
+
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
+    store_exists=Store.query.filter_by(id=id,is_active=False).first()
+    if not store_exists:
+            return jsonify({"msg":f"No existe una tienda con ID {id} o ya se encuentra activa","ok":False}) , 400
+    
+    store_exists.is_active=True
+    db.session.add(store_exists)
+    db.session.commit()
+
+    # Aramamos la respuesta
+    response=jsonify({
+        "msg": f"Tienda {store_exists.nombre} habilitada con exito",
         "ok": True,
         "data": store_exists.serialize()
     })

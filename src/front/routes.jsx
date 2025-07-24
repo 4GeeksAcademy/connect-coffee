@@ -17,12 +17,14 @@ import CafeDetails from "./pages/CafeDetails";
 import UserDetails from "./pages/UserDetails";
 import StoreIndex from "./components/StoreIndex.jsx";
 import Donations from "./pages/Donations.jsx";
+import Subscription from "./pages/Subscription.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import { Terms } from "./pages/Terms";
 import Hero from "./pages/Hero.jsx";
 import MenuPreview from "./components/MenuPreview.jsx";
 import AdminDetails from "./pages/AdminDetails";
-
+import StoreBuilder from "./pages/StoreBuilder.jsx";
+import PaymentSuccess from "./pages/PaymentSuccess.jsx";
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
 
@@ -52,9 +54,11 @@ export const router = createBrowserRouter(
       <Route path="/terms" element={<Terms />} />
       <Route path="/hero" element={<Hero />} />
       <Route path="/donations" element={<Donations />} />
-      <Route path="/success" element={<div>✅ ¡Gracias por tu donación!</div>} />
+      <Route path="/payment" element={<Subscription />} />
+      <Route path="/success" element={<PaymentSuccess />} />
       <Route path="/cancel" element={<div>❌ Cancelaste la donación.</div>} />
       <Route path="/menu/:id" element={<MenuPreview />} />
+      <Route path="/store-builder" element={<StoreBuilder />} />
       <Route path="/*" element={<NotFound />} />
 
     </Route>

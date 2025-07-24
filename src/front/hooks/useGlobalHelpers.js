@@ -9,9 +9,11 @@ export function useGlobalHelpers() {
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("message");
+      localStorage.removeItem("role");
       dispatch({type:"token", payload:"" });
       dispatch({type:"message", payload:"" });
       dispatch({type:"user", payload:"" });
+      dispatch({ type: "role", payload: "" });
   }
 
   

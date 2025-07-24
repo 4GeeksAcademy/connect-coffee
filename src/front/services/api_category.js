@@ -2,27 +2,20 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const apikey =
   "2136348ff926fcefd12680594f9ee1b413add849a6d437afac9f2b20d109dee9";
 
-export const getCategories = async () => {
+export const getCategories = async (token) => {
   try {
-    const response = await fetch(`${backendUrl}/api/category/list`, {
+    const response = await fetch(backendUrl + "/api/category/list", {
       method: "GET",
-      headers: {
+      headers: { 
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apikey}`,
-      },
+        "Authorization": "Bearer " + token
+        }
     });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status} - ${response.statusText}`);
-    }
-
     const jsonResponse = await response.json();
-    return jsonResponse;
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    // mock de un fallback //
-    return {
-      data: [
+    return jsonResponse.data;
+  } catch (err) {
+    const response = {
+      "data": [
         {
           description: "Presenta menu con alimentos de la categoria Sin TACC",
           id: 1,
@@ -42,10 +35,10 @@ export const getCategories = async () => {
           stores: [],
         },
         {
-          description: "La cafeteria tiene zona de fumadores",
-          id: 4,
-          name: "Zona Fumadores",
-          stores: [],
+          "description": "La cafeteria tiene zona de fumadores",
+          "id": 4,
+          "name": "Zona Fumadores lokos",
+          "stores": []
         },
         {
           description:
@@ -55,8 +48,28 @@ export const getCategories = async () => {
           stores: [],
         },
       ],
-      msg: "Listado de Categorias (Fallback)",
-      ok: true,
-    };
-  }
-};
+      "msg": "Listado de Categorias",
+      "ok": true
+    }
+    const jsonResponse = response;
+    return jsonResponse.data?jsonResponse.data:jsonResponse;
+  };
+}
+
+  export const categorySet = async (token,store_id,form) => {
+    try {
+      const response = await fetch(backendUrl + "/api/category/"+store_id+"/set", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+         },
+        body: JSON.stringify(form),
+      });
+      const jsonResponse = await response.json();
+      return jsonResponse;
+    } catch (err) {
+       console.error("Fetch failed:", err);
+       throw err;
+    }
+  };

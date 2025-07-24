@@ -18,3 +18,27 @@ export const getStoreMenu = async (token) => {
   const jsonResponse = await response.json();
   return jsonResponse;
 };
+
+export const menuCreate = async (token,form) => {
+  // Body 
+  // {
+  // 	"store_id":5,
+  // 	"description":"Menu Principal"
+  // }
+  try {
+    const response = await fetch(backendUrl + "/api/menu/create", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+       },
+      body: JSON.stringify(form),
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+     console.error("Fetch failed:", err);
+     throw err;
+  }
+};
+
