@@ -79,11 +79,15 @@ const StoreIndex = () => {
       cafe.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (cafe.description && cafe.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
+
+
     const matchesFilters = selectedFilters.length === 0 ||
       selectedFilters.every(filter => cafe[filter] === true);
 
     return matchesSearch && matchesFilters;
   });
+
+
 
   const toggleFilter = (filterId) => {
     setSelectedFilters(prev =>
@@ -176,6 +180,40 @@ const StoreIndex = () => {
               {(cafeteria.total_points || 0).toFixed(1)}
             </span>
           </div>
+          {/*
+          <div className="position-absolute top-0 end-0 m-2">
+              <div className="d-flex flex-column gap-1">
+                {activeCategories.slice(0, 3).map((category) => (
+                  <span
+                    key={category.id}
+                    className="badge"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      color: '#78350f',
+                      fontSize: '0.75rem',
+                      fontWeight: '600'
+                    }}
+                    title={category.name}
+                  >
+                    {category.icon}
+                  </span>
+                ))}
+                {activeCategories.length > 3 && (
+                  <span
+                    className="badge"
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                      color: '#78350f',
+                      fontSize: '0.7rem'
+                    }}
+                    title={`+${activeCategories.length - 3} más`}
+                  >
+                    +{activeCategories.length - 3}
+                  </span>
+                )}
+              </div>
+            </div>
+            */}
         </div>
         <div className="card-body">
           <h5 className="card-title fw-bold">{cafeteria.name}</h5>
