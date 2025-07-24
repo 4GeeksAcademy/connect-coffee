@@ -11,7 +11,7 @@ import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import  About  from "./pages/About.jsx";
+import About from "./pages/About.jsx";
 import { Provider } from "./pages/Provider";
 import CafeDetails from "./pages/CafeDetails";
 import UserDetails from "./pages/UserDetails";
@@ -21,6 +21,7 @@ import NotFound from "./pages/NotFound.jsx";
 import { Terms } from "./pages/Terms";
 import Hero from "./pages/Hero.jsx";
 import MenuPreview from "./components/MenuPreview.jsx";
+import AdminDetails from "./pages/AdminDetails";
 
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
@@ -47,6 +48,7 @@ export const router = createBrowserRouter(
       <Route path="/provider/:id" element={<Provider />} />
       <Route path="/cafedetails" element={<CafeDetails />} />
       <Route path="/userdetails" element={<UserDetails />} />
+      <Route path="/admindetails" element={<AdminDetails />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/hero" element={<Hero />} />
       <Route path="/donations" element={<Donations />} />
