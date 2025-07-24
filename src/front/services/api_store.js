@@ -30,3 +30,77 @@ export const getStoreDetail = async (id) => {
   const jsonResponse = await response.json();
   return jsonResponse;
 };
+
+
+export const storeCreate = async (token,form) => {
+  try {
+    const response = await fetch(backendUrl + "/api/store/create", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+       },
+      body: JSON.stringify(form),
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+     console.error("Fetch failed:", err);
+     throw err;
+  }
+};
+
+export const getUserStore = async (token) => {
+  try {
+    const response = await fetch(backendUrl + "/api/store/list", {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+       }
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+     console.error("Fetch failed:", err);
+     throw err;
+  }
+};
+
+
+export const activateStore = async (id) => {
+  const response = await fetch(backendUrl + "/api/store/"+id+"/activate", {
+    method: "PATCH",
+    headers: { 
+        "Content-Type": "application/json",
+        "x-api-key":apikey
+     },
+  });
+  if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+  const jsonResponse = await response.json();
+  return jsonResponse;
+};
+
+
+
+// export const storeCreate = async (token) => {
+//   try {
+//     const response = await fetch(backendUrl + "/api/store/create", {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: "Bearer " + token,
+//       },
+//     });
+//     if (!response.ok) {
+//       throw new Error(`Error ${response.status}: ${response.statusText}`);
+//     }
+//     const jsonResponse = await response.json();
+//     return jsonResponse;
+//   } catch (err) {
+//     console.error("Fetch failed:", err);
+//     throw err;
+//   }
+// };

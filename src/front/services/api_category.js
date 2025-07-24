@@ -1,7 +1,18 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const apikey = "2136348ff926fcefd12680594f9ee1b413add849a6d437afac9f2b20d109dee9";
 
-export const getCategories = () => {
+export const getCategories = async (token) => {
+  try {
+    const response = await fetch(backendUrl + "/api/category/list", {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+        }
+    });
+    const jsonResponse = await response.json();
+    return jsonResponse.data;
+  } catch (err) {
     const response = {
       "data": [
         {
@@ -25,7 +36,7 @@ export const getCategories = () => {
         {
           "description": "La cafeteria tiene zona de fumadores",
           "id": 4,
-          "name": "Zona Fumadores",
+          "name": "Zona Fumadores lokos",
           "stores": []
         },
         {
@@ -37,7 +48,28 @@ export const getCategories = () => {
       ],
       "msg": "Listado de Categorias",
       "ok": true
-}
-    const jsonResponse = JSON.stringify(response);
-    return jsonResponse;
+    }
+    const jsonResponse = response;
+    return jsonResponse.data?jsonResponse.data:jsonResponse;
   };
+}
+
+
+  export const categorySet = async (token,store_id,form) => {
+    try {
+      const response = await fetch(backendUrl + "/api/category/"+store_id+"/set", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+         },
+        body: JSON.stringify(form),
+      });
+      const jsonResponse = await response.json();
+      return jsonResponse;
+    } catch (err) {
+       console.error("Fetch failed:", err);
+       throw err;
+    }
+  };
+  

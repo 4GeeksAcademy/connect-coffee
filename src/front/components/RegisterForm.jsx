@@ -82,6 +82,7 @@ export const RegisterForm = ({ setToken }) => {
       const registerData = {
         username: form.username,
         password: form.password,
+        password_validate: form.password_validate,
         email: form.email,
         role: isStoreRegister ? 'Store' : 'User', // Asignar rol según el tipo ** //
         ...(isStoreRegister && {
