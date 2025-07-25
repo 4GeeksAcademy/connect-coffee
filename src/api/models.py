@@ -167,7 +167,8 @@ class Product(db.Model):
             "category": self.category,
             "menu_id": self.menu_id,
             "images": [img.serialize() for img in self.images],
-            "price": self.price
+            "price": self.price,
+            "is_active":self.is_active
         }
     def serialize_menu(self):
         return {
@@ -175,7 +176,8 @@ class Product(db.Model):
             "category": self.category,
             "name": self.name,
             "description": self.description,
-            "price": self.price
+            "price": self.price,
+            "is_active":self.is_active
         }
 
 

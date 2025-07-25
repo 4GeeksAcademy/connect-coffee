@@ -67,6 +67,25 @@ export const getUserStore = async (token) => {
   }
 };
 
+export const getStore = async (token,id) => {
+  try {
+    const response = await fetch(backendUrl + "/api/store/"+id, {
+      method: "GET",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+       }
+    });
+    const jsonResponse = await response.json();
+    console.error("RESPNODE",await jsonResponse);
+    return jsonResponsrc/front/services/api_store.js;
+  } catch (err) {
+     console.error("Fetch failed:", err);
+     throw err;
+  }
+};
+
+
 
 export const activateStore = async (id) => {
   const response = await fetch(backendUrl + "/api/store/"+id+"/activate", {
