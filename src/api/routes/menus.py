@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, JWTManager
 import json
 import yaml
-from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE
+from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE,APIKEY
 
 routes_menu = Blueprint('menus', __name__, url_prefix='/api/menu')
 
@@ -87,6 +87,26 @@ def menus_list():
         "data": [menu.serialize() for menu in menus]
     })
     return response, 200
+
+
+@routes_menu.route('/front/list/<int:store_id>', methods=['GET'])
+def front_menus_list(store_id:int):
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
+    menus = Menu.query.filter_by(store_id=store_id).all()
+
+    # Aramamos la respuesta
+    response = jsonify({
+        "msg": f"Listado de Menues para {store_id}",
+        "ok": True,
+        "data": [menu.serialize() for menu in menus]
+    })
+    return response, 200
+
+
+
 
 ## MENUS ## ADMIN ##
 # Endpoint ADMIN de listado de Menues

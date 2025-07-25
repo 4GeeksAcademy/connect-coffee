@@ -218,7 +218,7 @@ const ProviderDashboard = () => {
   return (
     <>
 
-      {(!storeDetails?.ok) ? (
+      {(!storeDetails?.ok && storeDetails !== undefined ) ? (
          <NotFound />
       ) : (
         <div className="min-vh-100" style={{ backgroundColor: '#FFF5EB' }}>

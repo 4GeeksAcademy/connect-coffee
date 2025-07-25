@@ -3,14 +3,6 @@ const apikey = "2136348ff926fcefd12680594f9ee1b413add849a6d437afac9f2b20d109dee9
 
 
 export const productCreate = async (token,form) => {
-//   {
-// 	"menu_id":2,
-// 	"name":"Cafe cortado",
-// 	"description":"Calentito con una galletita y soda",
-// 	"category":"Bebidas",
-// 	"price":8
-// }
-
   try {
     const response = await fetch(backendUrl + "/api/store/create", {
       method: "POST",

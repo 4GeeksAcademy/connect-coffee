@@ -7,7 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token,JWTManager
 import json,yaml
-from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE
+from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE,APIKEY
+
 
 routes_userpoint = Blueprint('userpoints', __name__,url_prefix='/api/userpoint')
 
@@ -127,6 +128,32 @@ def userpoints_list(user_type:str):
     })
     return response,200
 
+
+@routes_userpoint.route('/list/front/<string:user_type>/<int:entity_id>', methods=['GET'])
+def front_userpoints_list(user_type:str,entity_id:int):
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
+    # if not existing_store:
+    if user_type == "user":
+        userpoints=UserPoint.query.filter_by(user_id=entity_id).all()
+    elif user_type == "store":
+        # Se valida existencia de Store 
+        existing_store = Store.query.filter_by(id=entity_id).first()
+        if not existing_store:
+            return jsonify({"msg":f"No existe la tienda para el usuario con ID {entity_id}.","ok":False}) , 400
+        userpoints=UserPoint.query.filter_by(store_id=existing_store.id).all()
+    else:
+        return jsonify({"msg":f"No es posible generar el listado con la informacion proporcionada ","ok":False}),400
+        
+    # Aramamos la respuesta
+    response=jsonify({
+        "msg": f"Listado de Puntos de Usuario para {user_type}|{entity_id}",
+        "ok": True,
+        "data": [userpoint.serialize() for userpoint in userpoints]
+    })
+    return response,200
 
 ## SEGUIR ACA  
 

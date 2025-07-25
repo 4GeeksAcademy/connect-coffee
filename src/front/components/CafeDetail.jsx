@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { getStoreMenu } from '../services/api_menu.js';
-
+import { getStoreMenu,getFrontStoreMenu } from '../services/api_menu.js';
+import { getFrontStorePoints } from '../services/api_userpoints.js'
+import ReviewForm from './ReviewForm.jsx';
 const CafeDetail = ({ cafeData, onBack }) => {
     const { store, dispatch } = useGlobalReducer();
     const [activeTab, setActiveTab] = useState('info');
     const [isFavorite, setIsFavorite] = useState(false);
     const [menuData, setMenuData] = useState({});
+    const [apiReviews, setApiReviews] = useState({});
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     // Cargar menú desde la API cuando se monta el componente ** //
     useEffect(() => {
         if (cafeData?.id && store.token) {
             loadMenuFromAPI();
+            loadApiReviews();
         }
     }, [cafeData?.id, store.token]);
 
@@ -21,7 +25,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
             setLoading(true);
             console.log('Cargando menú para tienda:', cafeData.id);
 
-            const response = await getStoreMenu(store.token);
+            const response = await getFrontStoreMenu(cafeData?.id);
             console.log('Respuesta menú:', response);
 
             if (response && response.ok && response.data) {
@@ -50,7 +54,32 @@ const CafeDetail = ({ cafeData, onBack }) => {
             setLoading(false);
         }
     };
+      const loadApiReviews = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          console.log('Cargando reseñas...');
+          const response = await getFrontStorePoints(cafeData?.id);
+          console.log('Respuesta de API TEST:', response);
+    
+          if (response && response.ok && response.data) {
+            setApiReviews(response.data);
+            console.log('Tiendas reseñas:', response.data);
+          } else {
+            const errorMsg = response?.msg || 'Error al cargar las reseñas';
+            console.error('Error en respuesta:', errorMsg);
+            setError(errorMsg);
+          }
+        } catch (err) {
+          console.error('Error de conexión:', err);
+          setError('Error de conexión: ' + err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+    //const apiReviews = getStorePoints(store.token)
 
+    
     const filterConfig = {
         wifi: { icon: '📶', label: 'WiFi', field: 'wifi' },
         pet_friendly: { icon: '🐕', label: 'Pet Friendly', field: 'pet_friendly' },
@@ -59,6 +88,14 @@ const CafeDetail = ({ cafeData, onBack }) => {
         quiet_space: { icon: '🤫', label: 'Espacios Tranquilos', field: 'quiet_space' }
     };
 
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat('es-CL', {
             style: 'currency',
@@ -234,7 +271,8 @@ const CafeDetail = ({ cafeData, onBack }) => {
                         {[
                             { id: 'info', label: 'Información', icon: '📍' },
                             { id: 'menu', label: 'Menú', icon: '📋' },
-                            { id: 'photos', label: 'Fotos', icon: '📸' }
+                            { id: 'photos', label: 'Fotos', icon: '📸' },
+                            { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' }
                         ].map(tab => (
                             <button
                                 key={tab.id}
@@ -414,6 +452,35 @@ const CafeDetail = ({ cafeData, onBack }) => {
                                 <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
                             </div>
                         )}
+                    </div>
+                )}
+                {activeTab === 'reviews' && (
+                    <div className="row">
+                        <div className="row mt-4">
+                        <ReviewForm store_id={cafeData?.id}/>
+                        {apiReviews.map((review) => (
+                            <div key={review.id} className="col-12 mb-4">
+                                <div className="col-md-10">
+                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                        <small className="text-muted">{formatDate(review.created_at)}</small>
+                                    </div>
+                                    <div className="card" style={{ borderRadius: '15px' }}>
+                                        <div className="card-body">
+                                            <div className="row align-items-center">
+                                                <div className="mb-2">
+                                                        {renderStars(review.points)}
+                                                        <span className="ms-2 fw-bold">{review.points}/5</span>
+                                                    </div>
+
+                                                <p className="mb-0">{review.description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        ))}
+                        </div>
                     </div>
                 )}
             </div>
