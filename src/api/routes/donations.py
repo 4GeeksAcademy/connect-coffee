@@ -25,7 +25,7 @@ def create_checkout_session():
                     'unit_amount': amount,
                     'product_data': {
                         'name': 'Suscripción pago único CoffeeConnect ',
-                        'description':'TTA:4242 4242 4242 4242 | Exp: 12/34'
+                        'description':'TTA: 4242 4242 4242 4242 | Exp: 12/34'
                     },
                 },
                 'quantity': 1,

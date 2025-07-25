@@ -10,6 +10,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import json,yaml
 from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE,APIKEY
 from sqlalchemy import or_
+from api.helpers.users import user_has_role
 
 routes_store = Blueprint('stores', __name__,url_prefix='/api/store')
 
@@ -137,7 +138,7 @@ def deactivate_store_for(id: int):
 
     store_exists=Store.query.filter_by(id=id,is_active=True).first()
     if not store_exists:
-            return jsonify({"msg":f"No existe una tienda con ID {id}.","ok":False}) , 400
+            return jsonify({"msg":f"No existe una tienda activa con ID {id}.","ok":False}) , 400
     
     store_exists.is_active=False
     db.session.add(store_exists)
@@ -151,7 +152,7 @@ def deactivate_store_for(id: int):
     })
     return response,200
 
-# Store Deactivate
+# Store Activate
 @routes_store.route("/<int:id>/activate", methods=["PATCH"])
 def front_activate_store_for(id: int):
 
@@ -206,6 +207,29 @@ def front_get_storedetail_for(store_id: int):
         return jsonify({"msg": "Usuario no autorizado"}), 400
 
     store_exists=Store.query.filter_by(id=store_id).first()
+    # Existencia de Store
+    if not store_exists:
+            return jsonify({"msg":f"No existe una tienda con ID {store_id}.","ok":False}) , 400
+    
+    if store_exists:
+        # Aramamos la respuesta
+        response=jsonify({
+            "msg": f"Tienda {store_exists.nombre}",
+            "ok": True,
+            "data": store_exists.serialize()
+        })
+    return response,200
+
+# Store Get 
+@routes_store.route("/<int:store_id>", methods=["GET"])
+@jwt_required()
+def get_storedetail_for(store_id: int):
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user_has_role(user,[ROLE_STORE]):
+        return jsonify({"msg":"Usuario no autorizado","ok":False}),400 
+    
+    store_exists=Store.query.filter_by(id=store_id,user_id=user.id).first()
     # Existencia de Store
     if not store_exists:
             return jsonify({"msg":f"No existe una tienda con ID {store_id}.","ok":False}) , 400

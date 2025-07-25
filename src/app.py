@@ -13,6 +13,8 @@ from api.base import api
 from api.routes import *  # Import __all__ modules
 from api import routes     # Needed to access __all__
 
+from api.helpers.users import inject_user_id
+
 
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -49,6 +51,9 @@ setup_admin(app)
 
 # add the admin
 setup_commands(app)
+
+# Antes del request: setea el user_id
+app.before_request(inject_user_id)
 
 # Itero los blueprint declarados en init y los registro
 for name in routes.__all__:

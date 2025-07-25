@@ -10,8 +10,7 @@ import json
 import yaml
 from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE
 
-routes_category = Blueprint('categories', __name__,
-                            url_prefix='/api/category')
+routes_category = Blueprint('categories', __name__, url_prefix='/api/category')
 
 # Allow CORS requests to this API
 CORS(routes_category)
