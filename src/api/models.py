@@ -229,6 +229,7 @@ class UserPoint(db.Model):
 
     def serialize(self):
         return {
+            "id":self.id,
             "user_id": self.user_id,
             "store_id": self.store_id,
             "description": self.description,

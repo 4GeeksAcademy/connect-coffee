@@ -234,7 +234,7 @@ def activate_product_for(id: int):
 ## Admin Endpoints ##
 #####################
 
-# Product Deactivate
+# Product Deactivate Admin
 @routes_product.route("/admin/<int:id>/deactivate", methods=["PATCH"])
 @jwt_required()
 @require_user_role([ROLE_ADMIN])
@@ -257,7 +257,7 @@ def admin_deactivate_product_for(id: int):
     })
     return response,200
 
-# Product Activate
+# Product Activate Admin
 @routes_product.route("/admin/<int:id>/activate", methods=["PATCH"])
 @jwt_required()
 @require_user_role([ROLE_ADMIN])
@@ -281,7 +281,7 @@ def admin_activate_product_for(id: int):
     return response,200
 
 
-# Endpoint de creacion de Producto
+# Product Create Admin
 @routes_product.route('/admin/create', methods=['POST'])
 @jwt_required()
 @require_user_role([ROLE_ADMIN])
@@ -315,7 +315,7 @@ def add_product_admin():
     })
     return response,200
 
-# Product Delete 
+# Product Admin Delete 
 @routes_product.route("/admin/<int:id>", methods=["DELETE"])
 @jwt_required()
 @require_user_role([ROLE_ADMIN])
@@ -345,7 +345,7 @@ def products_list_admin():
     return response,200
 
 
-# Endpoint de actualizacion de Producto
+# Product Admin Update 
 @routes_product.route('/admin/<int:id>/update', methods=['PUT'])
 @jwt_required()
 @require_user_role([ROLE_ADMIN])

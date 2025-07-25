@@ -20,11 +20,6 @@ export const getStoreMenu = async (token) => {
 };
 
 export const menuCreate = async (token,form) => {
-  // Body 
-  // {
-  // 	"store_id":5,
-  // 	"description":"Menu Principal"
-  // }
   try {
     const response = await fetch(backendUrl + "/api/menu/create", {
       method: "POST",
@@ -42,3 +37,23 @@ export const menuCreate = async (token,form) => {
   }
 };
 
+
+export const getFrontStoreMenu = async (store_id) => {
+try{
+    const response = await fetch(backendUrl + "/api/menu/front/list/"+store_id, {
+      method: "GET",
+      headers: { 
+          "Content-Type": "application/json",
+          "x-api-key":apikey,
+      }
+    });
+    if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+      console.error("Fetch failed:", err);
+      throw err;
+  }
+};

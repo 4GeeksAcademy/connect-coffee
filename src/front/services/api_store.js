@@ -78,7 +78,7 @@ export const getStore = async (token,id) => {
     });
     const jsonResponse = await response.json();
     console.error("RESPNODE",await jsonResponse);
-    return jsonResponsrc/front/services/api_store.js;
+    return jsonResponse;
   } catch (err) {
      console.error("Fetch failed:", err);
      throw err;
