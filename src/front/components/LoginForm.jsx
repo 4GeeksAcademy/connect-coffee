@@ -4,6 +4,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useLocation } from 'react-router-dom';
 import AlertMessage from '../components/AlertMessage.jsx';
+import { getUserStore, getStore } from "../services/api_store";
 
 export const LoginForm = ({ setToken }) => {
   const navigate = useNavigate();
@@ -52,9 +53,36 @@ export const LoginForm = ({ setToken }) => {
     navigate('/login')
   }
 
+  const getUserStoreId = async (token) => {
+    try {
+      console.log('Obteniendo tienda del usuario...');
+      const storeData = await getUserStore(token);
+      
+      console.log('Respuesta getUserStore:', storeData);
+      
+      if (storeData.ok && storeData.data && storeData.data.length > 0) {
+        const storeId = storeData.data[0].id;
+        console.log('Redirigiendo a /provider/' + storeId);
+        navigate(`/provider/${storeId}`);
+      } else {
+        console.log('Usuario Store sin tienda, redirigiendo a crear tienda');
+        showAlert('No tienes una tienda registrada. Serás redirigido para crear una.', 'warning');
+        setTimeout(() => {
+          navigate('/create-store');
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error obteniendo tienda:', error);
+      showAlert('Error al obtener información de la tienda', 'danger');
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); // Test loading infinito **
+    setLoading(true);
     hideAlert();
 
     // Se implementa validacion basica //
@@ -72,7 +100,6 @@ export const LoginForm = ({ setToken }) => {
       const res = await getToken(loginData);
 
       if (res.ok) {
-        // Verificacion de tipo de login esperado //
         if (isStoreLogin && res.role !== 'Store') {
           showAlert('Esta cuenta no es de tipo Cafetería. Use el login de usuarios.', 'warning');
           setLoading(false);
@@ -84,6 +111,7 @@ export const LoginForm = ({ setToken }) => {
           setLoading(false);
           return;
         }
+
         localStorage.setItem("token", res?.access_token);
         localStorage.setItem("user", res?.username);
         localStorage.setItem("role", res?.role);
@@ -94,8 +122,8 @@ export const LoginForm = ({ setToken }) => {
         showAlert('¡Inicio de sesión exitoso!', 'success');
 
         setTimeout(() => {
-          if (res.role === 'Store') { 
-            navigate('/store-builder');
+          if (res.role === 'Store') {
+            getUserStoreId(res.access_token);
           } else if (res.role === 'SuperAdmin') {
             navigate('/');
           } else {
@@ -110,7 +138,7 @@ export const LoginForm = ({ setToken }) => {
       console.error('Error en login:', error);
       showAlert('Error de conexión. Por favor, intente nuevamente.', 'danger');
     } finally {
-      setLoading(false); // Test loading infinito ** //
+      setLoading(false);
     }
   };
 
@@ -126,7 +154,6 @@ export const LoginForm = ({ setToken }) => {
   };
 
   useEffect(() => {
-    // Verificar si el usuario ya está autenticado
     const token = localStorage.getItem('token');
     if (token) {
       navigate('/');

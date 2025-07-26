@@ -121,28 +121,28 @@ export const deleteStore = async (token, storeId) => {
 
 // Obtener estadísticas del dashboard de administración
 export const getAdminStats = async (token) => {
-try {
- if (!token) {
-   return { msg: "Debe iniciar sesión como administrador", ok: false };
- }
+  try {
+    if (!token) {
+      return { msg: "Debe iniciar sesión como administrador", ok: false };
+    }
 
- const response = await fetch(backendUrl + "/api/store/"+id+"/detail", {
-   method: "GET",
-   headers: {
-     "Content-Type": "application/json",
-     Authorization: "Bearer " + token,
-     "x-api-key": apikey,
-   },
- });
+    const response = await fetch(backendUrl + "/api/store/" + id + "/detail", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+        "x-api-key": apikey,
+      },
+    });
 
- if (!response.ok) {
-   throw new Error(`Error ${response.status}: ${response.statusText}`);
- }
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
 
- const jsonResponse = await response.json();
- return jsonResponse;
-} catch (error) {
- console.error("Error en getAdminStats:", error);
- return { msg: "Error de conexión", ok: false, error: error.message };
-}
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (error) {
+    console.error("Error en getAdminStats:", error);
+    return { msg: "Error de conexión", ok: false, error: error.message };
+  }
 };

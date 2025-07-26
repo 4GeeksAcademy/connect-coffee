@@ -61,7 +61,8 @@ const StoreIndex = () => {
   };
 
   const getfilterOptions = async () => {
-    setApiFilterOptions(await getCategories())
+    const cats = await getCategories();
+    setApiFilterOptions(Array.isArray(cats) ? cats : []);
   };
 
   const filterOptions = [
