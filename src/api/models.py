@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, ForeignKey, CheckConstraint, Date,Boolean,Table,DateTime,func,select
+from sqlalchemy import String, ForeignKey, CheckConstraint, Date, Boolean, Table, DateTime, func, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from typing import List, Optional
@@ -7,16 +7,21 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(60), unique=True, nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(
+        String(60), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(nullable=False)
-    role: Mapped[str] = mapped_column(String(50), nullable=True,default="User")
-    stores: Mapped[List["Store"]] = relationship("Store", back_populates="user")
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=1)
-
+    role: Mapped[str] = mapped_column(
+        String(50), nullable=True, default="User")
+    stores: Mapped[List["Store"]] = relationship(
+        "Store", back_populates="user")
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=1)
 
     def serialize(self):
         return {
@@ -25,44 +30,51 @@ class User(db.Model):
             "username": self.username,
             # do not serialize the password, its a security breach
         }
+
     def serialize_register(self):
         return {
             "id": self.id,
             "email": self.email,
             "username": self.username,
-            "role":self.role,
+            "role": self.role,
             # do not serialize the password, its a security breach
         }
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)  # Hashea con pbkdf2:sha256
+        self.password_hash = generate_password_hash(
+            password)  # Hashea con pbkdf2:sha256
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password) # Valida el Hash del password
-    
+        # Valida el Hash del password
+        return check_password_hash(self.password_hash, password)
 
-store_category_asociation=Table(
+
+store_category_asociation = Table(
     "store_category",
     db.metadata,
-    db.Column("store_id",db.Integer,ForeignKey("stores.id"), primary_key = True ),
-    db.Column("categories_id",db.Integer,ForeignKey("categories.id"), primary_key = True )
+    db.Column("store_id", db.Integer, ForeignKey(
+        "stores.id"), primary_key=True),
+    db.Column("categories_id", db.Integer, ForeignKey(
+        "categories.id"), primary_key=True)
 )
+
 
 class Store(db.Model):
     __tablename__ = "stores"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), nullable=False)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     direccion: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
-    fecha_de_pago: Mapped[Date] = mapped_column(Date, nullable=True)  
+    fecha_de_pago: Mapped[Date] = mapped_column(Date, nullable=True)
     total_points: Mapped[int] = mapped_column(nullable=True)
 
     menus = relationship("Menu", back_populates="store")
     user: Mapped["User"] = relationship("User", back_populates="stores")
     categories: Mapped[List["Category"]] = relationship(
-        "Category", 
-        secondary=store_category_asociation, 
+        "Category",
+        secondary=store_category_asociation,
         back_populates="stores"
     )
 
@@ -83,36 +95,42 @@ class Store(db.Model):
             "user_id": self.user_id,
             "images": [img.serialize_store() for img in self.images],
             "points": [point.serialize() for point in self.points],
-            "total_points":self.total_points,
+            "total_points": self.total_points,
             "categories": [cat.serialize_base() for cat in self.categories],
-            "is_active": self.is_active
+            "is_active": self.is_active,
+            "username": self.user.username if self.user else None
         }
+
     def serialize_menu(self):
         return {
             "id": self.id,
             "name": self.nombre
         }
-    
+
+
 class Category(db.Model):
     __tablename__ = "categories"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
-    stores: Mapped[List[Store]] = relationship("Store", secondary=store_category_asociation, back_populates="categories")
+    stores: Mapped[List[Store]] = relationship(
+        "Store", secondary=store_category_asociation, back_populates="categories")
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "stores":[store.serialize_menu() for store in self.stores]
+            "stores": [store.serialize_menu() for store in self.stores]
         }
+
     def serialize_base(self):
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description
         }
+
 
 class Menu(db.Model):
     __tablename__ = "menus"
@@ -129,9 +147,11 @@ class Menu(db.Model):
         primaryjoin="and_(foreign(Image.owner_id) == Menu.id, Image.owner_type == 'menu')",
         viewonly=True
     )
+
     def serialize(self):
         menu_images = [img for img in self.images if img.type == 'menu']
-        last_menu_image = max(menu_images, key=lambda img: img.id, default=None)
+        last_menu_image = max(
+            menu_images, key=lambda img: img.id, default=None)
         return {
             "id": self.id,
             "description": self.description,
@@ -139,6 +159,7 @@ class Menu(db.Model):
             "products": [product.serialize_menu() for product in self.products],
             "images": [last_menu_image.serialize_store()] if last_menu_image else []
         }
+
 
 class Product(db.Model):
     __tablename__ = "products"
@@ -168,8 +189,9 @@ class Product(db.Model):
             "menu_id": self.menu_id,
             "images": [img.serialize() for img in self.images],
             "price": self.price,
-            "is_active":self.is_active
+            "is_active": self.is_active
         }
+
     def serialize_menu(self):
         return {
             "id": self.id,
@@ -177,7 +199,7 @@ class Product(db.Model):
             "name": self.name,
             "description": self.description,
             "price": self.price,
-            "is_active":self.is_active
+            "is_active": self.is_active
         }
 
 
@@ -186,13 +208,14 @@ class Image(db.Model):
     __tablename__ = "images"
     id: Mapped[int] = mapped_column(primary_key=True)
     owner_id: Mapped[int] = mapped_column(nullable=False)
-    owner_type: Mapped[str] = mapped_column(String(50), nullable=False)  # 'store', 'product', 'user', 'menu'
+    owner_type: Mapped[str] = mapped_column(
+        String(50), nullable=False)  # 'store', 'product', 'user', 'menu'
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     type: Mapped[str] = mapped_column(String(50), nullable=False)
     url: Mapped[str] = mapped_column(String(255), nullable=False)
     position: Mapped[int] = mapped_column(default=0, nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id"), nullable=False)
 
     def serialize(self):
         return {
@@ -205,12 +228,14 @@ class Image(db.Model):
             "owner_id": self.owner_id,
             "user_id": self.user_id
         }
+
     def serialize_store(self):
         return {
             "url": self.url,
             "position": self.position,
-            "type":self.type
+            "type": self.type
         }
+
 
 class UserPoint(db.Model):
     __tablename__ = "userpoints"
@@ -236,7 +261,6 @@ class UserPoint(db.Model):
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
-    
 
     @classmethod
     def total(cls, store_id, session):

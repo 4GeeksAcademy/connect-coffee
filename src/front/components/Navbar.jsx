@@ -1,26 +1,281 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGlobalHelpers } from "../hooks/useGlobalHelpers";
 import { useGlobalButtons } from "../hooks/useGlobalButtons.jsx";
+import { getUserStore } from "../services/api_store";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
 	const [showProfile, setShowProfile] = useState(false);
 	const location = useLocation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const [storeId, setStoreId] = useState(null);
+	const [loadingStoreId, setLoadingStoreId] = useState(false);
 	const navigate = useNavigate();
 	const { logoutUser } = useGlobalHelpers();
-	const { BotonDonar,BotonSuscribir } = useGlobalButtons();
+	const { BotonDonar, BotonSuscribir } = useGlobalButtons();
+
 	const handleLogout = () => {
 		logoutUser();
 		navigate('/login')
 	}
+	const getStoreIdForUser = async () => {
+		if (store?.role === 'Store' && store?.token && !storeId && !loadingStoreId) {
+			setLoadingStoreId(true);
+			try {
+				console.log('Obteniendo ID de tienda para navbar...');
+				const storeData = await getUserStore(store.token);
 
+				if (storeData.ok && storeData.data && storeData.data.length > 0) {
+					const userStoreId = storeData.data[0].id;
+					setStoreId(userStoreId);
+					console.log('Store ID obtenido para navbar:', userStoreId);
+				} else {
+					console.warn('Usuario Store sin tienda registrada');
+					setStoreId(null);
+				}
+			} catch (error) {
+				console.error('Error obteniendo Store ID para navbar:', error);
+				setStoreId(null);
+			} finally {
+				setLoadingStoreId(false);
+			}
+		}
+	};
+	useEffect(() => {
+		getStoreIdForUser();
+	}, [store?.role, store?.token]);
+	useEffect(() => {
+		if (!store?.token) {
+			setStoreId(null);
+		}
+	}, [store?.token]);
+
+	// Si es usuario tipo Store (Proveedor), mostrar navbar específico //
+	if (store?.role === 'Store') {
+		return (
+			<nav
+				className="navbar navbar-expand-lg"
+				style={{
+					backgroundColor: '#fce8d9',
+					borderBottom: '1px solid #e8d5c4'
+				}}
+			>
+				<div className="container">
+					{/* Logo y título del proveedor */}
+					<div className="d-flex align-items-center">
+						<Link to="/" className="d-flex align-items-center text-decoration-none">
+							<i className="fas fa-coffee me-2" style={{ fontSize: '1.4rem', color: '#8b4513' }}></i>
+							<div>
+								<h5 className="mb-0 fw-bold" style={{ color: '#8b4513' }}>Coffee Connect</h5>
+								<small className="text-muted">Panel Proveedor</small>
+							</div>
+						</Link>
+					</div>
+
+					{/* Botón hamburguesa para móvil */}
+					<button
+						className="navbar-toggler border-0"
+						type="button"
+						onClick={() => setIsMenuOpen(!isMenuOpen)}
+						aria-expanded={isMenuOpen}
+						style={{
+							color: '#8b4513',
+							boxShadow: 'none'
+						}}
+					>
+						<i className="fas fa-bars"></i>
+					</button>
+
+					{/* Menú de navegación para proveedores */}
+					<div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>
+						<ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+							<li className="nav-item">
+								<Link
+									to="/"
+									className="nav-link px-3 py-2 rounded"
+									style={{
+										color: '#6b4423',
+										fontWeight: '500',
+										transition: 'all 0.2s ease'
+									}}
+									onMouseEnter={(e) => {
+										e.target.style.backgroundColor = '#e8d5c4';
+										e.target.style.color = '#8b4513';
+									}}
+									onMouseLeave={(e) => {
+										e.target.style.backgroundColor = 'transparent';
+										e.target.style.color = '#6b4423';
+									}}
+								>
+									<i className="fas fa-home me-1"></i>
+									Inicio
+								</Link>
+							</li>
+							<li className="nav-item">
+								{/* tab cafe */}
+								{storeId ? (
+									<Link
+										to={`/provider/${storeId}`}
+										className="nav-link px-3 py-2 rounded"
+										style={{
+											color: '#6b4423',
+											fontWeight: '500',
+											transition: 'all 0.2s ease'
+										}}
+										onMouseEnter={(e) => {
+											e.target.style.backgroundColor = '#e8d5c4';
+											e.target.style.color = '#8b4513';
+										}}
+										onMouseLeave={(e) => {
+											e.target.style.backgroundColor = 'transparent';
+											e.target.style.color = '#6b4423';
+										}}
+									>
+										<i className="fas fa-tachometer-alt me-1"></i>
+										Mi Dashboard
+									</Link>
+								) : (
+									<span
+										className="nav-link px-3 py-2 rounded text-muted"
+										style={{ cursor: 'not-allowed' }}
+									>
+										<i className="fas fa-tachometer-alt me-1"></i>
+										{loadingStoreId ? 'Cargando...' : 'Mi Dashboard'}
+									</span>
+								)}
+							</li>
+							<li className="nav-item">
+								{/* tab menu */}
+								{storeId ? (
+									<Link
+										to={`/provider/${storeId}?tab=menu`}
+										className="nav-link px-3 py-2 rounded"
+										style={{
+											color: '#6b4423',
+											fontWeight: '500',
+											transition: 'all 0.2s ease'
+										}}
+										onMouseEnter={(e) => {
+											e.target.style.backgroundColor = '#e8d5c4';
+											e.target.style.color = '#8b4513';
+										}}
+										onMouseLeave={(e) => {
+											e.target.style.backgroundColor = 'transparent';
+											e.target.style.color = '#6b4423';
+										}}
+									>
+										<i className="fas fa-utensils me-1"></i>
+										Mi Menú
+									</Link>
+								) : (
+									<span
+										className="nav-link px-3 py-2 rounded text-muted"
+										style={{ cursor: 'not-allowed' }}
+									>
+										<i className="fas fa-utensils me-1"></i>
+										{loadingStoreId ? 'Cargando...' : 'Mi Menú'}
+									</span>
+								)}
+							</li>
+						</ul>
+
+						{/* Sección de usuario proveedor */}
+						<div className="d-flex align-items-center">
+							{/* Badge de estado de la tienda */}
+							<span className={`badge me-3 ${storeId ? 'bg-success' : 'bg-warning'}`}>
+								{storeId ? 'Tienda Activa' : (loadingStoreId ? 'Verificando...' : 'Sin Tienda')}
+							</span>
+
+							{/* Dropdown del perfil */}
+							<div className="dropdown">
+								<button
+									className="btn btn-light dropdown-toggle d-flex align-items-center border-0"
+									onClick={() => setShowProfile(!showProfile)}
+									style={{
+										backgroundColor: '#fce8d9',
+										color: '#8b4513',
+										fontWeight: '500'
+									}}
+								>
+									<i className="fas fa-user-circle me-2" style={{ fontSize: '1.2rem' }}></i>
+									{store.user}
+								</button>
+
+								{showProfile && (
+									<div className="dropdown-menu dropdown-menu-end show shadow-sm border-0"
+										style={{
+											backgroundColor: '#f9f4ee',
+											borderRadius: '8px',
+											padding: '8px',
+											minWidth: '200px',
+											marginTop: '4px'
+										}}
+									>
+										<div className="dropdown-header" style={{ color: '#8b4513' }}>
+											<strong>{store.user}</strong><br />
+											<small className="text-muted">Proveedor de Cafetería</small>
+											{storeId && <small className="text-muted d-block">ID: {storeId}</small>}
+										</div>
+										<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
+
+										<Link
+											to="/UserDetails"
+											className="dropdown-item rounded d-flex align-items-center text-decoration-none"
+											style={{
+												color: '#6b4423',
+												padding: '10px 14px',
+												marginBottom: '2px',
+												transition: 'all 0.2s ease',
+												fontWeight: '500'
+											}}
+											onMouseEnter={(e) => {
+												e.target.style.backgroundColor = '#e8d5c4';
+											}}
+											onMouseLeave={(e) => {
+												e.target.style.backgroundColor = 'transparent';
+											}}
+										>
+											<i className="fas fa-user me-3" style={{ color: '#8b4513', width: '16px' }}></i>
+											Mi Perfil
+										</Link>
+										<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
+
+										<button
+											className="dropdown-item rounded d-flex align-items-center text-danger"
+											onClick={handleLogout}
+											style={{
+												padding: '10px 14px',
+												transition: 'all 0.2s ease',
+												fontWeight: '500',
+												border: 'none',
+												backgroundColor: 'transparent',
+												width: '100%',
+												textAlign: 'left'
+											}}
+											onMouseEnter={(e) => {
+												e.target.style.backgroundColor = '#f8d7da';
+											}}
+											onMouseLeave={(e) => {
+												e.target.style.backgroundColor = 'transparent';
+											}}
+										>
+											<i className="fas fa-sign-out-alt me-3" style={{ width: '16px' }}></i>
+											Cerrar Sesión
+										</button>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+		);
+	}
 	return (
 		<>
-
 			{(location.pathname !== '/Hero') && (
 				<nav
 					className="navbar navbar-expand-lg"
@@ -40,7 +295,7 @@ export const Navbar = () => {
 									fontSize: '1.3rem'
 								}}
 							>
-								Coffee Connect <routes className="users"></routes>
+								Coffee Connect
 							</span>
 						</Link>
 
@@ -83,31 +338,6 @@ export const Navbar = () => {
 										Inicio
 									</Link>
 								</li>
-								{(location.pathname !== '/') && (
-									<li className="nav-item">
-										<Link
-											to="/CafeDetails"
-											className="nav-link px-3 py-2 rounded"
-											style={{
-												color: '#6b4423',
-												fontWeight: '500',
-												transition: 'all 0.2s ease'
-											}}
-											onMouseEnter={(e) => {
-												e.target.style.backgroundColor = '#e8d5c4';
-												e.target.style.color = '#8b4513';
-											}}
-											onMouseLeave={(e) => {
-												e.target.style.backgroundColor = 'transparent';
-												e.target.style.color = '#6b4423';
-											}}
-										>
-											<i className="fas fa-store me-1"></i>
-											{/* Implementar campo de visibilidad false para cuando esta logged como Consumer / Provider / SuperAdmin ** */}
-											Cafeterías
-										</Link>
-									</li>
-								)}
 								<li className="nav-item">
 									<Link
 										to="/about"
@@ -139,9 +369,6 @@ export const Navbar = () => {
 									<>
 										{/* Separador vertical */}
 										<div className="vr mx-2" style={{ height: '30px', opacity: 0.3 }}></div>
-
-
-										{/* Sección para User Consumer */}
 										<div className="d-flex align-items-center">
 											<span className="text-muted small me-2">Usuarios:</span>
 											{(location.pathname !== '/login') && (
@@ -288,178 +515,129 @@ export const Navbar = () => {
 												</li>
 											</ul>
 										</div>
-
 									</>
 								) : (
 									<>
-										{/* Cuando hay sesión iniciada */}
-										<div className="dropdown ">
+										{/* Cuando hay sesión iniciada (usuario consumer) */}
+										<div className="dropdown">
 											<button
-												className="fw-bold custom-fg-brown d-flex align-items-center text-decoration-none"
+												className="btn dropdown-toggle d-flex align-items-center border-0 px-3 py-2"
 												onClick={() => setShowProfile(!showProfile)}
+												style={{
+													backgroundColor: '#fce8d9',
+													color: '#8b4513',
+													borderRadius: '8px',
+													fontWeight: '600',
+													fontSize: '0.95rem',
+													transition: 'all 0.2s ease',
+													boxShadow: '0 2px 4px rgba(139, 69, 19, 0.1)'
+												}}
+												onMouseEnter={(e) => {
+													e.target.style.backgroundColor = '#f4d1ae';
+													e.target.style.transform = 'translateY(-1px)';
+													e.target.style.boxShadow = '0 4px 8px rgba(139, 69, 19, 0.15)';
+												}}
+												onMouseLeave={(e) => {
+													e.target.style.backgroundColor = '#fce8d9';
+													e.target.style.transform = 'translateY(0)';
+													e.target.style.boxShadow = '0 2px 4px rgba(139, 69, 19, 0.1)';
+												}}
 											>
-												<i className="fa-solid fa-user fs-4 me-2 custom-fg-brown"></i>
-												<span className="fw-bold custom-fg-brown ">¡Hola {store.user}!</span>
+												<div className="d-flex align-items-center">
+													<div className="rounded-circle d-flex align-items-center justify-content-center me-2"
+														style={{
+															width: '32px',
+															height: '32px',
+															backgroundColor: '#e8d5c4',
+															border: '2px solid #d4a574'
+														}}>
+														<i className="fas fa-user" style={{ fontSize: '0.9rem', color: '#8b4513' }}></i>
+													</div>
+													<div className="d-flex flex-column align-items-start">
+														<span style={{ fontSize: '0.85rem', lineHeight: '1.1', opacity: 0.8 }}>
+															¡Hola!
+														</span>
+														<span style={{ fontSize: '0.95rem', lineHeight: '1.1', fontWeight: '700' }}>
+															{store.user}
+														</span>
+													</div>
+												</div>
 											</button>
 
 											{showProfile && (
-
-												<div className="dropdown-menu dropdown-menu-end show">
-													<div className="dropdown-header">
+												<div
+													className="dropdown-menu dropdown-menu-end show shadow border-0"
+													style={{
+														backgroundColor: '#f9f4ee',
+														borderRadius: '8px',
+														padding: '8px',
+														minWidth: '200px',
+														marginTop: '4px'
+													}}
+												>
+													<div className="dropdown-header" style={{ color: '#8b4513' }}>
 														<strong>{store.user}</strong><br />
-														<small>{store.role}</small><br />
+														<small className="text-muted">{store.role}</small><br />
 													</div>
-													<div className="dropdown-divider"></div>
-													<Link to="/UserDetails" className="text-decoration-none link-warning mx-3">👤 Mi Perfil</Link>
-													<div className="dropdown-divider"></div>
-													<button className="dropdown-item text-danger" onClick={handleLogout}><i className="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</button>
+													<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
+
+													{/* Redireccion a perfil / dependiendo de rol */}
+													<Link
+														to={store?.role === 'Superadmin' ? '/AdminDetails' : '/UserDetails'}
+														className="dropdown-item rounded d-flex align-items-center text-decoration-none"
+														style={{
+															color: '#6b4423',
+															padding: '10px 14px',
+															marginBottom: '2px',
+															transition: 'all 0.2s ease',
+															fontWeight: '500'
+														}}
+														onMouseEnter={(e) => {
+															e.target.style.backgroundColor = '#e8d5c4';
+														}}
+														onMouseLeave={(e) => {
+															e.target.style.backgroundColor = 'transparent';
+														}}
+													>
+														<i className={`fas ${store?.role === 'Superadmin' ? 'fa-crown' : 'fa-user'} me-3`}
+															style={{ color: '#8b4513', width: '16px' }}></i>
+														{store?.role === 'Superadmin' ? 'Panel Admin' : 'Mi Perfil'}
+													</Link>
+
+													<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
+
+													<button
+														className="dropdown-item rounded d-flex align-items-center text-danger"
+														onClick={handleLogout}
+														style={{
+															padding: '10px 14px',
+															transition: 'all 0.2s ease',
+															fontWeight: '500',
+															border: 'none',
+															backgroundColor: 'transparent',
+															width: '100%',
+															textAlign: 'left'
+														}}
+														onMouseEnter={(e) => {
+															e.target.style.backgroundColor = '#f8d7da';
+														}}
+														onMouseLeave={(e) => {
+															e.target.style.backgroundColor = 'transparent';
+														}}
+													>
+														<i className="fas fa-sign-out-alt me-3" style={{ width: '16px' }}></i>
+														Cerrar Sesión
+													</button>
 												</div>
 											)}
 										</div>
 									</>
-								)}
-								{/* Botón Views - Solo para SuperAdmin */}
-								{(store?.role === 'Superadmin') && (
-									<div className="dropdown">
-										<button
-											className="btn btn-sm dropdown-toggle px-3 py-2"
-											type="button"
-											data-bs-toggle="dropdown"
-											style={{
-												backgroundColor: '#c19660',
-												color: '#6b4423',
-												border: 'none',
-												borderRadius: '6px',
-												fontWeight: '500',
-												transition: 'all 0.2s ease'
-											}}
-											onMouseEnter={(e) => {
-												e.target.style.backgroundColor = '#b08751';
-											}}
-											onMouseLeave={(e) => {
-												e.target.style.backgroundColor = '#c19660';
-											}}
-										>
-											<i className="fas fa-business-time me-1"></i>
-											Views
-										</button>
-										<ul
-											className="dropdown-menu border-0 shadow-sm"
-											style={{
-												backgroundColor: '#f9f4ee',
-												borderRadius: '8px',
-												padding: '8px',
-												minWidth: '200px',
-												marginTop: '4px'
-											}}
-										>
-											<li>
-												<Link
-													to="/CafeDetails"
-													className="dropdown-item rounded d-flex align-items-center"
-													style={{
-														color: '#6b4423',
-														padding: '10px 14px',
-														marginBottom: '2px',
-														transition: 'all 0.2s ease',
-														fontWeight: '500'
-													}}
-													onMouseEnter={(e) => {
-														e.target.style.backgroundColor = '#e8d5c4';
-													}}
-													onMouseLeave={(e) => {
-														e.target.style.backgroundColor = 'transparent';
-													}}
-												>
-													<i className="fas fa-store me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-													<span>Cafe Details</span>
-												</Link>
-											</li>
-											{/* Botón vista perfil de usuario */}
-											<li>
-												<Link
-													to="/UserDetails"
-													className="dropdown-item rounded d-flex align-items-center"
-													style={{
-														color: '#6b4423',
-														padding: '10px 14px',
-														marginBottom: '2px',
-														transition: 'all 0.2s ease',
-														fontWeight: '500'
-													}}
-													onMouseEnter={(e) => {
-														e.target.style.backgroundColor = '#e8d5c4';
-													}}
-													onMouseLeave={(e) => {
-														e.target.style.backgroundColor = 'transparent';
-													}}
-												>
-													<i className="fas fa-store me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-													<span>User Details</span>
-												</Link>
-											</li>
-											<li>
-												<Link
-													to="/provider"
-													className="dropdown-item rounded d-flex align-items-center"
-													style={{
-														color: '#6b4423',
-														padding: '10px 14px',
-														marginBottom: '2px',
-														transition: 'all 0.2s ease',
-														fontWeight: '500'
-													}}
-													onMouseEnter={(e) => {
-														e.target.style.backgroundColor = '#e8d5c4';
-													}}
-													onMouseLeave={(e) => {
-														e.target.style.backgroundColor = 'transparent';
-													}}
-												>
-													<i className="fas fa-sign-in-alt me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-													<span>View Provider</span>
-												</Link>
-											</li>
-											<li>
-												<hr
-													className="dropdown-divider"
-													style={{
-														borderColor: '#e8d5c4',
-														margin: '6px 0',
-														opacity: '0.7'
-													}}
-												/>
-											</li>
-											<li>
-												<Link
-													to="/AdminDetails"
-													className="dropdown-item rounded d-flex align-items-center"
-													style={{
-														color: '#6b4423',
-														padding: '10px 14px',
-														transition: 'all 0.2s ease',
-														fontWeight: '500'
-													}}
-													onMouseEnter={(e) => {
-														e.target.style.backgroundColor = '#e8d5c4';
-													}}
-													onMouseLeave={(e) => {
-														e.target.style.backgroundColor = 'transparent';
-													}}
-												>
-													<i className="fas fa-cog me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-													<span>Panel Admin</span>
-												</Link>
-											</li>
-										</ul>
-									</div>
 								)}
 							</div>
 						</div>
 						{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
 					</div>
 				</nav>
-
 			)}
 		</>
 	);
