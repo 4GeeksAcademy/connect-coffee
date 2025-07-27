@@ -250,7 +250,7 @@ export const LoginForm = ({ setToken }) => {
                   <div className="d-grid gap-2">
                     <button
                       type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-custom"
                       style={{
                         backgroundColor: isStoreLogin ? '#8b4513' : '#d4a574',
                         border: 'none'
@@ -303,6 +303,7 @@ export const LoginForm = ({ setToken }) => {
           </div>
         </div>
       </div>
+       <div className="spacer-section" style={{ height: "80px" }}></div>
     </>
   );
 }

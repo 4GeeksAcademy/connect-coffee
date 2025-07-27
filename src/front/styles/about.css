@@ -106,20 +106,26 @@
   font-size: 3rem;
 }
 
-/* Botón */
+/* ESTILO DEL BOTON */
 .btn-custom {
   transition: all 0.3s ease;
   font-weight: 500;
-  background-color: var(--accent-color);
-  color: white;
+  background: linear-gradient(135deg, #7c2d12 0%, #d97706 100%);
+  color: white !important;
   border: none;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
+  padding: 0.6rem 1.8rem;
+  border-radius: 50px; /* Forma de cápsula como en el Hero */
+  box-shadow: 0 4px 12px rgba(124, 45, 18, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
 }
 
 .btn-custom:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(210, 105, 30, 0.3);
-  background-color: var(--cafe-brown);
-  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(124, 45, 18, 0.4);
+  background: linear-gradient(135deg, #6b2710 0%, #c46905 100%);
 }

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { registerUser } from "../services/api";
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import AlertMessage from '../components/AlertMessage.jsx';
+import AlertMessage from "../components/AlertMessage.jsx";
 
 export const RegisterForm = ({ setToken }) => {
   const [searchParams] = useSearchParams();
-  const isStoreRegister = searchParams.get('type') === 'Store';
+  const isStoreRegister = searchParams.get("type") === "Store";
 
   const [form, setForm] = useState({
     username: "",
@@ -16,8 +16,8 @@ export const RegisterForm = ({ setToken }) => {
     // Campos adicionales por discutir ** //
     ...(isStoreRegister && {
       businessName: "",
-      address: ""
-    })
+      address: "",
+    }),
   });
   const [message, setMessage] = useState("");
   const [hasAuth, setHasAuth] = useState(false);
@@ -27,23 +27,23 @@ export const RegisterForm = ({ setToken }) => {
   const navigate = useNavigate();
   const [alert, setAlert] = useState({
     show: false,
-    message: '',
-    type: 'danger'
+    message: "",
+    type: "danger",
   });
 
-  const showAlert = (message, type = 'danger') => {
+  const showAlert = (message, type = "danger") => {
     setAlert({
       show: true,
       message,
-      type
+      type,
     });
   };
 
   const hideAlert = () => {
     setAlert({
       show: false,
-      message: '',
-      type: 'danger'
+      message: "",
+      type: "danger",
     });
   };
 
@@ -53,26 +53,34 @@ export const RegisterForm = ({ setToken }) => {
     hideAlert();
 
     // Validaciones //
-    if (!form.username || !form.email || !form.password || !form.password_validate) {
-      showAlert('Por favor, complete todos los campos obligatorios', 'danger');
+    if (
+      !form.username ||
+      !form.email ||
+      !form.password ||
+      !form.password_validate
+    ) {
+      showAlert("Por favor, complete todos los campos obligatorios", "danger");
       setLoading(false);
       return;
     }
 
     if (form.password !== form.password_validate) {
-      showAlert('Las contraseñas no coinciden', 'danger');
+      showAlert("Las contraseñas no coinciden", "danger");
       setLoading(false);
       return;
     }
 
     if (form.password.length < 6) {
-      showAlert('La contraseña debe tener al menos 6 caracteres', 'danger');
+      showAlert("La contraseña debe tener al menos 6 caracteres", "danger");
       setLoading(false);
       return;
     }
 
     if (isStoreRegister && (!form.businessName || !form.address)) {
-      showAlert('Por favor, complete todos los datos de la cafetería', 'danger');
+      showAlert(
+        "Por favor, complete todos los datos de la cafetería",
+        "danger"
+      );
       setLoading(false);
       return;
     }
@@ -84,12 +92,12 @@ export const RegisterForm = ({ setToken }) => {
         password: form.password,
         password_validate: form.password_validate,
         email: form.email,
-        role: isStoreRegister ? 'Store' : 'User', // Asignar rol según el tipo ** //
+        role: isStoreRegister ? "Store" : "User", // Asignar rol según el tipo ** //
         ...(isStoreRegister && {
           businessName: form.businessName,
           address: form.address,
-          status: 'active' // status de activo o pendiente en base al pago realizado o no ** //
-        })
+          status: "active", // status de activo o pendiente en base al pago realizado o no ** //
+        }),
       };
 
       const res = await registerUser(registerData);
@@ -102,25 +110,28 @@ export const RegisterForm = ({ setToken }) => {
           email: "",
           ...(isStoreRegister && {
             businessName: "",
-            address: ""
-          })
+            address: "",
+          }),
         });
 
         if (isStoreRegister) {
-          showAlert('¡Cafetería registrada exitosamente! Por favor, inicia sesión.', 'success');
+          showAlert(
+            "¡Cafetería registrada exitosamente! Por favor, inicia sesión.",
+            "success"
+          );
         } else {
-          showAlert('¡Registro exitoso! Por favor, inicia sesión.', 'success');
+          showAlert("¡Registro exitoso! Por favor, inicia sesión.", "success");
         }
 
         setTimeout(() => {
           navigate(isStoreRegister ? "/login?type=Store" : "/login");
         }, 2000);
       } else {
-        showAlert(res.msg || 'Error en el registro', 'danger');
+        showAlert(res.msg || "Error en el registro", "danger");
       }
     } catch (error) {
-      console.error('Error en registro:', error);
-      showAlert('Error de conexión. Por favor, intente nuevamente.', 'danger');
+      console.error("Error en registro:", error);
+      showAlert("Error de conexión. Por favor, intente nuevamente.", "danger");
     } finally {
       setLoading(false);
     }
@@ -128,9 +139,9 @@ export const RegisterForm = ({ setToken }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     if (alert.show) {
       hideAlert();
@@ -149,29 +160,46 @@ export const RegisterForm = ({ setToken }) => {
 
       <div className="container mt-4">
         <div className="row justify-content-center">
-          <div className={isStoreRegister ? "col-md-8 col-lg-7" : "col-md-6 col-lg-5"}>
+          <div
+            className={
+              isStoreRegister ? "col-md-8 col-lg-7" : "col-md-6 col-lg-5"
+            }
+          >
             <div className="card shadow">
               <div className="card-body p-5">
                 {/* Header */}
                 <div className="text-center mb-4">
-                  <i className={`fas ${isStoreRegister ? 'fa-store' : 'fa-coffee'} display-4 mb-3`}
-                    style={{ color: '#8b4513' }}></i>
+                  <i
+                    className={`fas ${
+                      isStoreRegister ? "fa-store" : "fa-coffee"
+                    } display-4 mb-3`}
+                    style={{ color: "#8b4513" }}
+                  ></i>
                   <h1 className="h3 mb-1">
-                    {isStoreRegister ? 'Registra tu Cafetería' : 'Coffee Connect'}
+                    {isStoreRegister
+                      ? "Registra tu Cafetería"
+                      : "Coffee Connect"}
                   </h1>
                   <p className="text-muted">
                     {isStoreRegister
-                      ? 'Únete a nuestra red de cafeterías'
-                      : 'Crea tu cuenta y descubre las mejores cafeterías'}
+                      ? "Únete a nuestra red de cafeterías"
+                      : "Crea tu cuenta y descubre las mejores cafeterías"}
                   </p>
                 </div>
 
                 {isStoreRegister && (
-                  <div className="alert alert-info d-flex align-items-center mb-4" role="alert">
+                  <div
+                    className="alert alert-info d-flex align-items-center mb-4"
+                    role="alert"
+                  >
                     <i className="fas fa-info-circle me-2"></i>
                     <div>
-                      <strong>Registro para cafeterías.</strong><br />
-                      <small>Si eres un usuario regular registrate <Link to="/signup">aquí</Link></small>
+                      <strong>Registro para cafeterías.</strong>
+                      <br />
+                      <small>
+                        Si eres un usuario regular registrate{" "}
+                        <Link to="/signup">aquí</Link>
+                      </small>
                     </div>
                   </div>
                 )}
@@ -187,7 +215,9 @@ export const RegisterForm = ({ setToken }) => {
                         </label>
                         <input
                           className="form-control"
-                          placeholder={isStoreRegister ? "nombre_cafeteria" : "Usuario"}
+                          placeholder={
+                            isStoreRegister ? "nombre_cafeteria" : "Usuario"
+                          }
                           id="username"
                           name="username"
                           value={form.username}
@@ -207,7 +237,9 @@ export const RegisterForm = ({ setToken }) => {
                         <input
                           className="form-control"
                           type="email"
-                          placeholder={isStoreRegister ? "cafeteria@email.com" : "Email"}
+                          placeholder={
+                            isStoreRegister ? "cafeteria@email.com" : "Email"
+                          }
                           id="email"
                           name="email"
                           value={form.email}
@@ -273,7 +305,7 @@ export const RegisterForm = ({ setToken }) => {
                         <div className="input-group">
                           <input
                             className="form-control"
-                            type={showPassword ? 'text' : 'password'}
+                            type={showPassword ? "text" : "password"}
                             placeholder="Mínimo 6 caracteres"
                             id="password"
                             name="password"
@@ -288,7 +320,11 @@ export const RegisterForm = ({ setToken }) => {
                             className="btn btn-outline-secondary"
                             disabled={loading}
                           >
-                            <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                            <i
+                              className={`fas ${
+                                showPassword ? "fa-eye-slash" : "fa-eye"
+                              }`}
+                            ></i>
                           </button>
                         </div>
                       </div>
@@ -296,14 +332,17 @@ export const RegisterForm = ({ setToken }) => {
 
                     <div className={isStoreRegister ? "col-md-6" : "col-12"}>
                       <div className="mb-3">
-                        <label htmlFor="password_validate" className="form-label">
+                        <label
+                          htmlFor="password_validate"
+                          className="form-label"
+                        >
                           <i className="fas fa-lock me-1"></i>
                           Confirmar Contraseña
                         </label>
                         <div className="input-group">
                           <input
                             className="form-control"
-                            type={showPassword ? 'text' : 'password'}
+                            type={showPassword ? "text" : "password"}
                             placeholder="Repite la contraseña"
                             id="password_validate"
                             name="password_validate"
@@ -318,7 +357,11 @@ export const RegisterForm = ({ setToken }) => {
                             className="btn btn-outline-secondary"
                             disabled={loading}
                           >
-                            <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                            <i
+                              className={`fas ${
+                                showPassword ? "fa-eye-slash" : "fa-eye"
+                              }`}
+                            ></i>
                           </button>
                         </div>
                       </div>
@@ -336,30 +379,37 @@ export const RegisterForm = ({ setToken }) => {
                         disabled={loading}
                       />
                       <label className="form-check-label small" htmlFor="terms">
-                        Acepto los <Link to="/terms">términos y condiciones</Link> del servicio para cafeterías
+                        Acepto los{" "}
+                        <Link to="/terms">términos y condiciones</Link> del
+                        servicio para cafeterías
                       </label>
                     </div>
                   )}
 
                   <button
-                    className="btn btn-primary w-100 py-2 my-4"
+                    className="btn btn-custom w-100 py-2 my-4"
                     type="submit"
                     style={{
-                      backgroundColor: isStoreRegister ? '#8b4513' : '#d4a574',
-                      border: 'none'
+                      backgroundColor: isStoreRegister ? "#8b4513" : "#d4a574",
+                      border: "none",
                     }}
                     disabled={loading}
                   >
                     {loading ? (
                       <>
-                        <span className="spinner-border spinner-border-sm me-2" role="status">
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        >
                           <span className="visually-hidden">Cargando...</span>
                         </span>
                         Registrando...
                       </>
                     ) : (
                       <>
-                        {isStoreRegister ? 'Registrar Cafetería' : 'Crear Cuenta'}
+                        {isStoreRegister
+                          ? "Registrar Cafetería"
+                          : "Crear Cuenta"}
                       </>
                     )}
                   </button>
@@ -369,7 +419,10 @@ export const RegisterForm = ({ setToken }) => {
                       <>
                         <p className="mb-2">
                           ¿Ya tienes cuenta de cafetería?
-                          <Link to="/login?type=Store" className="text-decoration-none ms-1">
+                          <Link
+                            to="/login?type=Store"
+                            className="text-decoration-none ms-1"
+                          >
                             Inicia Sesión
                           </Link>
                         </p>
@@ -378,12 +431,16 @@ export const RegisterForm = ({ setToken }) => {
                       <>
                         <p className="mb-2">
                           ¿Ya tienes cuenta?
-                          <Link to="/login" className="text-decoration-none ms-1">
+                          <Link
+                            to="/login"
+                            className="text-decoration-none ms-1"
+                          >
                             Inicia Sesión
                           </Link>
                         </p>
                         <small className="text-muted">
-                          ¿Tienes una cafetería? <Link to="/signup?type=Store">Regístrala aquí</Link>
+                          ¿Tienes una cafetería?{" "}
+                          <Link to="/signup?type=Store">Regístrala aquí</Link>
                         </small>
                       </>
                     )}
@@ -394,8 +451,9 @@ export const RegisterForm = ({ setToken }) => {
           </div>
         </div>
       </div>
+      <div className="spacer-section" style={{ height: "80px" }}></div>
     </>
   );
-}
+};
 
 export default RegisterForm;

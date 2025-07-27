@@ -1,0 +1,101 @@
+
+/* Card Container */
+.card {
+    border-radius: 12px !important;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(to bottom, #fff9f0 0%, #ffffff 100%);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(124, 45, 18, 0.15) !important;
+}
+
+/* Card Image */
+.card-img-top {
+    border-radius: 12px 12px 0 0 !important;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .card-img-top {
+    opacity: 0.9;
+}
+
+/* Card Body */
+.card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Card Title */
+.card-title {
+    color: #7c2d12;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600 !important;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Card Text */
+.card-text {
+    color: #5a3e2b !important;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+/* Badges */
+.badge {
+    padding: 0.35rem 0.65rem !important;
+    border-radius: 50px !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+/* Rating Badge */
+.position-absolute .badge {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #5a3e2b !important;
+    border: 1px solid rgba(124, 45, 18, 0.1);
+    box-shadow: 0 2px 8px rgba(124, 45, 18, 0.1);
+}
+
+/* Feature Badges (Wifi, Pet Friendly, etc) */
+.badge.bg-light {
+    background-color: rgba(255, 248, 240, 0.9) !important;
+    border: 1px solid rgba(124, 45, 18, 0.1);
+    color: #7c2d12 !important;
+}
+
+.badge i {
+    font-size: 0.65rem;
+}
+
+/* Location Text */
+.text-muted small {
+    color: #8b735b !important;
+    font-size: 0.8rem;
+}
+
+/* Review Count */
+.text-muted {
+    color: #8b735b !important;
+    font-size: 0.8rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+}

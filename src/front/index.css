@@ -1,5 +1,5 @@
 body{
-    background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+    background: linear-gradient( #fff5eb 100%);
 }
 
 .container-style{
@@ -32,6 +32,29 @@ html, body {
 }
 footer {
     flex-shrink: 0 ; /* No se encoge */
+}
+/* ESTILO DEL BOTON */
+.btn-custom {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background: linear-gradient(135deg, #7c2d12 0%, #d97706 100%);
+  color: white !important;
+  border: none;
+  padding: 0.6rem 1.8rem;
+  border-radius: 50px; /* Forma de cápsula como en el Hero */
+  box-shadow: 0 4px 12px rgba(124, 45, 18, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.btn-custom:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(124, 45, 18, 0.4);
+  background: linear-gradient(135deg, #6b2710 0%, #c46905 100%);
 }
 
  .star-rating {
