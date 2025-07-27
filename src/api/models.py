@@ -1,11 +1,20 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, ForeignKey, CheckConstraint, Date, Boolean, Table, DateTime, func, select
+from sqlalchemy import String, ForeignKey, CheckConstraint, Date, Boolean, Table, DateTime, func, select, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from typing import List, Optional
 from datetime import datetime
 
 db = SQLAlchemy()
+
+# Tabla intermedia de favoritos
+favorites_table = Table(
+    "favorites",
+    db.metadata,
+    db.Column("user_id", db.Integer, ForeignKey("users.id"), primary_key=True),
+    db.Column("store_id", db.Integer, ForeignKey("stores.id"), primary_key=True),
+    UniqueConstraint("user_id", "store_id", name="uq_user_store_favorite")
+)
 
 
 class User(db.Model):
@@ -22,6 +31,11 @@ class User(db.Model):
         "Store", back_populates="user")
     is_active: Mapped[bool] = mapped_column(
         Boolean(), nullable=False, default=1)
+
+    # Relación con tiendas favoritas
+    # favorite_stores = relationship('Store', secondary=favorites_table, back_populates='favorited_by')
+    # Relación de favoritos (tiendas marcadas como favoritas por este usuario)
+    favorite_stores: Mapped[List["Store"]] = relationship(secondary=favorites_table, back_populates="favorited_by")
 
     def serialize(self):
         return {
@@ -84,8 +98,11 @@ class Store(db.Model):
         primaryjoin="and_(foreign(Image.owner_id) == Store.id, Image.owner_type == 'store')",
         viewonly=True
     )
-
+    # Relación con UserPoint 
     points = relationship("UserPoint", back_populates="store")
+    # Relación con usuarios que la marcaron como favorita
+    # favorited_by = relationship('User', secondary=favorites_table,back_populates='favorite_stores')
+    favorited_by: Mapped[List["User"]] = relationship(secondary=favorites_table,back_populates="favorite_stores")
 
     def serialize(self):
         return {
@@ -269,3 +286,4 @@ class UserPoint(db.Model):
             select(func.avg(cls.points)).where(cls.store_id == store_id)
         ).scalar()
         return result or 0  # Devuelve 0 si no hay resultados
+
