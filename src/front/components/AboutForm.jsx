@@ -62,7 +62,7 @@ const About = () => {
                 >
                   En{" "}
                   <strong style={{ color: "var(--accent-color)" }}>
-                    CoffeeConnect
+                    Coffee Connect
                   </strong>{" "}
                   no vendemos café, creamos conexiones. Somos buscadores de esos
                   rincones donde el primer sorbo te hace sentir en casa, donde
@@ -79,11 +79,11 @@ const About = () => {
                 className="display-5 fw-bold mb-5"
                 style={{ color: "var(--text-primary)" }}
               >
-                Beneficios de usar CoffeeConnect
+                Beneficios de usar Coffee Connect
               </h2>
 
               <div className="row g-4">
-                {/* Beneficio 1 */}
+                {/* PRIMER BENEFICIO */}
                 <div className="col-md-4">
                   <div className="benefit-card h-100 p-4">
                     <div className="benefit-img mb-4">
@@ -110,7 +110,7 @@ const About = () => {
                   </div>
                 </div>
 
-                {/* Beneficio 2 */}
+                {/* SEGUNDO BENEFICIO */}
                 <div className="col-md-4">
                   <div className="benefit-card h-100 p-4">
                     <div className="benefit-img mb-4">
@@ -136,7 +136,7 @@ const About = () => {
                   </div>
                 </div>
 
-                {/* Beneficio 3 */}
+                {/* TERCER BENEFICIO*/}
                 <div className="col-md-4">
                   <div className="benefit-card h-100 p-4">
                     <div className="benefit-img mb-4">
@@ -166,15 +166,17 @@ const About = () => {
             </div>
 
             {/* Para cafeterías */}
+            {/* CARRUSEL */}
             <div className="row align-items-center my-5 g-4">
               <div className="col-md-6 order-md-2">
                 <div
                   id="cafeCarousel"
                   className="carousel slide"
                   data-bs-ride="carousel"
+                  data-bs-interval="3000"
                 >
                   <div className="carousel-inner rounded-4 shadow-lg">
-                    {/* Imágenes del carrusel */}
+                    
                     {[
                       "https://images.unsplash.com/photo-1464979681340-bdd28a61699e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                       "https://images.unsplash.com/photo-1728044849321-4cbffc50cc1d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",

@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useGlobalHelpers } from "../hooks/useGlobalHelpers";
 import { useGlobalButtons } from "../hooks/useGlobalButtons.jsx";
 import { getUserStore } from "../services/api_store";
+import "../styles/navbar.css";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();

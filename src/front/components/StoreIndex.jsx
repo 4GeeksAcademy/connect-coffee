@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { getStoreIndex, getStoreDetail } from '../services/api_store.js';
-import CafeDetail from './CafeDetail.jsx';
-import { getCategories } from '../services/api_category.js';
+import { getStoreIndex, getStoreDetail } from "../services/api_store.js";
+import CafeDetail from "./CafeDetail.jsx";
+import { getCategories } from "../services/api_category.js";
+import "../styles/StoreIndex.css";
 
 const StoreIndex = () => {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState("home");
   const [selectedCafeteria, setSelectedCafeteria] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [cafeterias, setCafeterias] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,21 +25,21 @@ const StoreIndex = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Cargando tiendas...');
+      console.log("Cargando tiendas...");
       const response = await getStoreIndex();
-      console.log('Respuesta de API TEST:', response);
+      console.log("Respuesta de API TEST:", response);
 
       if (response && response.ok && response.data) {
         setCafeterias(response.data);
-        console.log('Tiendas cargadas:', response.data);
+        console.log("Tiendas cargadas:", response.data);
       } else {
-        const errorMsg = response?.msg || 'Error al cargar las cafeterías';
-        console.error('Error en respuesta:', errorMsg);
+        const errorMsg = response?.msg || "Error al cargar las cafeterías";
+        console.error("Error en respuesta:", errorMsg);
         setError(errorMsg);
       }
     } catch (err) {
-      console.error('Error de conexión:', err);
-      setError('Error de conexión: ' + err.message);
+      console.error("Error de conexión:", err);
+      setError("Error de conexión: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -46,17 +47,17 @@ const StoreIndex = () => {
 
   const loadCafeteriaDetail = async (id) => {
     try {
-      console.log('Cargando detalles de tienda:', id);
+      console.log("Cargando detalles de tienda:", id);
       const response = await getStoreDetail(id);
-      console.log('Respuesta detalle:', response);
+      console.log("Respuesta detalle:", response);
 
       if (response && response.ok && response.data) {
         setSelectedCafeteria(response.data);
-        setCurrentView('detail');
-        console.log('Cafetería detallada:', response.data);
+        setCurrentView("detail");
+        console.log("Cafetería detallada:", response.data);
       }
     } catch (err) {
-      console.error('Error cargando detalle:', err);
+      console.error("Error cargando detalle:", err);
     }
   };
 
@@ -66,24 +67,24 @@ const StoreIndex = () => {
   };
 
   const filterOptions = [
-    { id: 'has_wifi', label: 'WiFi', icon: 'fas fa-wifi' },
-    { id: 'pet_friendly', label: 'Pet Friendly', icon: 'fas fa-dog' },
-    { id: 'gluten_free', label: 'Sin TACC', icon: 'fas fa-leaf' },
-    { id: 'smoking_area', label: 'Zona Fumadores', icon: 'fas fa-smoking' },
-    { id: 'quiet_space', label: 'Espacios Azules', icon: 'fas fa-heart' }
+    { id: "has_wifi", label: "WiFi", icon: "fas fa-wifi" },
+    { id: "pet_friendly", label: "Pet Friendly", icon: "fas fa-dog" },
+    { id: "gluten_free", label: "Sin TACC", icon: "fas fa-leaf" },
+    { id: "smoking_area", label: "Zona Fumadores", icon: "fas fa-smoking" },
+    { id: "quiet_space", label: "Espacios Azules", icon: "fas fa-heart" },
   ];
 
   // filtros ** //
-  const filteredCafeterias = cafeterias.filter(cafe => {
+  const filteredCafeterias = cafeterias.filter((cafe) => {
     const matchesSearch =
       cafe.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cafe.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (cafe.description && cafe.description.toLowerCase().includes(searchTerm.toLowerCase()));
+      (cafe.description &&
+        cafe.description.toLowerCase().includes(searchTerm.toLowerCase()));
 
-
-
-    const matchesFilters = selectedFilters.length === 0 ||
-      selectedFilters.every(filter => cafe[filter] === true);
+    const matchesFilters =
+      selectedFilters.length === 0 ||
+      selectedFilters.every((filter) => cafe[filter] === true);
 
     return matchesSearch && matchesFilters;
   });
@@ -91,24 +92,30 @@ const StoreIndex = () => {
 
 
   const toggleFilter = (filterId) => {
-    setSelectedFilters(prev =>
+    setSelectedFilters((prev) =>
       prev.includes(filterId)
-        ? prev.filter(f => f !== filterId)
+        ? prev.filter((f) => f !== filterId)
         : [...prev, filterId]
     );
   };
 
-  {/* Header */ }
+  {
+    /* Header */
+  }
   const SearchAndFilters = () => (
-    <div className="bg-light py-5" style={{ background: 'linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%)' }}>
+    <div
+      className="bg-light py-5"
+      style={{ background: "linear-gradient( #fff5eb)" }}
+    >
       <div className="container">
         {/* Hero Section */}
         <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold" style={{ color: '#78350f' }}>
+          <h1 className="display-4 fw-bold" style={{ color: "#78350f" }}>
             Encuentra tu Café Perfecto
           </h1>
-          <p className="lead" style={{ color: '#78350f' }}>
-            Descubre cafeterías increíbles cerca de ti y conecta con la comunidad cafetera
+          <p className="lead" style={{ color: "#78350f" }}>
+            Descubre cafeterías increíbles cerca de ti y conecta con la
+            comunidad cafetera
           </p>
         </div>
 
@@ -136,41 +143,50 @@ const StoreIndex = () => {
             <i className="fas fa-filter me-1"></i>
             Filtros:
           </span>
-          {apiFilterOptions && (
+          {apiFilterOptions &&
             filterOptions.map((filter) => {
               const isSelected = selectedFilters.includes(filter.id);
               return (
                 <button
                   key={filter.id}
                   onClick={() => toggleFilter(filter.id)}
-                  className={`btn px-3 py-2 ${isSelected
-                    ? 'btn-warning text-white'
-                    : 'btn-outline-warning'
-                    }`}
+                  className={`btn px-3 py-2 ${
+                    isSelected
+                      ? "btn-warning text-white"
+                      : "btn-outline-warning"
+                  }`}
                 >
                   <i className={`${filter.icon} me-1`}></i>
                   {filter.label}
                 </button>
               );
-            })
-          )}
+            })}
         </div>
       </div>
     </div>
   );
 
-  {/* Cafeterias Grid */ }
+  {
+    /* Cafeterias Grid */
+  }
   const CafeteriaCard = ({ cafeteria, onSelect }) => (
     <div className="col">
-      <div className="card h-100 shadow-sm border-0" style={{ transition: 'transform 0.3s' }}>
+      <div
+        className="card h-100 shadow-sm border-0"
+        style={{ transition: "transform 0.3s" }}
+      >
         <div className="position-relative">
           <img
-            src={cafeteria.image_url || "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop"}
+            src={
+              cafeteria.image_url ||
+              "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop"
+            }
             alt={cafeteria.name}
             className="card-img-top"
-            style={{ height: '200px', objectFit: 'cover' }}
+            style={{ height: "200px", objectFit: "cover" }}
             onError={(e) => {
-              e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop";
+              e.target.src =
+                "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop";
             }}
           />
 
@@ -223,7 +239,8 @@ const StoreIndex = () => {
             <small>{cafeteria.address || "Dirección no disponible"}</small>
           </div>
           <p className="card-text text-muted small">
-            {cafeteria.description || "Cafetería acogedora con excelente ambiente"}
+            {cafeteria.description ||
+              "Cafetería acogedora con excelente ambiente"}
           </p>
 
           {/* Label o tag */}
@@ -245,12 +262,42 @@ const StoreIndex = () => {
             )}
           </div>
           <div className="d-flex justify-content-between align-items-center">
-            <small className="text-muted">{cafeteria.review_count || 0} reseñas</small>
+            <small className="text-muted">
+              {cafeteria.review_count || 0} reseñas
+            </small>
+
+
+            {/* ESTILO AL BOTON DE VISITAR */} 
             <button
               onClick={onSelect}
-              className="btn btn-warning btn-sm"
+              className="btn btn-sm d-inline-flex align-items-center"
+              style={{
+                background: "linear-gradient(135deg, #7c2d12 0%, #d97706 100%)",
+                color: "white",
+                padding: "0.4rem 1.2rem",
+                borderRadius: "50px",
+                border: "none",
+                boxShadow: "0 2px 8px rgba(124, 45, 18, 0.3)",
+                transition: "all 0.3s",
+                fontWeight: "500",
+                fontSize: "0.875rem",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(124, 45, 18, 0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(124, 45, 18, 0.3)";
+              }}
             >
-              Visitar <i className="fas fa-arrow-right ms-1"></i>
+              Visitar{" "}
+              <i
+                className="fas fa-arrow-right ms-2"
+                style={{ fontSize: "0.75rem" }}
+              ></i>
             </button>
           </div>
         </div>
@@ -259,13 +306,19 @@ const StoreIndex = () => {
   );
 
   const HomePage = () => (
-    <div style={{ background: 'linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%)', minHeight: '100vh' }}>
+    <div
+      style={{ background: "linear-gradient( #fff5eb)", minHeight: "100vh" }}
+    >
       <SearchAndFilters />
       <div className="container py-5">
         <div className="mb-4">
-          <h2 className="fw-bold mb-2" style={{ color: '#78350f' }}>Descubre Cafeterías Increíbles</h2>
-          <p className="lead" style={{ color: '#78350f' }}>
-            {filteredCafeterias.length} cafetería{filteredCafeterias.length !== 1 ? 's' : ''} encontrada{filteredCafeterias.length !== 1 ? 's' : ''}
+          <h2 className="fw-bold mb-2" style={{ color: "#78350f" }}>
+            Descubre Cafeterías Increíbles
+          </h2>
+          <p className="lead" style={{ color: "#78350f" }}>
+            {filteredCafeterias.length} cafetería
+            {filteredCafeterias.length !== 1 ? "s" : ""} encontrada
+            {filteredCafeterias.length !== 1 ? "s" : ""}
           </p>
         </div>
 
@@ -292,9 +345,8 @@ const StoreIndex = () => {
             <h3 className="text-muted">No encontramos cafeterías</h3>
             <p className="text-muted">
               {cafeterias.length === 0
-                ? 'No hay cafeterías registradas en la base de datos'
-                : 'Intenta con otros filtros o términos de búsqueda'
-              }
+                ? "No hay cafeterías registradas en la base de datos"
+                : "Intenta con otros filtros o términos de búsqueda"}
             </p>
             {cafeterias.length === 0 && (
               <button className="btn btn-warning mt-2" onClick={loadCafeterias}>
@@ -319,13 +371,18 @@ const StoreIndex = () => {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%)' }}>
-      {currentView === 'home' && <HomePage />}
-      {currentView === 'detail' && selectedCafeteria && (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%)",
+      }}
+    >
+      {currentView === "home" && <HomePage />}
+      {currentView === "detail" && selectedCafeteria && (
         <CafeDetail
           cafeData={selectedCafeteria}
           onBack={() => {
-            setCurrentView('home');
+            setCurrentView("home");
             setSelectedCafeteria(null);
           }}
         />

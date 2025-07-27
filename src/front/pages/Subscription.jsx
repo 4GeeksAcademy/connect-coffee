@@ -28,41 +28,135 @@ const Subscription = () => {
   };
 
   return (
+  <form onSubmit={handlePayment}>
+    <div className="card mx-auto mt-5 shadow-lg border-0 rounded-4 overflow-hidden" 
+         style={{ 
+           maxWidth: "32rem",
+           background: "linear-gradient(to bottom, #f8f9fa 0%, #fff8f0 100%)",
+           border: "1px solid rgba(124, 45, 18, 0.1)"
+         }}>
+      
+      <div className="py-4 px-4 text-center" 
+           style={{
+             background: "linear-gradient(135deg, #7c2d12 0%, #d97706 100%)",
+             color: "white"
+           }}>
+        <h4 className="mb-0 fw-bold">
+          <i className="fas fa-crown me-2"></i>
+          Suscripción Premium
+        </h4>
+        <p className="mb-0 small opacity-75">Desbloquea todo el potencial de tu cafetería</p>
+      </div>
 
-    <form onSubmit={handlePayment}>
-      <div className="card mx-auto mt-5 shadow custom-fg-brown rounded-4 m-3 p-4" style={{ maxWidth: "32rem" }}>
-        <div className="card-body text-center">
-          <h5 className="card-title mb-4 ">
-            Suscripción Premium
-          </h5>
+      <div className="card-body p-4">
+        {/* BENEFICIOS DE SUSCRIBIRSE */}
+        <ul className="list-unstyled mb-4">
+          <li className="mb-3 p-3 d-flex align-items-center rounded-3" 
+              style={{ backgroundColor: "rgba(124, 45, 18, 0.05)" }}>
+            <div className="me-3 p-2 rounded-circle" 
+                 style={{ 
+                   backgroundColor: "rgba(124, 45, 18, 0.1)", 
+                   width: "40px", 
+                   height: "40px",
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center"
+                 }}>
+              <i className="fa-solid fa-store" style={{ color: "#7c2d12" }}></i>
+            </div>
+            <div>
+              <h6 className="mb-0 fw-bold" style={{ color: "#7c2d12" }}>Gestión Completa</h6>
+              <small className="text-muted">Control total de tu tienda</small>
+            </div>
+          </li>
 
-            <ul className="list-unstyled text-start mb-4">
-              <li className="mb-2 mx-4"><i className="fa-solid fa-store mx-4"></i>Gestiona tu tienda</li>
-              <li className="mb-2 mx-4"><i className="fa-solid fa-utensils mx-4"></i>Gestiona tu menú</li>
-              <li className="mb-2 mx-4"><i className="fa-solid fa-qrcode mx-4"></i>Genera un QR para tu menú</li>
-            </ul>
+          <li className="mb-3 p-3 d-flex align-items-center rounded-3" 
+              style={{ backgroundColor: "rgba(124, 45, 18, 0.05)" }}>
+            <div className="me-3 p-2 rounded-circle" 
+                 style={{ 
+                   backgroundColor: "rgba(124, 45, 18, 0.1)", 
+                   width: "40px", 
+                   height: "40px",
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center"
+                 }}>
+              <i className="fa-solid fa-utensils" style={{ color: "#7c2d12" }}></i>
+            </div>
+            <div>
+              <h6 className="mb-0 fw-bold" style={{ color: "#7c2d12" }}>Menú Digital</h6>
+              <small className="text-muted">Actualiza tus productos fácilmente</small>
+            </div>
+          </li>
 
-          <button type="submit" className="btn btn-outline-warning w-100">
-            <i className="bi bi-credit-card-fill me-2"></i>
-           {loading ? 'Redirigiendo...' : 'Pagar suscripción'}
-          </button>
+          <li className="mb-4 p-3 d-flex align-items-center rounded-3" 
+              style={{ backgroundColor: "rgba(124, 45, 18, 0.05)" }}>
+            <div className="me-3 p-2 rounded-circle" 
+                 style={{ 
+                   backgroundColor: "rgba(124, 45, 18, 0.1)", 
+                   width: "40px", 
+                   height: "40px",
+                   display: "flex",
+                   alignItems: "center",
+                   justifyContent: "center"
+                 }}>
+              <i className="fa-solid fa-qrcode" style={{ color: "#7c2d12" }}></i>
+            </div>
+            <div>
+              <h6 className="mb-0 fw-bold" style={{ color: "#7c2d12" }}>QR Menú</h6>
+              <small className="text-muted">Comparte tu menú al instante</small>
+            </div>
+          </li>
+        </ul>
+
+        {/* VALOR DE LA SUSCRIPCION */}
+        <div className="text-center mb-4">
+          <h3 className="fw-bold" style={{ color: "#7c2d12" }}>USD 85.00<span className="fs-6 text-muted"></span></h3>
+        </div>
+
+        {/* BOTON DE PAGO */}
+        <button 
+          type="submit" 
+          className="btn w-100 py-3 d-flex align-items-center justify-content-center"
+          disabled={loading}
+          style={{
+            background: loading 
+              ? "#d97706" 
+              : "linear-gradient(135deg, #7c2d12 0%, #d97706 100%)",
+            color: "white",
+            borderRadius: "50px",
+            border: "none",
+            boxShadow: "0 4px 15px rgba(124, 45, 18, 0.3)",
+            transition: "all 0.3s",
+            fontWeight: "500"
+          }}
+          onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = "translateY(-3px)")}
+          onMouseLeave={(e) => !loading && (e.currentTarget.style.transform = "none")}
+        >
+          {loading ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+              Procesando pago...
+            </>
+          ) : (
+            <>
+              <i className="bi bi-credit-card-fill me-2"></i>
+              Comenzar suscripción
+            </>
+          )}
+        </button>
+
+        {/* LA GARANTIA*/}
+        <div className="text-center mt-3">
+          <small className="text-muted">
+            <i className="fas fa-lock me-1"></i> Pago seguro · 
+            <i className="fas fa-sync-alt ms-2 me-1"></i> Cancela cuando quieras
+          </small>
         </div>
       </div>
-    </form>
-
-    // <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center' }}>
-    //   <h2>Suscripciones</h2>
-    //   <form onSubmit={handlePayment}>
-    //     <div>Tralalaa</div>
-    //     <button type="submit" className='btn btn-warning custom-bg-brown' disabled={loading}>
-    //       {loading ? 'Redirigiendo...' : 'Pagar'}
-    //     </button>
-    //   </form>
-    //   <div className='text-start'>
-      
-    //   </div>
-
-    // </div>
+    </div>
+     <p className="lead mb-5 text-muted" style={{ fontSize: "1.25rem" }}></p>
+  </form>
   );
 };
 

@@ -9,7 +9,7 @@
 }
 
 .hero-section {
-    background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+    background: linear-gradient(#fff5eb);
     border-radius: 0 0 20px 20px;
     box-shadow: 0 4px 12px rgba(207, 9, 9, 0.1);
     overflow: hidden;
@@ -149,9 +149,9 @@
 .back-to-top-bar {
   width: 100%;
   padding: 5px 0;
-  background: #AB6B3E; /* Color café oscuro, por ejemplo */
+  background: #AB6B3E; 
   text-align: center;
-  bottom: 0; /* Se posiciona justo antes del footer */
+  bottom: 0; 
   z-index: 50;
 }
 
@@ -174,4 +174,5 @@
     height: 300px !important;
   }
 }
+
 
