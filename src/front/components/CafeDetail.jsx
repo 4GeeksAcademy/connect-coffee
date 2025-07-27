@@ -3,6 +3,8 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getStoreMenu,getFrontStoreMenu } from '../services/api_menu.js';
 import { getFrontStorePoints } from '../services/api_userpoints.js'
 import ReviewForm from './ReviewForm.jsx';
+import {favoriteGet} from '../services/api_favorite.js'
+
 const CafeDetail = ({ cafeData, onBack }) => {
     const { store, dispatch } = useGlobalReducer();
     const [activeTab, setActiveTab] = useState('info');
@@ -17,6 +19,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
         if (cafeData?.id && store.token) {
             loadMenuFromAPI();
             loadApiReviews();
+            loadFavorite();
         }
     }, [cafeData?.id, store.token]);
 
@@ -54,31 +57,56 @@ const CafeDetail = ({ cafeData, onBack }) => {
             setLoading(false);
         }
     };
-      const loadApiReviews = async () => {
+    const loadApiReviews = async () => {
         try {
-          setLoading(true);
-          setError(null);
-          console.log('Cargando reseñas...');
-          const response = await getFrontStorePoints(cafeData?.id);
-          console.log('Respuesta de API TEST:', response);
-    
-          if (response && response.ok && response.data) {
+            setLoading(true);
+            setError(null);
+            console.log('Cargando reseñas...');
+            const response = await getFrontStorePoints(cafeData?.id);
+            console.log('Respuesta de API TEST:', response);
+
+            if (response && response.ok && response.data) {
             setApiReviews(response.data);
             console.log('Tiendas reseñas:', response.data);
-          } else {
+            } else {
             const errorMsg = response?.msg || 'Error al cargar las reseñas';
             console.error('Error en respuesta:', errorMsg);
             setError(errorMsg);
-          }
+            }
         } catch (err) {
-          console.error('Error de conexión:', err);
-          setError('Error de conexión: ' + err.message);
+            console.error('Error de conexión:', err);
+            setError('Error de conexión: ' + err.message);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
+    };
     //const apiReviews = getStorePoints(store.token)
+    const loadFavorite = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            console.log('Cargando favoritos...');
+            const response = await favoriteGet(store.token);
+            console.log('Respuesta de API FAV:', response);
 
+            if (response && response.ok && response.data) {
+                const isInFavorites = response.data.some(store => store.id === cafeData?.id);
+                if(isInFavorites){
+                    setIsFavorite(true)
+                    console.log('Es Favorito');
+                }
+            } else {
+                const errorMsg = response?.msg || 'Error al cargar las reseñas';
+                console.error('Error en respuesta:', errorMsg);
+                setError(errorMsg);
+            }
+        } catch (err) {
+            console.error('Error de conexión:', err);
+            setError('Error de conexión: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
     
     const filterConfig = {
         wifi: { icon: '📶', label: 'WiFi', field: 'wifi' },
@@ -458,9 +486,9 @@ const CafeDetail = ({ cafeData, onBack }) => {
                     <div className="row">
                         <div className="row mt-4">
                         <ReviewForm store_id={cafeData?.id}/>
-                        {apiReviews.map((review) => (
+                        {apiReviews?.map((review) => (
                             <div key={review.id} className="col-12 mb-4">
-                                <div className="col-md-10">
+                                <div className="col-md-12">
                                     <div className="d-flex justify-content-between align-items-start mb-2">
                                         <small className="text-muted">{formatDate(review.created_at)}</small>
                                     </div>

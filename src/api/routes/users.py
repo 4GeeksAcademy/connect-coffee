@@ -29,6 +29,7 @@ def register():
     passsword_validate = data.get("password_validate")
     store_name = data.get("businessName")
     store_address = data.get("address")
+    role=data.get("role")
 
     if password != passsword_validate:
         return jsonify({"msg": f"Las contraseñas no son iguales", "ok": False}), 400
@@ -49,16 +50,22 @@ def register():
         if data['role'] in valid_types:
             new_user.role = data['role'].capitalize()
 
-
-    if store_name and store_address:
+    if role == ROLE_STORE or role == ROLE_USER:
         db.session.add(new_user)
-        db.session.commit()
-        new_store=Store(nombre=store_name,direccion=store_address,is_active=False,user_id=new_user.id)
-    else:
-        return jsonify({"msg": f"No se pueden evaluar los datos address:{store_address} BusenessName:{store_name} y ", "ok": False}), 409
+    
 
-    db.session.add(new_store)
+    if role == ROLE_STORE:
+        if store_name and store_address:
+            db.session.commit()
+            new_store=Store(nombre=store_name,direccion=store_address,is_active=False,user_id=new_user.id)
+            db.session.add(new_store)
+            db.session.commit()
+        else:
+            return jsonify({"msg": f"No se pueden evaluar los datos address:{store_address} BusenessName:{store_name} y ", "ok": False}), 409
+
     db.session.commit()
+
+
     access_token = create_access_token(identity=str(new_user.id))
 
     # Aramamos la respuesta
