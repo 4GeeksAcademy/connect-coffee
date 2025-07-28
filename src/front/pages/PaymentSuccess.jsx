@@ -22,10 +22,10 @@ const PaymentSuccess = () => {
         console.log("setResponseApi FALSE", resApi.data[0]);
         setIsActiveStore(await activateStore(resApi.data[0].id));
         console.log("isActive",isActiveStore);
-        navigate('/store-builder')
+        navigate('/provider')
       }else{
         console.log("setResponseApi TRUE", resApi.data[0]);
-        navigate('/store-builder')
+        navigate('/')
         //return true;
       }
     }

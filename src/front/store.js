@@ -19,8 +19,8 @@ export default function storeReducer(store, action = {}) {
   }
   return {
     ...store,
-    [type]: payload
-    };
+    [type]: payload,
+  };
   //v1
   /*
   return {

@@ -34,7 +34,8 @@ class User(db.Model):
     # Relación con tiendas favoritas
     # favorite_stores = relationship('Store', secondary=favorites_table, back_populates='favorited_by')
     # Relación de favoritos (tiendas marcadas como favoritas por este usuario)
-    favorite_stores: Mapped[List["Store"]] = relationship(secondary=favorites_table, back_populates="favorited_by")
+    favorite_stores: Mapped[List["Store"]] = relationship(
+        secondary=favorites_table, back_populates="favorited_by")
 
     def serialize(self):
         return {
@@ -83,7 +84,7 @@ class Store(db.Model):
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     fecha_de_pago: Mapped[Date] = mapped_column(Date, nullable=True)
     total_points: Mapped[int] = mapped_column(nullable=True)
-
+    description: Mapped[str] = mapped_column(String(200), nullable=True)
     menus = relationship("Menu", back_populates="store")
     user: Mapped["User"] = relationship("User", back_populates="stores")
     categories: Mapped[List["Category"]] = relationship(
@@ -98,11 +99,12 @@ class Store(db.Model):
         primaryjoin="and_(foreign(Image.owner_id) == Store.id, Image.owner_type == 'store')",
         viewonly=True
     )
-    # Relación con UserPoint 
+    # Relación con UserPoint
     points = relationship("UserPoint", back_populates="store")
     # Relación con usuarios que la marcaron como favorita
     # favorited_by = relationship('User', secondary=favorites_table,back_populates='favorite_stores')
-    favorited_by: Mapped[List["User"]] = relationship(secondary=favorites_table,back_populates="favorite_stores")
+    favorited_by: Mapped[List["User"]] = relationship(
+        secondary=favorites_table, back_populates="favorite_stores")
 
     def serialize(self):
         return {
@@ -271,7 +273,7 @@ class UserPoint(db.Model):
 
     def serialize(self):
         return {
-            "id":self.id,
+            "id": self.id,
             "user_id": self.user_id,
             "store_id": self.store_id,
             "description": self.description,
@@ -286,4 +288,3 @@ class UserPoint(db.Model):
             select(func.avg(cls.points)).where(cls.store_id == store_id)
         ).scalar()
         return result or 0  # Devuelve 0 si no hay resultados
-

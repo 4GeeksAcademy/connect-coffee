@@ -100,6 +100,33 @@ export const activateStore = async (id) => {
   return jsonResponse;
 };
 
+// se agrega endpoint para boton de guardar cambios //
+export const updateStore = async (token, storeId, form) => {
+  try {
+    const response = await fetch(
+      backendUrl + "/api/store/" + storeId + "/update",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify(form),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    const jsonResponse = await response.json();
+    console.log("Respuesta update store:", jsonResponse);
+    return jsonResponse;
+  } catch (err) {
+    console.error("Error updating store:", err);
+    throw err;
+  }
+};
 // export const storeCreate = async (token) => {
 //   try {
 //     const response = await fetch(backendUrl + "/api/store/create", {
