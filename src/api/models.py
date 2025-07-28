@@ -12,8 +12,7 @@ favorites_table = Table(
     "favorites",
     db.metadata,
     db.Column("user_id", db.Integer, ForeignKey("users.id"), primary_key=True),
-    db.Column("store_id", db.Integer, ForeignKey("stores.id"), primary_key=True),
-    UniqueConstraint("user_id", "store_id", name="uq_user_store_favorite")
+    db.Column("store_id", db.Integer, ForeignKey("stores.id"), primary_key=True)
 )
 
 
@@ -79,6 +78,7 @@ class Store(db.Model):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"), nullable=False)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str] = mapped_column(String(200), nullable=True)
     direccion: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     fecha_de_pago: Mapped[Date] = mapped_column(Date, nullable=True)

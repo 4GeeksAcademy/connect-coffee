@@ -1,6 +1,8 @@
 // Subscription.jsx
 import React, { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { useNavigate } from 'react-router-dom';
 
 const stripePublicKey = import.meta.env.VITE_STRIPE_API_PUBKEY;
 const stripePromise = loadStripe(stripePublicKey); // ⚠️ Clave pública de Stripe
@@ -9,13 +11,17 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const Subscription = () => {
   const [amount, setAmount] = useState('');
   const [loading, setLoading] = useState(false);
+  const { store } = useGlobalReducer();
+  const navigate = useNavigate();
 
   const handlePayment = async (e) => {
     e.preventDefault();
     let amount=85
 
     setLoading(true);
-
+    if (store?.role != "ROLE_STORE"){
+      navigate('/signup?type=Store')
+    }
     const response = await fetch(backendUrl+'/api/donation/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
