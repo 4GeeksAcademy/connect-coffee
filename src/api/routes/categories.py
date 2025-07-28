@@ -9,6 +9,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 import yaml
 from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE
+from api.helpers.users import user_has_role,user_has_product,require_user_product,require_user_role
+from api.helpers.users import user_has_role, require_user_role
 
 routes_category = Blueprint('categories', __name__, url_prefix='/api/category')
 
@@ -150,6 +152,43 @@ def set_category(store_id):
     })
     return response, 200
 
+
+@routes_category.route('/<int:store_id>/unset', methods=['POST'])
+@jwt_required()
+@require_user_role([ROLE_STORE, ROLE_ADMIN])
+def remove_category(store_id):
+    data = request.get_json()
+    if "category_ids" not in data:
+        return jsonify({"msg": "Debe especificar category_ids a eliminar.", "ok": False}), 400
+    category_ids = data.get("category_ids")
+    if not category_ids or not isinstance(category_ids, list):
+        return jsonify({"msg": "Debe ingresar un listado de categorias [1,2,n].", "ok": False}), 400
+    existing_store = Store.query.get(store_id)
+    if not existing_store:
+        return jsonify({"error": "La tienda no existe"}), 404
+    removed = []
+    skipped = []
+    # IDs actuales asociados
+    existing_ids = {c.id for c in existing_store.categories}
+    for cat_id in category_ids:
+        category = Category.query.get(cat_id)
+        if not category:
+            skipped.append({"id": cat_id, "reason": "Categoria no encontrada"})
+            continue
+        if cat_id not in existing_ids:
+            skipped.append({"id": cat_id, "reason": "No asociada"})
+            continue
+        existing_store.categories.remove(category)
+        removed.append(cat_id)
+    db.session.commit()
+    response = jsonify({
+        "msg": f"Se procesaron las categorías para eliminación.",
+        "ok": True,
+        "removed": removed,
+        "skipped": skipped,
+        "store_id": store_id
+    })
+    return response, 200
 
 #  SEGUIR ACA
 

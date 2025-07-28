@@ -2,7 +2,8 @@ export const initialStore = () => {
   return {
     message: null,
     token: localStorage.getItem("token") || null,
-    user: localStorage.getItem("user") || null
+    user: localStorage.getItem("user") || null,
+    role: localStorage.getItem("role") || null
   };
 };
 
@@ -18,8 +19,8 @@ export default function storeReducer(store, action = {}) {
   }
   return {
     ...store,
-    [type]: payload
-    };
+    [type]: payload,
+  };
   //v1
   /*
   return {

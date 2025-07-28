@@ -494,7 +494,6 @@ const AdminDetail = () => {
                                         <th>Propietario</th>
                                         <th>Estado</th>
                                         <th>Rating</th>
-                                        <th>Pago</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -542,11 +541,7 @@ const AdminDetail = () => {
                                                     </small>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <small className="text-muted">
-                                                    {storeItem.fecha_de_pago ? formatDate(storeItem.fecha_de_pago) : 'Sin pago'}
-                                                </small>
-                                            </td>
+
                                             <td>
                                                 <div className="dropdown">
                                                     <button
@@ -645,7 +640,6 @@ const AdminDetail = () => {
                                         <p><strong>Rating:</strong> ⭐ {Number(storeDetail.rating || 0).toFixed(1)}</p>
                                         <p><strong>Reseñas:</strong> {storeDetail.reviews_count}</p>
                                         <p><strong>User ID:</strong> {storeDetail.user_id}</p>
-                                        <p><strong>Fecha de pago:</strong> {storeDetail.fecha_de_pago ? formatDate(storeDetail.fecha_de_pago) : 'Sin pago'}</p>
                                     </div>
                                 </div>
                                 <hr />
