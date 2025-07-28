@@ -183,8 +183,8 @@ const StoreIndex = () => {
                   onClick={() => toggleFilter(filter.id)}
                   className={`btn px-3 py-2 ${
                     isSelected
-                      ? "btn-warning text-white"
-                      : "btn-outline-warning"
+                      ? "btn-filter-active"
+                      : "btn-filter-active:hover"
                   }`}
                 >
                   <i className={`${filter.icon} me-1`}></i>

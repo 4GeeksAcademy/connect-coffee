@@ -57,26 +57,113 @@ footer {
   background: linear-gradient(135deg, #6b2710 0%, #c46905 100%);
 }
 
+/* ESTILO DE ESTRELLAS*/
  .star-rating {
-        direction: rtl;
-        display: inline-block;
-        cursor: pointer;
-    }
+  direction: rtl;
+  display: inline-flex;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
 
 .star-rating input {
-    display: none;
+  display: none;
 }
 
 .star-rating label {
-    color: #ddd;
-    font-size: 24px;
-    padding: 0 2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  color: var(--secondary-bg-color); /* #f5e6d3 */
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  position: relative;
+  text-shadow: 0 2px 4px rgba(139, 90, 60, 0.2);
 }
 
+/* Efecto estrella activa/seleccionada */
 .star-rating label:hover,
-.star-rating label:hover~label,
-.star-rating input:checked~label {
-    color: #ffc107;
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+  color: var(--accent-color); /* #d2691e */
+  transform: scale(1.2);
+  text-shadow: 0 4px 8px rgba(210, 105, 30, 0.4);
 }
+
+/* Animación al seleccionar */
+.star-rating input:checked + label {
+  animation: starPulse 0.5s ease;
+}
+
+@keyframes starPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.5) rotate(10deg); }
+  100% { transform: scale(1.2); }
+}
+
+/* Efecto al pasar el mouse */
+.star-rating label::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: radial-gradient(circle, rgba(210,105,30,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.star-rating label:hover::after {
+  opacity: 1;
+}
+
+/* Versión móvil */
+@media (max-width: 768px) {
+  .star-rating label {
+    font-size: 28px;
+  }
+}
+
+/* BOTONES DEL NAVBAR */
+
+.btn-sm {
+  background-color: #8b4513; 
+  color: #fff;
+  border: none;
+  border-radius: '6px';
+  font-weight: '500';
+  transition: 'all 0.2s ease';
+}
+
+/* BOTON SOLO MARRON */
+.btn-dos {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background: var(--text-primary);
+  color: white !important;
+  border: none;
+  padding: 0.6rem 1.8rem;
+  border-radius: 50px; /* Forma de cápsula como en el Hero */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.btn-dos {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(124, 45, 18, 0.4);
+  background: var(--text-primary);
+}
+
+/* RATING */
+.rating i {
+  color: var(--cafe-brown); 
+  font-size: 1.2rem;
+  margin-right: 2px;
+}
+
