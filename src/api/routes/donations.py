@@ -1,15 +1,18 @@
-import stripe,os
+import stripe
+import os
 from flask import Flask, request, jsonify, Blueprint
 from flask_cors import CORS
 
 
-stripe.api_key = os.getenv("STRIPE_API_PRIVKEY")  # ⚠️ Tu clave secreta de Stripe
+# ⚠️ Tu clave secreta de Stripe
+stripe.api_key = os.getenv("STRIPE_API_PRIVKEY")
 
 
-routes_donation = Blueprint('donations', __name__,url_prefix='/api/donation')
+routes_donation = Blueprint('donations', __name__, url_prefix='/api/donation')
 
 # Allow CORS requests to this API
 CORS(routes_donation)
+
 
 @routes_donation.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session():
@@ -25,14 +28,14 @@ def create_checkout_session():
                     'unit_amount': amount,
                     'product_data': {
                         'name': 'Suscripción pago único CoffeeConnect ',
-                        'description':'TTA: 4242 4242 4242 4242 | Exp: 12/34'
+                        'description': 'TTA: 4242 4242 4242 4242 | Exp: 12/34'
                     },
                 },
                 'quantity': 1,
             }],
             mode='payment',
             success_url=os.getenv("FRONTEND_URL")+'/success',
-            cancel_url=os.getenv("FRONTEND_URL")+'/cancel',
+            cancel_url=os.getenv("FRONTEND_URL")+'/payment',
         )
         return jsonify({'id': session.id})
     except Exception as e:

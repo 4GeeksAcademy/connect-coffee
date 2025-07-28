@@ -57,7 +57,6 @@ export const Navbar = () => {
 	}, [store?.token]);
 
 	if (location.pathname !== '/hero') {
-		// Si es usuario tipo Store (Proveedor), mostrar navbar específico //
 		if (store?.role === 'Store') {
 			return (
 				<nav
@@ -225,31 +224,9 @@ export const Navbar = () => {
 											</div>
 											<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
 
-											<Link
-												to="/UserDetails"
-												className="dropdown-item rounded d-flex align-items-center text-decoration-none"
-												style={{
-													color: '#6b4423',
-													padding: '10px 14px',
-													marginBottom: '2px',
-													transition: 'all 0.2s ease',
-													fontWeight: '500'
-												}}
-												onMouseEnter={(e) => {
-													e.target.style.backgroundColor = '#e8d5c4';
-												}}
-												onMouseLeave={(e) => {
-													e.target.style.backgroundColor = 'transparent';
-												}}
-											>
-												<i className="fas fa-user me-3" style={{ color: '#8b4513', width: '16px' }}></i>
-												Mi Perfil
-											</Link>
-											<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
-
 											<button
 												className="dropdown-item rounded d-flex align-items-center text-danger"
-												onClick={()=>{handleLogout()}}
+												onClick={handleLogout}
 												style={{
 													padding: '10px 14px',
 													transition: 'all 0.2s ease',
@@ -612,7 +589,7 @@ export const Navbar = () => {
 
 														<button
 															className="dropdown-item rounded d-flex align-items-center text-danger"
-															onClick={()=>{handleLogout()}}
+															onClick={handleLogout}
 															style={{
 																padding: '10px 14px',
 																transition: 'all 0.2s ease',

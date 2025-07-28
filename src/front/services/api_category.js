@@ -6,16 +6,16 @@ export const getCategories = async (token) => {
   try {
     const response = await fetch(backendUrl + "/api/category/list", {
       method: "GET",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-        }
+        Authorization: "Bearer " + token,
+      },
     });
     const jsonResponse = await response.json();
     return jsonResponse.data;
   } catch (err) {
     const response = {
-      "data": [
+      data: [
         {
           description: "Presenta menu con alimentos de la categoria Sin TACC",
           id: 1,
@@ -35,10 +35,10 @@ export const getCategories = async (token) => {
           stores: [],
         },
         {
-          "description": "La cafeteria tiene zona de fumadores",
-          "id": 4,
-          "name": "Zona Fumadores lokos",
-          "stores": []
+          description: "La cafeteria tiene zona de fumadores",
+          id: 4,
+          name: "Zona Fumadores lokos",
+          stores: [],
         },
         {
           description:
@@ -48,28 +48,52 @@ export const getCategories = async (token) => {
           stores: [],
         },
       ],
-      "msg": "Listado de Categorias",
-      "ok": true
-    }
+      msg: "Listado de Categorias",
+      ok: true,
+    };
     const jsonResponse = response;
-    return jsonResponse.data?jsonResponse.data:jsonResponse;
-  };
-}
+    return jsonResponse.data ? jsonResponse.data : jsonResponse;
+  }
+};
 
-  export const categorySet = async (token,store_id,form) => {
-    try {
-      const response = await fetch(backendUrl + "/api/category/"+store_id+"/set", {
+export const categorySet = async (token, store_id, form) => {
+  try {
+    const response = await fetch(
+      backendUrl + "/api/category/" + store_id + "/set",
+      {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + token
-         },
+          Authorization: "Bearer " + token,
+        },
         body: JSON.stringify(form),
-      });
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } catch (err) {
-       console.error("Fetch failed:", err);
-       throw err;
-    }
-  };
+      }
+    );
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+    console.error("Fetch failed:", err);
+    throw err;
+  }
+};
+
+export const categoryUnset = async (token, store_id, form) => {
+  try {
+    const response = await fetch(
+      backendUrl + "/api/category/" + store_id + "/unset",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify(form),
+      }
+    );
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (err) {
+    console.error("Fetch failed:", err);
+    throw err;
+  }
+};
