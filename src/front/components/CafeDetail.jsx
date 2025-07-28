@@ -3,7 +3,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getStoreMenu,getFrontStoreMenu } from '../services/api_menu.js';
 import { getFrontStorePoints } from '../services/api_userpoints.js'
 import ReviewForm from './ReviewForm.jsx';
-import {favoriteGet} from '../services/api_favorite.js'
+import {favoriteGet,favoriteDelete,favoriteCreate} from '../services/api_favorite.js'
 
 const CafeDetail = ({ cafeData, onBack }) => {
     const { store, dispatch } = useGlobalReducer();
@@ -13,15 +13,27 @@ const CafeDetail = ({ cafeData, onBack }) => {
     const [apiReviews, setApiReviews] = useState({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [isUser,setIsUser]= useState(false);
+    const [disableFavorite, setDisableFavorite] = useState(false);
 
     // Cargar menú desde la API cuando se monta el componente ** //
     useEffect(() => {
         if (cafeData?.id && store.token) {
             loadMenuFromAPI();
-            loadApiReviews();
-            loadFavorite();
         }
     }, [cafeData?.id, store.token]);
+    useEffect(() => {
+        if (cafeData?.id && store.token) {
+            if (store?.role=='User'){
+              loadApiReviews();
+              loadFavorite(); 
+              setIsUser(true);
+              setDisableFavorite(false)
+            }else{
+              setDisableFavorite(true)
+            }
+        }
+    }, [store.role]);
 
   const loadMenuFromAPI = async () => {
     try {
@@ -141,8 +153,27 @@ const CafeDetail = ({ cafeData, onBack }) => {
         ));
     };
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+  const toggleFavorite = async () => {
+    const form={
+      "store_id":cafeData?.id
+    }
+
+    if(isFavorite){
+      const response=await favoriteDelete(store.token,form);
+      if (response?.ok){
+        localStorage.setItem("favorites",JSON.stringify(response?.data));
+        dispatch({ type: "favorites", payload: JSON.stringify(response?.data) });
+        setIsFavorite(false);
+      }
+    }else{
+       const response=await favoriteCreate(store.token,form);
+      if (response?.ok){
+        localStorage.setItem("favorites",JSON.stringify(response?.data));
+        dispatch({ type: "favorites", payload: JSON.stringify(response?.data) });
+        setIsFavorite(true);
+      }
+    }
+
     // TODO: Si alcanza el tiempo implementar fav agregar/quitar ** //
   };
 
@@ -343,6 +374,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                       border: "none",
                     }}
                     onClick={toggleFavorite}
+                    disabled={disableFavorite}
                   >
                     {isFavorite ? "❤️ En Favoritos" : "🤍 Agregar a Favoritos"}
                   </button>
@@ -360,7 +392,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                             { id: 'menu', label: 'Menú', icon: '📋' },
                             { id: 'photos', label: 'Fotos', icon: '📸' },
                             { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' }
-                        ].map(tab => (
+                        ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
                             <button
                                 key={tab.id}
                                 className="btn px-4 py-2"

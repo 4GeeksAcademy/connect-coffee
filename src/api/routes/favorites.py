@@ -36,7 +36,8 @@ def add_favorite():
     user.favorite_stores.append(store)
     try:
         db.session.commit()
-        return jsonify({'msg': f'{store.nombre} | Ahora ya es tu favorito!',"ok":True}), 201
+        favorites = [{'id': store.id, 'name': store.nombre} for store in user.favorite_stores ]
+        return jsonify({'msg': f'{store.nombre} | Ahora ya es tu favorito!',"ok":True,"data": favorites}), 201
     except IntegrityError:
         db.session.rollback()
         return jsonify({'msg': 'Error al agregar favorito',"ok":False}), 500
@@ -61,7 +62,8 @@ def remove_favorite():
 
     user.favorite_stores.remove(store)
     db.session.commit()
-    return jsonify({'msg': 'Tienda quitada de favoritos',"ok":True}), 200
+    favorites = [{'id': store.id, 'name': store.nombre} for store in user.favorite_stores ]
+    return jsonify({'msg': 'Tienda quitada de favoritos',"ok":True,"data": favorites}), 200
 
 
 # Obtener tiendas favoritas de un usuario

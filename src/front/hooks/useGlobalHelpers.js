@@ -14,6 +14,7 @@ export function useGlobalHelpers() {
       dispatch({type:"message", payload:"" });
       dispatch({type:"user", payload:"" });
       dispatch({ type: "role", payload: "" });
+      console.log("--CIERRE DE SESION--");
   }
 
   

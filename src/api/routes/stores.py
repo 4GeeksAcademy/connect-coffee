@@ -10,7 +10,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 import json,yaml
 from api.constants import ROLE_ADMIN,ROLE_USER, ROLE_STORE,APIKEY
 from sqlalchemy import or_
-from api.helpers.users import user_has_role
+from api.helpers.users import user_has_role,user_has_product,require_user_product,require_user_role
 
 routes_store = Blueprint('stores', __name__,url_prefix='/api/store')
 
@@ -242,3 +242,47 @@ def get_storedetail_for(store_id: int):
             "data": store_exists.serialize()
         })
     return response,200
+
+
+# Endpoint de actualizacion de Tienda
+@routes_store.route('/<int:id>/update', methods=['PUT'])
+@jwt_required()
+@require_user_role([ROLE_STORE])
+def update_store(id:int):
+    user = g.user
+    
+    body=json.loads(request.data)
+    name=body['nombre']
+    address=body['direccion']
+    description=body['description']
+
+
+
+    # Se validan datos requeridos
+    if name is None or address is None or address is None:
+        return jsonify({"msg":f"Hay datos faltantes necesarios para poder actualizar la tienda.","ok":False}),400
+    
+        
+    # Si ya existe la tienda damos error
+    existing_store = store.query.filter_by(id=id,user_id=user.id).first()
+    if (existing_store):
+         return jsonify({"msg":f"La tienda no existe.","ok":False}),400
+
+    # Crear tienda
+    existing_store.nombre=name,
+    existing_store.description=description,
+    existing_store.direccion=address
+
+    try:
+        db.session.commit()
+        # Aramamos la respuesta
+        response=jsonify({
+            "msg": "Tienda actualizada con éxito",
+            "ok": True,
+            "data": store.serialize()
+        })
+        return response,200
+            
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": "Error al actualizar tienda", "ok": False}), 500
