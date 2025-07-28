@@ -50,6 +50,7 @@
 
 /* Badges */
 .badge {
+    background: #8b451381;
     padding: 0.35rem 0.65rem !important;
     border-radius: 50px !important;
     font-weight: 500 !important;
@@ -68,7 +69,7 @@
 
 /* Feature Badges (Wifi, Pet Friendly, etc) */
 .badge.bg-light {
-    background-color: rgba(255, 248, 240, 0.9) !important;
+    background-color: rgba(255, 240, 240, 0.9) !important;
     border: 1px solid rgba(124, 45, 18, 0.1);
     color: #7c2d12 !important;
 }
@@ -98,4 +99,21 @@
     .card-title {
         font-size: 1.1rem;
     }
+}
+
+.btn-filter-active {
+  transition: all 0.3s ease;
+  font-weight: 600;
+  background: var(--text-primary);
+  color: white !important;
+  border: none;
+  padding: 0.6rem 1.8rem;
+  border-radius: 50px;
+  box-shadow: 0 4px 8px rgba(107, 52, 16, 0.3);
+  min-width: 120px;
+}
+
+.btn-filter-active:hover {
+  background: var(--cafe-brown);
+  transform: translateY(-2px);
 }

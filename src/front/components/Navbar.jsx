@@ -430,7 +430,7 @@ export const Navbar = () => {
 										{/* Sección para User Provider */}
 										<div className="dropdown">
 											<button
-												className="btn btn-sm dropdown-toggle px-3 py-2"
+												className="btn btn-sm dropdown-toggle me-2 px-3 py-2"
 												type="button"
 												data-bs-toggle="dropdown"
 												style={{

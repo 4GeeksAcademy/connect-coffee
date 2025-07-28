@@ -42,20 +42,20 @@ export const ReviewForm = ({ store_id }) => {
     <>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">Comment</label>
+          <label htmlFor="description" className="form-label">Comentarios</label>
           <textarea
             className="form-control"
             id="description"
             name="description"
             rows="3"
-            placeholder="Leave your comment here"
+            placeholder="Deja tu comentario aquí"
             value={form.description}
             onChange={handleInputChange}
           ></textarea>
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Rating</label>
+          <label className="form-label">¿Cómo calificarías este lugar?</label>
           <div className="star-rating" style={{ direction: "rtl", display: "inline-block" }}>
             {[5, 4, 3, 2, 1].map((value) => (
               <label
@@ -66,7 +66,7 @@ export const ReviewForm = ({ store_id }) => {
                 onClick={() => handleRatingClick(value)}
                 style={{
                   fontSize: "24px",
-                  padding: "0 2px",
+                  padding: "0 4px",
                   cursor: "pointer",
                   transition: "transform 0.2s ease",
                 }}
@@ -75,7 +75,7 @@ export const ReviewForm = ({ store_id }) => {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">Submit Comment</button>
+        <button type="submit" className="btn btn-dos">Enviar reseña</button>
       </form>
     </>
   );
