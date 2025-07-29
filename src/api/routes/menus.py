@@ -99,7 +99,7 @@ def front_menus_list(store_id:int):
 
     # Aramamos la respuesta
     response = jsonify({
-        "msg": f"Listado de Menues para {store_id}",
+        "msg": f"Listado de Menues para f2691352730bf2691352730b",
         "ok": True,
         "data": [menu.serialize() for menu in menus]
     })
