@@ -1,28 +1,22 @@
 import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { getStoreMenu, getFrontStoreMenu } from '../services/api_menu.js';
 import { getFrontStorePoints } from '../services/api_userpoints.js'
 import ReviewForm from './ReviewForm.jsx';
 import { favoriteGet, favoriteDelete, favoriteCreate } from '../services/api_favorite.js'
 import ImageNotFound from "../assets/img/image-not-found.png"
+import MiniMenu from './MiniMenu.jsx';
+import QrCode from './QrCode.jsx'
 
 const CafeDetail = ({ cafeData, onBack }) => {
-    const { store, dispatch } = useGlobalReducer();
-    const [activeTab, setActiveTab] = useState('menu');
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [menuData, setMenuData] = useState({});
-    const [apiReviews, setApiReviews] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [isUser,setIsUser]= useState(false);
-    const [disableFavorite, setDisableFavorite] = useState(false);
+  const { store, dispatch } = useGlobalReducer();
+  const [activeTab, setActiveTab] = useState('menu');
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [apiReviews, setApiReviews] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isUser, setIsUser] = useState(false);
+  const [disableFavorite, setDisableFavorite] = useState(false);
 
-  // Cargar menú desde la API cuando se monta el componente ** //
-  useEffect(() => {
-    if (cafeData?.id && store.token) {
-      loadMenuFromAPI();
-    }
-  }, [cafeData?.id, store.token]);
   useEffect(() => {
     if (cafeData?.id && store.token) {
       if (store?.role == 'User') {
@@ -34,90 +28,49 @@ const CafeDetail = ({ cafeData, onBack }) => {
       }
     }
   }, [store.role]);
-    useEffect(() => {
+
+  useEffect(() => {
     const carouselElement = document.querySelector('#cafeImageCarousel');
-    if (carouselElement) {
-      const carousel = new Carousel(carouselElement, {
+    if (carouselElement && window.bootstrap) {
+      new window.bootstrap.Carousel(carouselElement, {
         interval: 5000,
         ride: 'carousel'
       });
     }
   }, [cafeData.images]);
-  const loadMenuFromAPI = async () => {
-    try {
-      setLoading(true);
-      console.log("Cargando menú para tienda:", cafeData.id);
 
-      const response = await getFrontStoreMenu(cafeData?.id);
-      console.log('Respuesta menú:', response);
-
-      if (response && response.ok && response.data) {
-        // Filtrar menú por store_id ** //
-        const storeMenu = response.data.filter(
-          (item) => item.store_id === cafeData.id
-        );
-        const groupedMenu = storeMenu.reduce((acc, item) => {
-          const category = item.category || "Sin categoría";
-          if (!acc[category]) {
-            acc[category] = [];
-          }
-          acc[category].push({
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            description: item.description || "Descripción no disponible",
-          });
-          return acc;
-        }, {});
-
-        setMenuData(groupedMenu);
-        console.log('Menú cargado:', groupedMenu);
-      }
-    } catch (error) {
-      console.error('Error cargando menú:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
   const loadApiReviews = async () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Cargando reseñas...');
       const response = await getFrontStorePoints(cafeData?.id);
-      console.log('Respuesta de API TEST:', response);
-      
+
       if (response && response.ok && response.data) {
         setApiReviews(response.data);
-        console.log('Tiendas reseñas:', response.data);
         setIsUser(true);
       } else {
         const errorMsg = response?.msg || 'Error al cargar las reseñas';
-        console.error('Error en respuesta:', errorMsg);
         setError(errorMsg);
       }
     } catch (err) {
-      console.error('Error de conexión:', err);
       setError('Error de conexión: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
+
   const reloadReviews = async () => {
     try {
-      console.log('🔄 Recargando reseñas...');
       const response = await getFrontStorePoints(cafeData?.id);
-
       if (response && response.ok && response.data) {
         setApiReviews(response.data);
-        console.log('✅ Reseñas recargadas:', response.data.length);
       }
     } catch (err) {
-      console.error('❌ Error recargando reseñas:', err);
+      console.error('Error recargando reseñas:', err);
     }
   };
+
   const handleReviewSubmitted = (response) => {
-    console.log('Nueva reseña enviada:', response);
     reloadReviews();
     setTimeout(() => {
       document.getElementById('reviews-list')?.scrollIntoView({
@@ -126,28 +79,23 @@ const CafeDetail = ({ cafeData, onBack }) => {
       });
     }, 1000);
   };
-  //const apiReviews = getStorePoints(store.token)
+
   const loadFavorite = async () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Cargando favoritos...');
       const response = await favoriteGet(store.token);
-      console.log('Respuesta de API FAV:', response);
 
       if (response && response.ok && response.data) {
         const isInFavorites = response.data.some(store => store.id === cafeData?.id);
         if (isInFavorites) {
           setIsFavorite(true)
-          console.log('Es Favorito');
         }
       } else {
-        const errorMsg = response?.msg || 'Error al cargar las reseñas';
-        console.error('Error en respuesta:', errorMsg);
+        const errorMsg = response?.msg || 'Error al cargar los favoritos';
         setError(errorMsg);
       }
     } catch (err) {
-      console.error('Error de conexión:', err);
       setError('Error de conexión: ' + err.message);
     } finally {
       setLoading(false);
@@ -162,7 +110,6 @@ const CafeDetail = ({ cafeData, onBack }) => {
     quiet_space: { icon: '🤫', label: 'Espacios Tranquilos', field: 'quiet_space' }
   };
 
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -170,13 +117,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
       day: 'numeric'
     });
   };
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CL', {
-      style: 'currency',
-      currency: 'CLP'
-    }).format(amount);
-  };
-  // Llamar a rating ** //
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, i) => (
       <span key={i} className={i < Math.floor(rating) ? 'text-warning' : 'text-muted'}>
@@ -205,40 +146,6 @@ const CafeDetail = ({ cafeData, onBack }) => {
         setIsFavorite(true);
       }
     }
-
-    // TODO: Si alcanza el tiempo implementar fav agregar/quitar ** //
-  };
-
-  const renderHours = () => {
-    if (!cafeData.hours_detail && !cafeData.hours) {
-      return (
-        <div className="d-flex justify-content-between py-2 border-bottom">
-          <span className="fw-semibold">Horario</span>
-          <span>Consultar horarios</span>
-        </div>
-      );
-    }
-
-    const hours = cafeData.hours_detail || cafeData.hours;
-
-    if (typeof hours === "string") {
-      return (
-        <div className="d-flex justify-content-between py-2 border-bottom">
-          <span className="fw-semibold">Horario general</span>
-          <span>{hours}</span>
-        </div>
-      );
-    }
-
-    return Object.entries(hours).map(([day, time]) => (
-      <div
-        key={day}
-        className="d-flex justify-content-between py-2 border-bottom"
-      >
-        <span className="fw-semibold">{day}</span>
-        <span>{time}</span>
-      </div>
-    ));
   };
 
   const getActiveFeatures = () => {
@@ -251,7 +158,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
     return features;
   };
 
-  // Validacion de datos ** //
+  // Validación de datos
   if (!cafeData) {
     return (
       <div
@@ -272,7 +179,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
   return (
     <div className="min-vh-100" style={{ backgroundColor: "#F6E0C4" }}>
       <div className="container py-4">
-        {/* BOTON DE VOLVER CON ESTILO INCLUIDO*/}
+        {/* Botón de volver */}
         <div className="mb-4">
           <button
             onClick={onBack}
@@ -289,16 +196,13 @@ const CafeDetail = ({ cafeData, onBack }) => {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "rgba(217, 119, 6, 0.1)";
-              e.currentTarget.style.transform = "translateX(-4px)"; // Efecto hacia la izquierda
-              e.currentTarget.style.boxShadow =
-                "0 4px 8px rgba(124, 45, 18, 0.15)";
+              e.currentTarget.style.transform = "translateX(-4px)";
+              e.currentTarget.style.boxShadow = "0 4px 8px rgba(124, 45, 18, 0.15)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor =
-                "rgba(255, 255, 255, 0.9)";
+              e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.9)";
               e.currentTarget.style.transform = "none";
-              e.currentTarget.style.boxShadow =
-                "0 2px 6px rgba(124, 45, 18, 0.1)";
+              e.currentTarget.style.boxShadow = "0 2px 6px rgba(124, 45, 18, 0.1)";
             }}
           >
             <i className="fas fa-arrow-left me-2"></i>
@@ -320,7 +224,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                   objectFit: "contain"
                 }}
                 onError={(e) => {
-                  e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop";
+                  e.target.src = ImageNotFound;
                 }}
               />
             </div>
@@ -332,7 +236,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                       src={
                         cafeData.logo_url ||
                         cafeData.image_url ||
-                        "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=150&h=150&fit=crop"
+                        ImageNotFound
                       }
                       alt="Logo"
                       className="rounded-circle me-3"
@@ -342,8 +246,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                         objectFit: "cover",
                       }}
                       onError={(e) => {
-                        e.target.src =
-                          "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=150&h=150&fit=crop";
+                        e.target.src = ImageNotFound;
                       }}
                     />
                     <div>
@@ -362,7 +265,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                           ).toFixed(1)}
                         </span>
                         <span className="ms-1 text-muted">
-                          ({cafeData.points.length || 0} reseñas)
+                          ({cafeData.points?.length || 0} reseñas)
                         </span>
                       </div>
                     </div>
@@ -376,14 +279,24 @@ const CafeDetail = ({ cafeData, onBack }) => {
                     <strong>Dirección:</strong>{" "}
                     {cafeData.address || "Dirección no disponible"}
                   </p>
-                  
+
                   <div className="mb-3">
                     <span
-                      className={`badge px-3 py-2 ${cafeData.is_open ? "bg-success" : "bg-danger"
+                      className={`badge px-3 py-2 ${cafeData.is_active ? "bg-success" : "bg-danger"
                         }`}
                     >
-                      {cafeData.is_open ? "🟢 Abierto ahora" : "🔴 Cerrado"}
+                      {cafeData.is_active ? "🟢 Abierto ahora" : "🔴 Cerrado"}
                     </span>
+                  </div>
+
+                  <div className="text-center">
+                    <div className="d-inline-block p-3 bg-white rounded-3 shadow-sm border"
+                      style={{ borderColor: '#d4a574' }}>
+                      <QrCode id_menu={cafeData.id} />
+                    </div>
+                    <p className="mt-2 mb-0 small fw-light" style={{ color: '#8b4513' }}>
+                      Escanea para ver el menú digital
+                    </p>
                   </div>
 
                   <div className="d-flex flex-wrap gap-2 mb-3">
@@ -418,76 +331,40 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         </div>
 
-                {/* Tabs de navegación */}
-                <div className="d-flex justify-content-center mb-4">
-                    <div className="d-flex gap-2">
-                        {[
-                          { id: 'menu', label: 'Menú', icon: '📋' },
-                          { id: 'photos', label: 'Fotos', icon: '📸' },
-                          { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' },
-                          { id: 'info', label: 'Contactanos', icon: '💬' }
-                        ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
-                            <button
-                                key={tab.id}
-                                className="btn px-4 py-2"
-                                onClick={() => setActiveTab(tab.id)}
-                                style={{
-                                    backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
-                                    color: activeTab === tab.id ? 'white' : '#8B4513',
-                                    border: '1px solid #8B4513',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                {tab.icon} {tab.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+        {/* Tabs de navegación */}
+        <div className="d-flex justify-content-center mb-4">
+          <div className="d-flex gap-2">
+            {[
+              { id: 'menu', label: 'Menú', icon: '📋' },
+              { id: 'photos', label: 'Fotos', icon: '📸' },
+              { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' },
+              { id: 'info', label: 'Contactanos', icon: '💬' }
+            ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
+              <button
+                key={tab.id}
+                className="btn px-4 py-2"
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
+                  color: activeTab === tab.id ? 'white' : '#8B4513',
+                  border: '1px solid #8B4513',
+                  borderRadius: '20px'
+                }}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Contenido de tabs */}
         {activeTab === "info" && (
           <div className="row">
-            <div className="col-md-2 mb-4">
-              {/* <div className="card border-0 shadow-sm">
-                <div
-                  className="card-header"
-                  style={{ backgroundColor: "#8B4513", color: "white" }}
-                >
-                  <h5 className="mb-0">📍 Ubicación</h5>
-                </div>
-                <div className="card-body">
-                 <p className="mb-2">
-                    <strong>Dirección:</strong>{" "}
-                    {cafeData.address || "Dirección no disponible"}
-                  </p> 
-                   <div className="mt-3">
-                    <div
-                      className="bg-light rounded p-4 text-center"
-                      style={{ minHeight: "200px" }}
-                    >
-                      <p className="text-muted">🗺️ Mapa interactivo</p>
-                      <small className="text-muted">
-                        {cafeData.location?.coordinates ? (
-                          <>
-                            Lat: {cafeData.location.coordinates.lat}
-                            <br />
-                            Lng: {cafeData.location.coordinates.lng}
-                          </>
-                        ) : (
-                          "Coordenadas no disponibles"
-                        )}
-                      </small>
-                    </div>
-                  </div> 
-                </div>
-              </div>*/}
-            </div> 
-
-            <div className="col-md-12 mb-4">
+            <div className="col-12">
               <div className="card border-0 shadow-sm">
-                <div className="card-header text-white" 
-                  style={{ backgroundColor: "#8B4513", color: "white" }}
-                  >
+                <div className="card-header text-white"
+                  style={{ backgroundColor: "#8B4513" }}
+                >
                   <h5 className="mb-0">💬 Chat con el cliente</h5>
                 </div>
                 <div className="card-body" style={{ maxHeight: "300px", overflowY: "auto" }}>
@@ -506,177 +383,32 @@ const CafeDetail = ({ cafeData, onBack }) => {
                     <input
                       type="text"
                       className="form-control me-2"
-                      placeholder="Pronto podras dejarnos tu mensaje... "
+                      placeholder="Pronto podrás dejarnos tu mensaje..."
                       disabled
                     />
-                    <button type="submit" className="btn btn-dark disabled">Enviar</button>
+                    <button type="submit" className="btn btn-secondary disabled">Enviar</button>
                   </form>
                 </div>
               </div>
-              {/* <div className="card border-0 shadow-sm">
-                <div
-                  className="card-header"
-                  style={{ backgroundColor: "#8B4513", color: "white" }}
-                >
-                  <h5 className="mb-0">🕒 Horarios</h5>
-                </div>
-                <div className="card-body">{renderHours()}</div>
-              </div> */}
-
-              {/* <div className="card border-0 shadow-sm mt-4">
-                <div
-                  className="card-header"
-                  style={{ backgroundColor: "#8B4513", color: "white" }}
-                >
-                  <h5 className="mb-0">📞 Contacto</h5>
-                </div>
-                <div className="card-body">
-                  <p className="mb-2">
-                    <strong>Teléfono:</strong>{" "}
-                    {cafeData.phone || "Teléfono no disponible"}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Email:</strong>{" "}
-                    {cafeData.email || "Email no disponible"}
-                  </p>
-                  <p className="mb-0">
-                    <strong>Web:</strong>{" "}
-                    {cafeData.website || "Sitio web no disponible"}
-                  </p>
-                </div>
-              </div> */}
             </div>
           </div>
         )}
 
         {activeTab === "menu" && (
           <div className="row">
-            {loading ? (
-              <div className="col-12 text-center py-5">
-                <div className="spinner-border text-warning" role="status">
-                  <span className="visually-hidden">Cargando menú...</span>
-                </div>
-                <p className="mt-3 text-muted">Cargando menú API TEST...</p>
-              </div>
-            ) : cafeData.menu && cafeData.menu.length > 0 ? (
-              // Verificar menu desde el back ** //
-              cafeData.menu.map((menuSection) => (
-                <div key={menuSection.id} className="col-12 mb-4">
-                  <h4 className="mb-3" style={{ color: "#8B4513" }}>
-                    {menuSection.name}
-                  </h4>
-                  <div className="row">
-                    {menuSection.categories?.map((category) => (
-                      <div key={category.id} className="col-lg-6 mb-4">
-                        <div className="card border-0 shadow-sm">
-                          <div
-                            className="card-header"
-                            style={{
-                              backgroundColor: "#8B4513",
-                              color: "white",
-                            }}
-                          >
-                            <h5 className="mb-0">{category.name}</h5>
-                          </div>
-                          <div className="card-body">
-                            {category.products?.map((item) => (
-                              <div
-                                key={item.id}
-                                className="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom"
-                              >
-                                <div className="flex-grow-1">
-                                  <h6
-                                    className="mb-1"
-                                    style={{ color: "#8B4513" }}
-                                  >
-                                    {item.name}
-                                  </h6>
-                                  <p className="text-muted small mb-0">
-                                    {item.description}
-                                  </p>
-                                </div>
-                                <span
-                                  className="fw-bold ms-3"
-                                  style={{ color: "#8B4513" }}
-                                >
-                                  {item.price
-                                    ? formatCurrency(item.price)
-                                    : "Consultar"}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))
-            ) : Object.keys(menuData).length > 0 ? (
-              // El menu viene del back ** hacer llamada //
-              Object.entries(menuData).map(([category, items]) => (
-                <div key={category} className="col-lg-6 mb-4">
-                  <div className="card border-0 shadow-sm">
-                    <div
-                      className="card-header"
-                      style={{ backgroundColor: "#8B4513", color: "white" }}
-                    >
-                      <h5 className="mb-0">{category}</h5>
-                    </div>
-                    <div className="card-body">
-                      {items.map((item) => (
-                        <div
-                          key={item.id}
-                          className="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom"
-                        >
-                          <div className="flex-grow-1">
-                            <h6 className="mb-1" style={{ color: "#8B4513" }}>
-                              {item.name}
-                            </h6>
-                            <p className="text-muted small mb-0">
-                              {item.description}
-                            </p>
-                          </div>
-                          <span
-                            className="fw-bold ms-3"
-                            style={{ color: "#8B4513" }}
-                          >
-                            {item.price
-                              ? formatCurrency(item.price)
-                              : "Consultar"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-12 text-center py-5">
-                <i className="fas fa-utensils fa-3x text-muted mb-3"></i>
-                <h5 className="text-muted">Menú no disponible</h5>
-                <p className="text-muted">
-                  Esta cafetería aún no ha subido su menú
-                </p>
-                {!store.token && (
-                  <p className="text-muted small">
-                    <i className="fas fa-info-circle me-1"></i>
-                    Inicia sesión para ver más detalles
-                  </p>
-                )}
-              </div>
-            )}
+            <div className="col-12">
+              <MiniMenu storeId={cafeData.id} />
+            </div>
           </div>
         )}
 
-          {activeTab === 'photos' && (
-            <div className="d-flex justify-content-center mb-4">
+        {activeTab === 'photos' && (
+          <div className="d-flex justify-content-center mb-4">
             {cafeData.images && cafeData.images.length > 0 ? (
               <div
                 id="cafeImageCarousel"
                 className="carousel slide"
                 data-bs-ride="carousel"
-                data-bs-interval="1000"
                 style={{ maxWidth: '600px', width: '100%' }}
               >
                 <div className="carousel-inner">
@@ -691,15 +423,14 @@ const CafeDetail = ({ cafeData, onBack }) => {
                         alt={`${cafeData.name} - Foto ${index + 1}`}
                         style={{ height: '300px', objectFit: 'cover' }}
                         onError={(e) => {
-                          e.target.src =
-                            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop';
+                          e.target.src = ImageNotFound;
                         }}
                       />
                     </div>
                   ))}
                 </div>
 
-                {/* Controles */}
+                {/* Controles del carousel */}
                 {cafeData.images.length > 1 && (
                   <>
                     <button
@@ -723,16 +454,16 @@ const CafeDetail = ({ cafeData, onBack }) => {
                   </>
                 )}
               </div>
-            
-                ) : (
-                    <div className="col-12 text-center py-5">
-                        <i className="fas fa-camera fa-3x text-muted mb-3"></i>
-                        <h5 className="text-muted">Fotos no disponibles</h5>
-                        <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
-                    </div>
-                )}
-            </div>
+            ) : (
+              <div className="col-12 text-center py-5">
+                <i className="fas fa-camera fa-3x text-muted mb-3"></i>
+                <h5 className="text-muted">Fotos no disponibles</h5>
+                <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
+              </div>
+            )}
+          </div>
         )}
+
         {activeTab === 'reviews' && (
           <div className="row">
             <div className="col-12">
@@ -752,7 +483,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                   </div>
                 </div>
 
-                {/* ✅ Formulario de reseña mejorado */}
+                {/* Formulario de reseña */}
                 <div className="card-body">
                   {isUser ? (
                     <div className="mb-4 p-3 bg-light rounded">
@@ -777,7 +508,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                 </div>
               </div>
 
-              {/* ✅ Lista de reseñas mejorada */}
+              {/* Lista de reseñas */}
               <div id="reviews-list">
                 {loading ? (
                   <div className="text-center py-5">
@@ -808,42 +539,37 @@ const CafeDetail = ({ cafeData, onBack }) => {
                       <div key={review.id || index} className="col-12 mb-4">
                         <div className="card border-0 shadow-sm" style={{ borderRadius: '15px' }}>
                           <div className="card-body">
-                            <div className="row">
-                              <div className="col-md-12">
-                                {/* Header de la reseña */}
-                                <div className="d-flex justify-content-between align-items-start mb-3">
-                                  <div className="d-flex align-items-center">
-                                    <div className="me-3">
-                                      <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                                        style={{ width: '40px', height: '40px' }}>
-                                        <i className="fas fa-user text-white"></i>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <h6 className="mb-1" style={{ color: "#8B4513" }}>
-                                        {review.user?.username || `Usuario ${index + 1}`}
-                                      </h6>
-                                      <div className="d-flex align-items-center">
-                                        {renderStars(review.points)}
-                                        <span className="ms-2 fw-bold text-warning">
-                                          {review.points}/5
-                                        </span>
-                                      </div>
-                                    </div>
+                            <div className="d-flex justify-content-between align-items-start mb-3">
+                              <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                  <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                                    style={{ width: '40px', height: '40px' }}>
+                                    <i className="fas fa-user text-white"></i>
                                   </div>
-                                  <small className="text-muted">
-                                    <i className="fas fa-calendar-alt me-1"></i>
-                                    {formatDate(review.created_at)}
-                                  </small>
                                 </div>
-
-                                {/* Contenido de la reseña */}
-                                <div className="ms-5">
-                                  <p className="mb-0" style={{ lineHeight: '1.6' }}>
-                                    "{review.description}"
-                                  </p>
+                                <div>
+                                  <h6 className="mb-1" style={{ color: "#8B4513" }}>
+                                    {review.user?.username || `Usuario ${index + 1}`}
+                                  </h6>
+                                  <div className="d-flex align-items-center">
+                                    {renderStars(review.points)}
+                                    <span className="ms-2 fw-bold text-warning">
+                                      {review.points}/5
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
+                              <small className="text-muted">
+                                <i className="fas fa-calendar-alt me-1"></i>
+                                {formatDate(review.created_at)}
+                              </small>
+                            </div>
+
+                            {/* Contenido de la reseña */}
+                            <div className="ms-5">
+                              <p className="mb-0" style={{ lineHeight: '1.6' }}>
+                                "{review.description}"
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -853,7 +579,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                 )}
               </div>
 
-              {/* ✅ Estadísticas de reseñas */}
+              {/* Estadísticas de reseñas */}
               {apiReviews && apiReviews.length > 0 && (
                 <div className="card border-0 shadow-sm mt-4">
                   <div className="card-header" style={{ backgroundColor: "#8B4513", color: "white" }}>
