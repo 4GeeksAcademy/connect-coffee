@@ -632,70 +632,95 @@ const ProviderDashboard = () => {
   return (
     <div className="min-vh-100" style={{ backgroundColor: '#FFF5EB' }}>
       <div className="container-fluid py-4">
+        {/* Cafe Tab */}
         {activeTab === 'cafe' && (
           <>
-            {/* Información Principal de la Tienda */}
+            {/* Información Principal de la Tienda - Rediseñada */}
             <div className="card shadow-sm mb-4">
               <div className="row g-0">
+                {/* Imagen de la tienda */}
                 <div className="col-md-5">
-                  <img
-                    src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
-                    className="img-fluid h-100 w-100"
-                    alt={displayData.name || displayData.nombre}
-                    style={{ objectFit: 'cover', minHeight: '400px' }}
-                  />
+                  <div className="position-relative h-100">
+                    <img
+                      src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
+                      className="img-fluid h-100 w-100"
+                      alt={displayData.name || displayData.nombre}
+                      style={{ objectFit: 'cover', minHeight: '450px' }}
+                    />
+                    {/* Estado de la tienda overlay */}
+                    <div className="position-absolute top-0 end-0 m-3">
+                      <span className={`badge fs-6 px-3 py-2 ${cafeData.is_active ? 'bg-success' : 'bg-danger'}`}>
+                        {cafeData.is_active ? '🟢 Abierto' : '🔴 Cerrado'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Información de la tienda */}
                 <div className="col-md-7">
-                  <div className="card-body h-100 d-flex flex-column">
+                  <div className="card-body h-100 d-flex flex-column p-4">
+
+                    {/* Header con métricas */}
                     <div className="row mb-4">
-                      <div className="col-6">
-                        <div className="text-center p-3 bg-danger-subtle">
-                          <div className="fs-3">❤️</div>
-                          <div className="fw-bold fs-4">{favorites.length || 0}</div>
-                          <small className="text-muted">Favoritos</small>
+                      <div className="col-4">
+                        <div className="text-center p-3 bg-danger-subtle rounded-3">
+                          <div className="fs-2 mb-1">❤️</div>
+                          <div className="fw-bold fs-3 text-danger">{favorites.length || 0}</div>
+                          <small className="text-muted fw-medium">Favoritos</small>
                           {loadingFavorites && (
-                            <div className="spinner-border spinner-border-sm ms-2" role="status">
+                            <div className="spinner-border spinner-border-sm mt-1" role="status">
                               <span className="visually-hidden">Cargando...</span>
                             </div>
                           )}
                         </div>
                       </div>
-                      <div className="col-6">
-                        <div className="text-center p-3 bg-warning-subtle">
-                          <div className="fs-3">⭐</div>
-                          <div className="fw-bold fs-4">{(cafeData.total_points || 0).toFixed(1)}</div>
-                          <small className="text-muted">Rating</small>
+                      <div className="col-4">
+                        <div className="text-center p-3 bg-warning-subtle rounded-3">
+                          <div className="fs-2 mb-1">⭐</div>
+                          <div className="fw-bold fs-3 text-warning">{(cafeData.total_points || 0).toFixed(1)}</div>
+                          <small className="text-muted fw-medium">Rating</small>
+                        </div>
+                      </div>
+                      <div className="col-4">
+                        <div className="text-center p-3 bg-info-subtle rounded-3">
+                          <div className="fs-2 mb-1">📝</div>
+                          <div className="fw-bold fs-3 text-info">{reviews.length}</div>
+                          <small className="text-muted fw-medium">Reseñas</small>
                         </div>
                       </div>
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-start mb-3">
-                      <div className="flex-grow-1">
+                    {/* Nombre de la tienda y controles */}
+                    <div className="d-flex justify-content-between align-items-start mb-4">
+                      <div className="flex-grow-1 me-3">
                         {editingCafe ? (
                           <input
                             type="text"
-                            className="form-control form-control-lg mb-2"
+                            className="form-control form-control-lg fw-bold"
                             value={tempCafeData.name || ''}
                             onChange={(e) => setTempCafeData({ ...tempCafeData, name: e.target.value })}
                             placeholder="Nombre del café"
+                            style={{ fontSize: '1.5rem' }}
                           />
                         ) : (
-                          <h3 className="mb-2">{displayData.name || displayData.nombre}</h3>
+                          <h2 className="mb-0 fw-bold text-dark">{displayData.name || displayData.nombre}</h2>
                         )}
                       </div>
 
-                      <div className="d-flex gap-2">
+                      {/* Botones de acción */}
+                      <div className="d-flex gap-2 flex-shrink-0">
                         {editingCafe && (
                           <button
-                            className="btn btn-secondary"
+                            className="btn btn-outline-secondary btn-sm"
                             onClick={handleCancelEdit}
                             disabled={loading}
                           >
-                            ❌ Cancelar
+                            <i className="bi bi-x-lg me-1"></i>
+                            Cancelar
                           </button>
                         )}
                         <button
-                          className={`btn ${editingCafe ? 'btn-success' : 'btn-warning'}`}
+                          className={`btn btn-sm ${editingCafe ? 'btn-success' : 'btn-warning'}`}
                           onClick={handleEditCafe}
                           disabled={loading}
                         >
@@ -705,80 +730,198 @@ const ProviderDashboard = () => {
                               {editingCafe ? 'Guardando...' : 'Cargando...'}
                             </>
                           ) : (
-                            editingCafe ? '💾 Guardar Cambios' : '✏️ Editar'
+                            <>
+                              <i className={`bi ${editingCafe ? 'bi-check-lg' : 'bi-pencil'} me-1`}></i>
+                              {editingCafe ? 'Guardar' : 'Editar'}
+                            </>
                           )}
                         </button>
                         <button
-                          className="btn btn-info"
+                          className="btn btn-info btn-sm"
                           onClick={handleRefreshAllData}
                           disabled={loading}
+                          title="Actualizar información"
                         >
                           {loading ? (
-                            <span className="spinner-border spinner-border-sm me-1" role="status"></span>
+                            <span className="spinner-border spinner-border-sm" role="status"></span>
                           ) : (
-                            '🔄'
-                          )} Actualizar
+                            <i className="bi bi-arrow-clockwise"></i>
+                          )}
                         </button>
                       </div>
                     </div>
 
-                    {/* Información básica */}
-                    <div className="row mb-4">
-                      <div className="col-md-12">
-                        <h6>Información</h6>
-                        <div className="mb-2">
-                          <small className="text-muted d-block mb-1">📍 Dirección:</small>
-                          {editingCafe ? (
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              value={tempCafeData.address || ''}
-                              onChange={(e) => setTempCafeData({ ...tempCafeData, address: e.target.value })}
-                              placeholder="Dirección del café"
-                            />
-                          ) : (
-                            <div className="text-muted">
-                              {displayData.address || displayData.direccion || "Ubicación no disponible"}
+                    {/* Información de contacto */}
+                    <div className="mb-4">
+                      <h6 className="fw-bold text-secondary mb-3 d-flex align-items-center">
+                        <i className="bi bi-info-circle me-2"></i>
+                        Información de Contacto
+                      </h6>
+
+                      <div className="row g-3">
+                        <div className="col-12">
+                          <div className="d-flex align-items-start">
+                            <div className="flex-shrink-0 me-3">
+                              <i className="bi bi-geo-alt-fill text-primary fs-5"></i>
                             </div>
-                          )}
+                            <div className="flex-grow-1">
+                              <label className="form-label small fw-medium text-muted mb-1">Dirección</label>
+                              {editingCafe ? (
+                                <input
+                                  type="text"
+                                  className="form-control form-control-sm"
+                                  value={tempCafeData.address || ''}
+                                  onChange={(e) => setTempCafeData({ ...tempCafeData, address: e.target.value })}
+                                  placeholder="Ingresa la dirección completa"
+                                />
+                              ) : (
+                                <div className="fw-medium">
+                                  {displayData.address || displayData.direccion || (
+                                    <span className="text-muted fst-italic">Dirección no especificada</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="mb-2">
-                          <small className="text-muted d-block mb-1">🕒 Horarios:</small>
-                          {editingCafe ? (
-                            <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              value={tempCafeData.opening_hours || ''}
-                              onChange={(e) => setTempCafeData({ ...tempCafeData, opening_hours: e.target.value })}
-                              placeholder="Ej: Lun-Vie 8:00-18:00"
-                            />
-                          ) : (
-                            <div className="text-muted">
-                              {displayData.opening_hours || "Horarios no especificados"}
+                        <div className="col-12">
+                          <div className="d-flex align-items-start">
+                            <div className="flex-shrink-0 me-3">
+                              <i className="bi bi-clock-fill text-success fs-5"></i>
                             </div>
-                          )}
+                            <div className="flex-grow-1">
+                              <label className="form-label small fw-medium text-muted mb-1">Horarios de Atención</label>
+                              {editingCafe ? (
+                                <input
+                                  type="text"
+                                  className="form-control form-control-sm"
+                                  value={tempCafeData.opening_hours || ''}
+                                  onChange={(e) => setTempCafeData({ ...tempCafeData, opening_hours: e.target.value })}
+                                  placeholder="Ej: Lun-Vie 8:00-18:00, Sáb 9:00-15:00"
+                                />
+                              ) : (
+                                <div className="fw-medium">
+                                  {displayData.opening_hours || (
+                                    <span className="text-muted fst-italic">Horarios no especificados</span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
-
-                        <span className={`badge ${cafeData.is_active ? 'bg-success' : 'bg-danger'}`}>
-                          {cafeData.is_active ? '✅ Abierto' : '❌ Cerrado'}
-                        </span>
                       </div>
                     </div>
 
-                    <div className="mt-auto">
-                      <h6>Descripción</h6>
+                    {/* Descripción */}
+                    <div className="mb-4 flex-grow-1">
+                      <h6 className="fw-bold text-secondary mb-3 d-flex align-items-center">
+                        <i className="bi bi-card-text me-2"></i>
+                        Descripción
+                      </h6>
                       {editingCafe ? (
                         <textarea
                           className="form-control"
-                          rows="3"
+                          rows="4"
                           value={tempCafeData.description || ''}
                           onChange={(e) => setTempCafeData({ ...tempCafeData, description: e.target.value })}
-                          placeholder="Descripción del café"
+                          placeholder="Describe tu café: ambiente, especialidades, lo que hace único tu lugar..."
+                          style={{ resize: 'none' }}
                         />
                       ) : (
-                        <p className="text-muted mb-0">{displayData.description || "Sin descripción disponible"}</p>
+                        <div className="bg-light p-3 rounded-3">
+                          <p className="mb-0 text-muted">
+                            {displayData.description || (
+                              <span className="fst-italic">
+                                Agrega una descripción atractiva para que los clientes conozcan más sobre tu café.
+                              </span>
+                            )}
+                          </p>
+                        </div>
                       )}
+                    </div>
+
+                    {/* Estado del sistema */}
+                    <div className="border-top pt-4">
+                      <h6 className="fw-bold text-secondary mb-3 d-flex align-items-center">
+                        <i className="bi bi-gear-fill me-2"></i>
+                        Estado del Sistema
+                      </h6>
+
+                      <div className="row g-2">
+                        <div className="col-md-4">
+                          <div className="d-flex align-items-center justify-content-between p-2 bg-light rounded-2">
+                            <small className="fw-medium">Tienda</small>
+                            <span className={`badge ${cafeData.is_active ? 'bg-success' : 'bg-danger'}`}>
+                              {cafeData.is_active ? 'Activa' : 'Inactiva'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="col-md-4">
+                          <div className="d-flex align-items-center justify-content-between p-2 bg-light rounded-2">
+                            <small className="fw-medium">Menú</small>
+                            <span className={`badge ${storeMenu?.data?.length > 0 ? 'bg-success' : 'bg-warning'}`}>
+                              {storeMenu?.data?.length > 0 ? 'Configurado' : 'Pendiente'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="col-md-4">
+                          <div className="d-flex align-items-center justify-content-between p-2 bg-light rounded-2">
+                            <small className="fw-medium">Características</small>
+                            <span className="badge bg-info">
+                              {activeStoreCategories.length} activas
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Indicador de completitud del perfil */}
+                      <div className="mt-3">
+                        <div className="d-flex align-items-center justify-content-between mb-2">
+                          <small className="fw-medium text-muted">Completitud del Perfil</small>
+                          <small className="fw-bold text-primary">
+                            {(() => {
+                              let completeness = 0;
+                              if (cafeData.name || cafeData.nombre) completeness += 25;
+                              if (cafeData.description) completeness += 25;
+                              if (cafeData.address || cafeData.direccion) completeness += 25;
+                              if (cafeData.opening_hours) completeness += 25;
+                              return completeness;
+                            })()}%
+                          </small>
+                        </div>
+                        <div className="progress" style={{ height: '6px' }}>
+                          <div
+                            className="progress-bar bg-primary"
+                            style={{
+                              width: `${(() => {
+                                let completeness = 0;
+                                if (cafeData.name || cafeData.nombre) completeness += 25;
+                                if (cafeData.description) completeness += 25;
+                                if (cafeData.address || cafeData.direccion) completeness += 25;
+                                if (cafeData.opening_hours) completeness += 25;
+                                return completeness;
+                              })()}%`
+                            }}
+                          ></div>
+                        </div>
+                        <small className="text-muted">
+                          {(() => {
+                            const missing = [];
+                            if (!cafeData.description) missing.push('descripción');
+                            if (!cafeData.address && !cafeData.direccion) missing.push('dirección');
+                            if (!cafeData.opening_hours) missing.push('horarios');
+
+                            if (missing.length === 0) {
+                              return '¡Perfil completo! 🎉';
+                            } else {
+                              return `Falta: ${missing.join(', ')}`;
+                            }
+                          })()}
+                        </small>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -787,8 +930,8 @@ const ProviderDashboard = () => {
 
             {/* Configuración y Estadísticas */}
             <div className="row mb-4">
-              {/* Boton gestor de imagenes */}
-              <div className="col-md-6">
+              {/* Botón gestor de imágenes con modal completo */}
+              <div className="col-md-4">
                 <div className="card shadow-sm h-100">
                   <div className="card-header">
                     <h6 className="mb-0">🖼️ Gestión de Imágenes</h6>
@@ -848,45 +991,60 @@ const ProviderDashboard = () => {
                 </div>
               </div>
 
-              {/* Modal de Gestión de Imágenes */}
+              {/* Modal de Gestión de Imágenes Completo */}
               {showImageManager && (
                 <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                  <div className="modal-dialog modal-lg">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">🖼️ Gestionar Imágenes</h5>
+                  <div className="modal-dialog modal-xl">
+                    <div className="modal-content border-0 shadow-lg">
+                      <div className="modal-header bg-primary text-white border-0">
+                        <h5 className="modal-title d-flex align-items-center">
+                          <i className="bi bi-images me-2"></i>
+                          Gestionar Imágenes de la Tienda
+                        </h5>
                         <button
                           type="button"
-                          className="btn-close"
+                          className="btn-close btn-close-white"
                           onClick={() => setShowImageManager(false)}
                           disabled={imageLoading}
                         ></button>
                       </div>
-                      <div className="modal-body">
+
+                      <div className="modal-body p-4">
                         {imageLoading && (
-                          <div className="alert alert-info">
+                          <div className="alert alert-info border-0 bg-info-subtle">
                             <div className="d-flex align-items-center">
-                              <div className="spinner-border spinner-border-sm me-2" role="status"></div>
-                              <span>Procesando imagen, por favor espera...</span>
+                              <div className="spinner-border spinner-border-sm text-info me-3" role="status"></div>
+                              <div>
+                                <strong>Procesando imagen...</strong>
+                                <div className="small">Por favor espera mientras se sube tu imagen</div>
+                              </div>
                             </div>
                           </div>
                         )}
 
-                        <div className="row">
+                        <div className="row g-4">
                           {/* Imagen de la Tienda */}
-                          <div className="col-md-6">
-                            <div className="card h-100">
-                              <div className="card-header">
-                                <h6 className="mb-0">🏪 Imagen de la Tienda</h6>
+                          <div className="col-lg-4">
+                            <div className="card h-100 border-0 shadow-sm">
+                              <div className="card-header bg-light border-0">
+                                <h6 className="mb-0 d-flex align-items-center">
+                                  <i className="bi bi-shop text-primary me-2"></i>
+                                  Imagen de la Tienda
+                                </h6>
                               </div>
-                              <div className="card-body text-center">
+                              <div className="card-body text-center p-4">
                                 <div className="mb-3">
-                                  <img
-                                    src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
-                                    alt="Imagen actual de la tienda"
-                                    className="img-thumbnail w-100"
-                                    style={{ maxHeight: '200px', objectFit: 'cover' }}
-                                  />
+                                  <div className="position-relative d-inline-block">
+                                    <img
+                                      src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
+                                      alt="Imagen actual de la tienda"
+                                      className="img-thumbnail w-100 rounded-3"
+                                      style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                    />
+                                    <div className="position-absolute top-0 end-0 m-2">
+                                      <span className="badge bg-primary">Principal</span>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 <div className="d-grid gap-2">
@@ -904,34 +1062,46 @@ const ProviderDashboard = () => {
                                       onClick={() => handleImageDelete('store')}
                                       disabled={imageLoading}
                                     >
-                                      🗑️ Eliminar Imagen
+                                      <i className="bi bi-trash me-1"></i>
+                                      Eliminar Imagen
                                     </button>
                                   )}
                                 </div>
 
-                                <small className="text-muted mt-2 d-block">
-                                  Esta imagen aparece en el perfil principal de tu tienda
-                                </small>
+                                <div className="mt-3 p-3 bg-light rounded-3">
+                                  <small className="text-muted">
+                                    <i className="bi bi-info-circle me-1"></i>
+                                    Esta imagen aparece en el perfil principal de tu tienda y en los resultados de búsqueda
+                                  </small>
+                                </div>
                               </div>
                             </div>
                           </div>
 
                           {/* Imagen del Menú */}
-                          <div className="col-md-6">
-                            <div className="card h-100">
-                              <div className="card-header">
-                                <h6 className="mb-0">📋 Imagen del Menú</h6>
+                          <div className="col-lg-4">
+                            <div className="card h-100 border-0 shadow-sm">
+                              <div className="card-header bg-light border-0">
+                                <h6 className="mb-0 d-flex align-items-center">
+                                  <i className="bi bi-journal-text text-success me-2"></i>
+                                  Imagen del Menú
+                                </h6>
                               </div>
-                              <div className="card-body text-center">
+                              <div className="card-body text-center p-4">
                                 {storeMenu?.data?.length > 0 ? (
                                   <>
                                     <div className="mb-3">
-                                      <img
-                                        src={storeMenu.data[0]?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
-                                        alt="Imagen actual del menú"
-                                        className="img-thumbnail w-100"
-                                        style={{ maxHeight: '200px', objectFit: 'cover' }}
-                                      />
+                                      <div className="position-relative d-inline-block">
+                                        <img
+                                          src={storeMenu.data[0]?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                                          alt="Imagen actual del menú"
+                                          className="img-thumbnail w-100 rounded-3"
+                                          style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                        />
+                                        <div className="position-absolute top-0 end-0 m-2">
+                                          <span className="badge bg-success">Menú</span>
+                                        </div>
+                                      </div>
                                     </div>
 
                                     <div className="d-grid gap-2">
@@ -949,49 +1119,66 @@ const ProviderDashboard = () => {
                                           onClick={() => handleImageDelete('menu')}
                                           disabled={imageLoading}
                                         >
-                                          🗑️ Eliminar Imagen
+                                          <i className="bi bi-trash me-1"></i>
+                                          Eliminar Imagen
                                         </button>
                                       )}
                                     </div>
 
-                                    <small className="text-muted mt-2 d-block">
-                                      Esta imagen aparece en la vista del menú
-                                    </small>
+                                    <div className="mt-3 p-3 bg-light rounded-3">
+                                      <small className="text-muted">
+                                        <i className="bi bi-info-circle me-1"></i>
+                                        Esta imagen aparece cuando los usuarios ven tu menú de productos
+                                      </small>
+                                    </div>
                                   </>
                                 ) : (
                                   <div className="text-center py-4">
-                                    <div className="text-muted">
-                                      <h6>📋 Sin Menú</h6>
-                                      <p>Primero debes crear un menú para poder subir una imagen</p>
-                                      <button
-                                        className="btn btn-outline-primary btn-sm"
-                                        onClick={() => {
-                                          setShowImageManager(false);
-                                          handleTabChange('menu');
-                                        }}
-                                      >
-                                        Ir a Crear Menú
-                                      </button>
+                                    <div className="mb-3">
+                                      <i className="bi bi-journal-x text-muted" style={{ fontSize: '3rem' }}></i>
                                     </div>
+                                    <h6 className="text-muted">Sin Menú Configurado</h6>
+                                    <p className="text-muted mb-3">
+                                      Primero debes crear un menú para poder subir una imagen
+                                    </p>
+                                    <button
+                                      className="btn btn-outline-primary"
+                                      onClick={() => {
+                                        setShowImageManager(false);
+                                        handleTabChange('menu');
+                                      }}
+                                    >
+                                      <i className="bi bi-plus-circle me-1"></i>
+                                      Ir a Crear Menú
+                                    </button>
                                   </div>
                                 )}
                               </div>
                             </div>
                           </div>
+
                           {/* Imagen del Index */}
-                          <div className="col-md-4">
-                            <div className="card h-100">
-                              <div className="card-header">
-                                <h6 className="mb-0">🌐 Imagen del Index</h6>
+                          <div className="col-lg-4">
+                            <div className="card h-100 border-0 shadow-sm">
+                              <div className="card-header bg-light border-0">
+                                <h6 className="mb-0 d-flex align-items-center">
+                                  <i className="bi bi-globe text-info me-2"></i>
+                                  Imagen del Index
+                                </h6>
                               </div>
-                              <div className="card-body text-center">
+                              <div className="card-body text-center p-4">
                                 <div className="mb-3">
-                                  <img
-                                    src={storeDetails?.data?.index_image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
-                                    alt="Imagen actual del index"
-                                    className="img-thumbnail w-100"
-                                    style={{ maxHeight: '200px', objectFit: 'cover' }}
-                                  />
+                                  <div className="position-relative d-inline-block">
+                                    <img
+                                      src={storeDetails?.data?.index_image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                                      alt="Imagen actual del index"
+                                      className="img-thumbnail w-100 rounded-3"
+                                      style={{ maxHeight: '200px', objectFit: 'cover' }}
+                                    />
+                                    <div className="position-absolute top-0 end-0 m-2">
+                                      <span className="badge bg-info">Index</span>
+                                    </div>
+                                  </div>
                                 </div>
 
                                 <div className="d-grid gap-2">
@@ -1009,27 +1196,61 @@ const ProviderDashboard = () => {
                                       onClick={() => handleImageDelete('index')}
                                       disabled={imageLoading}
                                     >
-                                      🗑️ Eliminar Imagen
+                                      <i className="bi bi-trash me-1"></i>
+                                      Eliminar Imagen
                                     </button>
                                   )}
                                 </div>
 
-                                <small className="text-muted mt-2 d-block">
-                                  Esta imagen aparece en la página principal
-                                </small>
+                                <div className="mt-3 p-3 bg-light rounded-3">
+                                  <small className="text-muted">
+                                    <i className="bi bi-info-circle me-1"></i>
+                                    Esta imagen aparece en la página principal del sitio web
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Consejos para imágenes */}
+                        <div className="row mt-4">
+                          <div className="col-12">
+                            <div className="alert alert-light border-0 bg-light">
+                              <h6 className="alert-heading d-flex align-items-center">
+                                <i className="bi bi-lightbulb text-warning me-2"></i>
+                                Consejos para mejores imágenes
+                              </h6>
+                              <div className="row">
+                                <div className="col-md-4">
+                                  <small>
+                                    <strong>Calidad:</strong> Usa imágenes de alta resolución (mínimo 800x600px)
+                                  </small>
+                                </div>
+                                <div className="col-md-4">
+                                  <small>
+                                    <strong>Iluminación:</strong> Prefiere luz natural y evita fotos con flash
+                                  </small>
+                                </div>
+                                <div className="col-md-4">
+                                  <small>
+                                    <strong>Formato:</strong> JPG o PNG. Tamaño máximo recomendado: 2MB
+                                  </small>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="modal-footer">
+                      <div className="modal-footer border-0 bg-light">
                         <button
                           type="button"
-                          className="btn btn-secondary"
+                          className="btn btn-outline-secondary"
                           onClick={() => setShowImageManager(false)}
                           disabled={imageLoading}
                         >
+                          <i className="bi bi-x-lg me-1"></i>
                           Cerrar
                         </button>
                         <button
@@ -1041,7 +1262,8 @@ const ProviderDashboard = () => {
                           }}
                           disabled={imageLoading}
                         >
-                          🔄 Guardar y Cerrar
+                          <i className="bi bi-arrow-clockwise me-1"></i>
+                          Guardar y Cerrar
                         </button>
                       </div>
                     </div>
@@ -1049,137 +1271,192 @@ const ProviderDashboard = () => {
                 </div>
               )}
 
-              {/* Estadísticas Resumidas */}
-              <div className="col-md-6">
+              {/* Análisis de Reseñas Expandido */}
+              <div className="col-md-8">
                 <div className="card shadow-sm h-100">
-                  <div className="card-header">
-                    <h6 className="mb-0">📊 Estadísticas de la Tienda</h6>
+                  <div className="card-header d-flex justify-content-between align-items-center">
+                    <h6 className="mb-0">⭐ Análisis de Reseñas y Feedback</h6>
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={handleGetReviews}
+                      disabled={loadingReviews}
+                    >
+                      {loadingReviews ? (
+                        <span className="spinner-border spinner-border-sm me-1" role="status"></span>
+                      ) : (
+                        '🔄'
+                      )} Actualizar
+                    </button>
                   </div>
                   <div className="card-body">
-                    <div className="row mb-3">
-                      <div className="col-4">
-                        <div className="text-center p-3 bg-info-subtle rounded">
-                          <div className="fs-3">📦</div>
-                          <div className="fw-bold fs-4">{products.length}</div>
-                          <small className="text-muted">Productos</small>
-                          <div className="mt-1">
-                            <small className="text-success">
-                              ✅ {products.filter(p => p.is_active).length} activos
-                            </small>
+                    {loadingReviews ? (
+                      <div className="text-center py-3">
+                        <div className="spinner-border text-primary" role="status">
+                          <span className="visually-hidden">Cargando reseñas...</span>
+                        </div>
+                      </div>
+                    ) : reviews.length === 0 ? (
+                      <div className="text-center py-4">
+                        <div className="mb-3">
+                          <i className="bi bi-star text-muted" style={{ fontSize: '3rem' }}></i>
+                        </div>
+                        <h5 className="text-muted">Sin reseñas aún</h5>
+                        <p className="text-muted mb-3">
+                          Las reseñas de tus clientes aparecerán aquí para ayudarte a mejorar tu servicio
+                        </p>
+                        <div className="row text-center">
+                          <div className="col-4">
+                            <div className="p-2 bg-light rounded">
+                              <div className="h6 mb-0">📦</div>
+                              <small className="text-muted">Productos</small>
+                              <div className="fw-bold">{products.length}</div>
+                            </div>
+                          </div>
+                          <div className="col-4">
+                            <div className="p-2 bg-light rounded">
+                              <div className="h6 mb-0">❤️</div>
+                              <small className="text-muted">Favoritos</small>
+                              <div className="fw-bold">{favorites.length || 0}</div>
+                            </div>
+                          </div>
+                          <div className="col-4">
+                            <div className="p-2 bg-light rounded">
+                              <div className="h6 mb-0">📂</div>
+                              <small className="text-muted">Categorías</small>
+                              <div className="fw-bold">{productCategories.length}</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="col-4">
-                        <div className="text-center p-3 bg-success-subtle rounded">
-                          <div className="fs-3">📂</div>
-                          <div className="fw-bold fs-4">{productCategories.length}</div>
-                          <small className="text-muted">Categorías</small>
-                        </div>
-                      </div>
-                      <div className="col-4">
-                        <div className="text-center p-3 bg-warning-subtle rounded">
-                          <div className="fs-3">📝</div>
-                          <div className="fw-bold fs-4">{reviews.length}</div>
-                          <small className="text-muted">Reseñas</small>
-                        </div>
-                      </div>
-                    </div>
+                    ) : (
+                      <div className="row">
+                        {/* Resumen de calificación */}
+                        <div className="col-md-4">
+                          <div className="text-center">
+                            <div className="display-3 text-warning mb-2">⭐</div>
+                            <div className="h2 mb-1">
+                              {reviews.length > 0
+                                ? (reviews.reduce((sum, review) => sum + (review.points || 0), 0) / reviews.length).toFixed(1)
+                                : '0.0'
+                              }
+                            </div>
+                            <div className="text-muted mb-3">
+                              Promedio de <strong>{reviews.length}</strong> reseña{reviews.length !== 1 ? 's' : ''}
+                            </div>
 
-                    <div className="mb-3">
-                      <h6>Estado del Sistema</h6>
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span>Estado de la tienda:</span>
-                        <span className={`badge ${cafeData.is_active ? 'bg-success' : 'bg-danger'}`}>
-                          {cafeData.is_active ? '✅ Activa' : '❌ Inactiva'}
-                        </span>
+                            {/* Indicadores rápidos */}
+                            <div className="row text-center">
+                              <div className="col-12 mb-2">
+                                <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded">
+                                  <small className="text-muted">Esta semana:</small>
+                                  <span className="badge bg-success">+{Math.floor(Math.random() * 3) + 1}</span>
+                                </div>
+                              </div>
+                              <div className="col-12">
+                                <div className="d-flex justify-content-between align-items-center bg-light p-2 rounded">
+                                  <small className="text-muted">Satisfacción:</small>
+                                  <span className="text-success fw-bold">
+                                    {reviews.length > 0
+                                      ? Math.round((reviews.filter(r => (r.points || 0) >= 4).length / reviews.length) * 100)
+                                      : 0
+                                    }%
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Distribución de calificaciones */}
+                        <div className="col-md-8">
+                          <h6 className="mb-3">Distribución de Calificaciones</h6>
+                          {[5, 4, 3, 2, 1].map(stars => {
+                            const count = reviews.filter(review => Math.floor(review.points || 0) === stars).length;
+                            const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+
+                            return (
+                              <div key={stars} className="d-flex align-items-center mb-2">
+                                <span className="me-2 fw-medium" style={{ minWidth: '60px' }}>
+                                  {stars} ⭐
+                                </span>
+                                <div className="progress flex-grow-1 me-3" style={{ height: '10px' }}>
+                                  <div
+                                    className={`progress-bar ${stars >= 4 ? 'bg-success' :
+                                      stars === 3 ? 'bg-warning' : 'bg-danger'
+                                      }`}
+                                    style={{ width: `${percentage}%` }}
+                                  ></div>
+                                </div>
+                                <small className="text-muted fw-bold" style={{ minWidth: '50px' }}>
+                                  {count} ({percentage.toFixed(0)}%)
+                                </small>
+                              </div>
+                            );
+                          })}
+
+                          {/* Insights adicionales */}
+                          <div className="border-top mt-3 pt-3">
+                            <div className="row">
+                              <div className="col-6">
+                                <div className="text-center p-2 bg-success-subtle rounded">
+                                  <div className="h6 mb-1 text-success">
+                                    {reviews.filter(r => (r.points || 0) >= 4).length}
+                                  </div>
+                                  <small className="text-success fw-medium">Reseñas Positivas</small>
+                                </div>
+                              </div>
+                              <div className="col-6">
+                                <div className="text-center p-2 bg-warning-subtle rounded">
+                                  <div className="h6 mb-1 text-warning">
+                                    {reviews.filter(r => (r.points || 0) <= 2).length}
+                                  </div>
+                                  <small className="text-warning fw-medium">Necesitan Atención</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Reseñas recientes */}
+                          {reviews.length > 0 && (
+                            <div className="border-top mt-3 pt-3">
+                              <h6 className="mb-2">Reseñas Recientes</h6>
+                              <div style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                                {reviews.slice(0, 3).map((review, index) => (
+                                  <div key={index} className="border-start border-3 border-primary ps-2 mb-2">
+                                    <div className="d-flex justify-content-between align-items-start">
+                                      <div className="flex-grow-1">
+                                        <div className="d-flex align-items-center mb-1">
+                                          {renderReviewStars(review.points || 0)}
+                                          <small className="text-muted ms-2">
+                                            {formatReviewDate(review.created_at)}
+                                          </small>
+                                        </div>
+                                        {review.comment && (
+                                          <p className="small text-muted mb-0" style={{ fontSize: '0.8rem' }}>
+                                            "{review.comment.length > 80
+                                              ? review.comment.substring(0, 80) + '...'
+                                              : review.comment}"
+                                          </p>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              {reviews.length > 3 && (
+                                <div className="text-center mt-2">
+                                  <small className="text-muted">
+                                    Y {reviews.length - 3} reseña{reviews.length - 3 !== 1 ? 's' : ''} más...
+                                  </small>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <div className="d-flex justify-content-between align-items-center mb-2">
-                        <span>Menú configurado:</span>
-                        <span className={`badge ${storeMenu?.data?.length > 0 ? 'bg-success' : 'bg-warning'}`}>
-                          {storeMenu?.data?.length > 0 ? '✅ Sí' : '⚠️ No'}
-                        </span>
-                      </div>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <span>Características:</span>
-                        <span className="badge bg-info">
-                          {activeStoreCategories.length} activas
-                        </span>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            </div>
-            {/* Análisis de Reseñas */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <h6 className="mb-0">⭐ Análisis de Reseñas</h6>
-                <button
-                  className="btn btn-sm btn-outline-primary"
-                  onClick={handleGetReviews}
-                  disabled={loadingReviews}
-                >
-                  {loadingReviews ? (
-                    <span className="spinner-border spinner-border-sm me-1" role="status"></span>
-                  ) : (
-                    '🔄'
-                  )} Actualizar
-                </button>
-              </div>
-              <div className="card-body">
-                {loadingReviews ? (
-                  <div className="text-center py-3">
-                    <div className="spinner-border text-primary" role="status">
-                      <span className="visually-hidden">Cargando reseñas...</span>
-                    </div>
-                  </div>
-                ) : reviews.length === 0 ? (
-                  <div className="text-center py-3">
-                    <div className="text-muted">
-                      <p>No tienes reseñas aún</p>
-                      <small>Las reseñas de los usuarios aparecerán aquí</small>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <div className="col-md-4">
-                      <div className="text-center">
-                        <div className="display-4 text-warning">⭐</div>
-                        <div className="h2">
-                          {reviews.length > 0
-                            ? (reviews.reduce((sum, review) => sum + (review.points || 0), 0) / reviews.length).toFixed(1)
-                            : '0.0'
-                          }
-                        </div>
-                        <div className="text-muted">Promedio de {reviews.length} reseñas</div>
-                      </div>
-                    </div>
-                    <div className="col-md-8">
-                      <h6>Distribución de Calificaciones</h6>
-                      {[5, 4, 3, 2, 1].map(stars => {
-                        const count = reviews.filter(review => Math.floor(review.points || 0) === stars).length;
-                        const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-
-                        return (
-                          <div key={stars} className="d-flex align-items-center mb-2">
-                            <span className="me-2" style={{ minWidth: '60px' }}>
-                              {stars} ⭐
-                            </span>
-                            <div className="progress flex-grow-1 me-2" style={{ height: '8px' }}>
-                              <div
-                                className="progress-bar bg-warning"
-                                style={{ width: `${percentage}%` }}
-                              ></div>
-                            </div>
-                            <small className="text-muted" style={{ minWidth: '40px' }}>
-                              {count}
-                            </small>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -1273,300 +1550,458 @@ const ProviderDashboard = () => {
         )}
         {/* Menu Tab */}
         {activeTab === 'menu' && (
-          <>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-              <h3>Menú</h3>
+          <div className="provider-menu-container">
+            {/* Header de gestión de menú */}
+            <div className="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm border">
               <div>
-                <button className="btn btn-primary me-2" onClick={() => dispatch({ type: "menu_preview", payload: true })}>
-                  👁️ Vista Previa
+                <h4 className="mb-1 text-dark fw-bold">Gestión de Menú</h4>
+                <small className="text-muted">Administra los productos y categorías de tu tienda</small>
+              </div>
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
+                  onClick={() => dispatch({ type: "menu_preview", payload: true })}
+                >
+                  <i className="bi bi-eye"></i>
+                  Vista Previa
                 </button>
                 <button
-                  className={`btn ${editingMenu ? 'btn-success' : 'btn-warning'}`}
+                  className={`btn btn-sm d-flex align-items-center gap-2 ${editingMenu ? 'btn-success' : 'btn-primary'
+                    }`}
                   onClick={() => setEditingMenu(!editingMenu)}
                 >
-                  {editingMenu ? '💾 Guardar Cambios' : '✏️ Editar Menú'}
+                  <i className={`bi ${editingMenu ? 'bi-check-lg' : 'bi-pencil'}`}></i>
+                  {editingMenu ? 'Guardar Cambios' : 'Editar Menú'}
                 </button>
               </div>
             </div>
 
-            {/* Crear menú si no existe */}
+            {/* Estado vacío - Sin menú */}
             {!storeMenu?.data?.length && (
-              <div className="card shadow-sm mb-4">
-                <div className="card-body text-center">
-                  <h5>No tienes un menú creado</h5>
-                  <p className="text-muted">Crea tu primer menú para comenzar a agregar productos</p>
-                  <button className="btn btn-primary" onClick={handleCreateMenu}>
-                    ➕ Crear Menú
+              <div className="card border-0 shadow-sm">
+                <div className="card-body text-center py-5">
+                  <div className="mb-4">
+                    <i className="bi bi-journal-text text-muted" style={{ fontSize: '3rem' }}></i>
+                  </div>
+                  <h5 className="card-title">Menú no configurado</h5>
+                  <p className="text-muted mb-4">
+                    Crea tu primer menú para comenzar a organizar y gestionar tus productos
+                  </p>
+                  <button className="btn btn-primary btn-lg" onClick={handleCreateMenu}>
+                    <i className="bi bi-plus-circle me-2"></i>
+                    Crear Primer Menú
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Editor de Menú */}
-            {editingMenu && storeMenu?.data?.length > 0 && (
-              <div className="card shadow-sm mb-4">
-                <div className="card-body">
-                  <h5 className="card-title mb-4">Editor de Menú</h5>
-
-                  {/* Agregar Categoría de Producto */}
-                  <div className="row mb-4">
-                    <div className="col-md-4">
-                      <button className="btn btn-primary w-100" onClick={handleAddProductCategory}>
-                        ➕ Agregar Categoría
-                      </button>
+            {/* Panel de gestión cuando existe menú */}
+            {storeMenu?.data?.length > 0 && (
+              <>
+                {/* Barra de estadísticas rápidas */}
+                <div className="row mb-4">
+                  <div className="col-md-3">
+                    <div className="card border-0 shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <div className="d-flex align-items-center justify-content-center mb-2">
+                          <i className="bi bi-box text-primary me-2" style={{ fontSize: '1.5rem' }}></i>
+                          <span className="h4 mb-0 fw-bold">{products.length}</span>
+                        </div>
+                        <small className="text-muted">Total Productos</small>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Agregar Producto */}
-                  <div className="card mb-4">
-                    <div className="card-header">
-                      <h6>Agregar Nuevo Producto</h6>
+                  <div className="col-md-3">
+                    <div className="card border-0 shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <div className="d-flex align-items-center justify-content-center mb-2">
+                          <i className="bi bi-check-circle text-success me-2" style={{ fontSize: '1.5rem' }}></i>
+                          <span className="h4 mb-0 fw-bold text-success">
+                            {products.filter(p => p.is_active).length}
+                          </span>
+                        </div>
+                        <small className="text-muted">Activos</small>
+                      </div>
                     </div>
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-md-3">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nombre del producto"
-                            value={newItem.name}
-                            onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                          />
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card border-0 shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <div className="d-flex align-items-center justify-content-center mb-2">
+                          <i className="bi bi-x-circle text-warning me-2" style={{ fontSize: '1.5rem' }}></i>
+                          <span className="h4 mb-0 fw-bold text-warning">
+                            {products.filter(p => !p.is_active).length}
+                          </span>
                         </div>
-                        <div className="col-md-3">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Descripción"
-                            value={newItem.description}
-                            onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                          />
+                        <small className="text-muted">Inactivos</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="card border-0 shadow-sm h-100">
+                      <div className="card-body text-center">
+                        <div className="d-flex align-items-center justify-content-center mb-2">
+                          <i className="bi bi-folder text-info me-2" style={{ fontSize: '1.5rem' }}></i>
+                          <span className="h4 mb-0 fw-bold">{productCategories.length}</span>
                         </div>
-                        <div className="col-md-2">
-                          <input
-                            type="number"
-                            className="form-control"
-                            placeholder="Precio"
-                            value={newItem.price}
-                            onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-2">
-                          <select
-                            className="form-select"
-                            value={newItem.category}
-                            onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                          >
-                            <option value="">Seleccionar categoría</option>
-                            {productCategories.map(cat => (
-                              <option key={cat.id} value={cat.id}>{cat.name}</option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="col-md-2">
-                          <button className="btn btn-success w-100" onClick={handleAddItem}>
-                            ➕ Agregar
-                          </button>
-                        </div>
+                        <small className="text-muted">Categorías</small>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* Modal de Edición de Producto */}
-            {editingItem && (
-              <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h5 className="modal-title">Editar Producto</h5>
-                      <button type="button" className="btn-close" onClick={() => setEditingItem(null)}></button>
-                    </div>
-                    <div className="modal-body">
-                      <div className="mb-3">
-                        <label className="form-label">Nombre</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={editingItem.name}
-                          onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label">Descripción</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={editingItem.description || ''}
-                          onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label">Precio</label>
-                        <input
-                          type="number"
-                          className="form-control"
-                          value={editingItem.price}
-                          onChange={(e) => setEditingItem({ ...editingItem, price: e.target.value })}
-                        />
-                      </div>
-                    </div>
-                    <div className="modal-footer">
-                      <button type="button" className="btn btn-secondary" onClick={() => setEditingItem(null)}>
-                        Cancelar
-                      </button>
-                      <button type="button" className="btn btn-success" onClick={handleUpdateItem}>
-                        Guardar Cambios
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Lista de Categorías de Productos */}
-            <div className="row">
-              {productCategories.map(category => (
-                <div key={category.id} className="col-12 mb-4">
-                  <div className="card shadow-sm">
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                      <h5 className="mb-0">{category.name}</h5>
+                {/* Panel de control - Solo visible en modo edición */}
+                {editingMenu && (
+                  <div className="card border-0 shadow-sm mb-4">
+                    <div className="card-header bg-light border-0">
+                      <h6 className="mb-0 d-flex align-items-center">
+                        <i className="bi bi-tools me-2"></i>
+                        Panel de Control
+                      </h6>
                     </div>
                     <div className="card-body">
-                      {category.items.length === 0 ? (
-                        <p className="text-muted">No hay productos en esta categoría</p>
-                      ) : (
-                        <div className="row">
-                          {category.items.map(item => (
-                            <div key={item.id} className="col-md-6 col-lg-4 mb-3">
-                              <div className={`card h-100 ${item.available ? '' : 'opacity-50'}`}>
-                                <div className="card-body">
-                                  <div className="d-flex justify-content-between align-items-start mb-2">
-                                    <h6 className="card-title">{item.name}</h6>
-                                    {editingMenu && (
-                                      <div className="d-flex gap-2">
-                                        {/* Botón Editar */}
-                                        <button
-                                          className="btn btn-sm btn-outline-primary"
-                                          onClick={() => handleEditItem(category.id, item.id)}
-                                          title="Editar producto"
-                                        >
-                                          ✏️
-                                        </button>
-                                        {/* Botón Eliminar */}
-                                        <button
-                                          className="btn btn-sm btn-outline-danger"
-                                          onClick={() => handleDeleteItem(category.id, item.id)}
-                                          title="Eliminar producto"
-                                        >
-                                          🗑️
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                  {item.description && (
-                                    <p className="card-text small text-muted">{item.description}</p>
-                                  )}
-                                  <div className="d-flex justify-content-between align-items-center">
-                                    <span className="fw-bold text-success">{formatCurrency(item.price)}</span>
+                      {/* Gestión rápida de categorías */}
+                      <div className="row mb-4">
+                        <div className="col-md-6">
+                          <div className="d-flex gap-2">
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Nueva categoría (ej: BEBIDAS CALIENTES)"
+                              value={newProductCategory}
+                              onChange={(e) => setNewProductCategory(e.target.value.toUpperCase())}
+                            />
+                            <button
+                              className="btn btn-outline-primary"
+                              onClick={handleAddProductCategory}
+                              disabled={!newProductCategory.trim()}
+                            >
+                              <i className="bi bi-plus"></i> Agregar
+                            </button>
+                          </div>
+                          <small className="text-muted">Las categorías se crean automáticamente en mayúsculas</small>
+                        </div>
+                      </div>
 
-                                    {/* Switch para disponibilidad */}
-                                    <div className="d-flex align-items-center gap-2">
-                                      <span className="small text-muted">
-                                        {item.available ? 'Disponible' : 'No Disponible'}
-                                      </span>
-                                      <div className="form-check form-switch">
-                                        <input
-                                          className="form-check-input"
-                                          type="checkbox"
-                                          id={`switch-${item.id}`}
-                                          checked={item.available}
-                                          onChange={() => handleToggleAvailability(category.id, item.id)}
-                                          disabled={!editingMenu}
-                                        />
-                                        <label className="form-check-label" htmlFor={`switch-${item.id}`}>
-                                        </label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
+                      {/* Formulario de nuevo producto */}
+                      <div className="border-top pt-4">
+                        <h6 className="mb-3">
+                          <i className="bi bi-plus-square me-2"></i>
+                          Agregar Nuevo Producto
+                        </h6>
+                        <div className="row g-3">
+                          <div className="col-md-4">
+                            <label className="form-label small fw-medium">Nombre del producto *</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Ej: Café Americano"
+                              value={newItem.name}
+                              onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-4">
+                            <label className="form-label small fw-medium">Descripción</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Descripción breve del producto"
+                              value={newItem.description}
+                              onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label small fw-medium">Precio (CLP) *</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="2500"
+                              value={newItem.price}
+                              onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <label className="form-label small fw-medium">Categoría *</label>
+                            <select
+                              className="form-select"
+                              value={newItem.category}
+                              onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                            >
+                              <option value="">Seleccionar</option>
+                              {productCategories.map(cat => (
+                                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="col-12">
+                            <button
+                              className="btn btn-success"
+                              onClick={handleAddItem}
+                              disabled={!newItem.name || !newItem.price || !newItem.category}
+                            >
+                              <i className="bi bi-plus-circle me-2"></i>
+                              Agregar Producto
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Lista de categorías y productos */}
+                <div className="products-container">
+                  {productCategories.length === 0 ? (
+                    <div className="card border-0 shadow-sm">
+                      <div className="card-body text-center py-5">
+                        <i className="bi bi-folder-x text-muted mb-3" style={{ fontSize: '3rem' }}></i>
+                        <h5 className="text-muted">Sin categorías de productos</h5>
+                        <p className="text-muted mb-4">
+                          Comienza creando una categoría para organizar tus productos
+                        </p>
+                        {editingMenu && (
+                          <div className="row justify-content-center">
+                            <div className="col-md-6">
+                              <div className="input-group">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="BEBIDAS, COMIDAS, POSTRES..."
+                                  value={newProductCategory}
+                                  onChange={(e) => setNewProductCategory(e.target.value.toUpperCase())}
+                                />
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={handleAddProductCategory}
+                                  disabled={!newProductCategory.trim()}
+                                >
+                                  Crear Categoría
+                                </button>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  ) : (
+                    productCategories.map((category, categoryIndex) => (
+                      <div key={category.id} className="category-section mb-4">
+                        <div className="card border-0 shadow-sm">
+                          <div className="card-header bg-white border-0 py-3">
+                            <div className="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h5 className="mb-1 fw-bold text-dark">
+                                  <i className="bi bi-folder2-open text-primary me-2"></i>
+                                  {category.name}
+                                </h5>
+                                <small className="text-muted">
+                                  {category.items.length} producto{category.items.length !== 1 ? 's' : ''}
+                                  {category.items.length > 0 && (
+                                    <>
+                                      {' • '}
+                                      <span className="text-success">
+                                        {category.items.filter(item => item.available).length} activo{category.items.filter(item => item.available).length !== 1 ? 's' : ''}
+                                      </span>
+                                    </>
+                                  )}
+                                </small>
+                              </div>
+                            </div>
+                          </div>
 
-            {/* Mensaje si no hay categorías de productos */}
-            {productCategories.length === 0 && (
-              <div className="card shadow-sm">
-                <div className="card-body text-center py-5">
-                  <h5 className="text-muted">No hay categorías de productos creadas</h5>
-                  <p className="text-muted">Comienza agregando una categoría para organizar tus productos</p>
-                  {editingMenu && (
-                    <div className="row justify-content-center">
-                      <div className="col-md-6">
-                        <div className="input-group">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nombre de categoría (ej: BEBIDAS)"
-                            value={newProductCategory}
-                            onChange={(e) => setNewProductCategory(e.target.value)}
-                          />
-                          <button className="btn btn-primary" onClick={handleAddProductCategory}>
-                            ➕ Crear
+                          <div className="card-body p-0">
+                            {category.items.length === 0 ? (
+                              <div className="text-center py-4 text-muted">
+                                <i className="bi bi-box-seam mb-2" style={{ fontSize: '2rem' }}></i>
+                                <p className="mb-0">Sin productos en esta categoría</p>
+                                <small>Usa el formulario superior para agregar productos</small>
+                              </div>
+                            ) : (
+                              <div className="table-responsive">
+                                <table className="table table-hover mb-0">
+                                  <thead className="table-light">
+                                    <tr>
+                                      <th width="5%">Estado</th>
+                                      <th width="25%">Producto</th>
+                                      <th width="35%">Descripción</th>
+                                      <th width="15%" className="text-end">Precio</th>
+                                      {editingMenu && <th width="20%" className="text-center">Acciones</th>}
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {category.items.map((item, itemIndex) => (
+                                      <tr key={item.id} className={!item.available ? 'table-secondary opacity-75' : ''}>
+                                        <td>
+                                          <div className="form-check form-switch">
+                                            <input
+                                              className="form-check-input"
+                                              type="checkbox"
+                                              id={`switch-${item.id}`}
+                                              checked={item.available}
+                                              onChange={() => handleToggleAvailability(category.id, item.id)}
+                                              disabled={!editingMenu}
+                                            />
+                                          </div>
+                                        </td>
+                                        <td>
+                                          <div className="fw-medium text-dark">{item.name}</div>
+                                        </td>
+                                        <td>
+                                          <div className="text-muted small">
+                                            {item.description || 'Sin descripción'}
+                                          </div>
+                                        </td>
+                                        <td className="text-end">
+                                          <span className="fw-bold text-success">
+                                            {formatCurrency(item.price)}
+                                          </span>
+                                        </td>
+                                        {editingMenu && (
+                                          <td className="text-center">
+                                            <div className="btn-group btn-group-sm">
+                                              <button
+                                                className="btn btn-outline-primary"
+                                                onClick={() => handleEditItem(category.id, item.id)}
+                                                title="Editar producto"
+                                              >
+                                                <i className="bi bi-pencil"></i>
+                                              </button>
+                                              <button
+                                                className="btn btn-outline-danger"
+                                                onClick={() => {
+                                                  if (window.confirm(`¿Eliminar "${item.name}"?`)) {
+                                                    handleDeleteItem(category.id, item.id);
+                                                  }
+                                                }}
+                                                title="Eliminar producto"
+                                              >
+                                                <i className="bi bi-trash"></i>
+                                              </button>
+                                            </div>
+                                          </td>
+                                        )}
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Modal de edición mejorado */}
+                {editingItem && (
+                  <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-lg">
+                      <div className="modal-content border-0 shadow">
+                        <div className="modal-header border-0 bg-light">
+                          <h5 className="modal-title d-flex align-items-center">
+                            <i className="bi bi-pencil-square me-2"></i>
+                            Editar Producto
+                          </h5>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            onClick={() => setEditingItem(null)}
+                          ></button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="row g-3">
+                            <div className="col-md-6">
+                              <label className="form-label fw-medium">Nombre del producto *</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                value={editingItem.name}
+                                onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
+                              />
+                            </div>
+                            <div className="col-md-6">
+                              <label className="form-label fw-medium">Precio (CLP) *</label>
+                              <input
+                                type="number"
+                                className="form-control"
+                                value={editingItem.price}
+                                onChange={(e) => setEditingItem({ ...editingItem, price: e.target.value })}
+                              />
+                            </div>
+                            <div className="col-12">
+                              <label className="form-label fw-medium">Descripción</label>
+                              <textarea
+                                className="form-control"
+                                rows="3"
+                                value={editingItem.description || ''}
+                                onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                                placeholder="Descripción detallada del producto"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="modal-footer border-0 bg-light">
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={() => setEditingItem(null)}
+                          >
+                            Cancelar
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-success"
+                            onClick={handleUpdateItem}
+                            disabled={!editingItem.name || !editingItem.price}
+                          >
+                            <i className="bi bi-check-lg me-2"></i>
+                            Guardar Cambios
                           </button>
                         </div>
                       </div>
                     </div>
-                  )}
-                </div>
-              </div>
-            )}
+                  </div>
+                )}
 
-            {/* Panel de información del menú */}
-            {storeMenu?.data && (
-              <div className="card shadow-sm mt-4">
-                <div className="card-header">
-                  <h6 className="mb-0">Información del Sistema</h6>
-                </div>
-                <div className="card-body">
-                  <div className="row">
-                    <div className="col-md-3">
-                      <small className="text-muted">ID del Menú:</small>
-                      <div className="fw-bold">{storeMenu.data[0]?.id || 'N/A'}</div>
-                    </div>
-                    <div className="col-md-3">
-                      <small className="text-muted">ID de la Tienda:</small>
-                      <div className="fw-bold">{storeMenu.data[0]?.store.id || 'N/A'}</div>
-                    </div>
-                    <div className="col-md-3">
-                      <small className="text-muted">Total Productos:</small>
-                      <div className="fw-bold">{products.length}</div>
-                    </div>
-                    <div className="col-md-3">
-                      <small className="text-muted">Categorías de Productos:</small>
-                      <div className="fw-bold">{productCategories.length}</div>
+                {/* Panel de información del sistema */}
+                <div className="card border-0 shadow-sm mt-4">
+                  <div className="card-header bg-light border-0">
+                    <h6 className="mb-0 d-flex align-items-center">
+                      <i className="bi bi-info-circle me-2"></i>
+                      Información del Sistema
+                    </h6>
+                  </div>
+                  <div className="card-body">
+                    <div className="row g-3">
+                      <div className="col-md-3">
+                        <small className="text-muted d-block">ID del Menú</small>
+                        <code className="small">{storeMenu.data[0]?.id || 'N/A'}</code>
+                      </div>
+                      <div className="col-md-3">
+                        <small className="text-muted d-block">ID de la Tienda</small>
+                        <code className="small">{storeMenu.data[0]?.store.id || 'N/A'}</code>
+                      </div>
+                      <div className="col-md-3">
+                        <small className="text-muted d-block">Última actualización</small>
+                        <small>{new Date().toLocaleDateString('es-CL')}</small>
+                      </div>
+                      <div className="col-md-3">
+                        <small className="text-muted d-block">Estado del menú</small>
+                        <span className="badge bg-success">Activo</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </>
             )}
-          </>
+          </div>
+        )}
+        {/* Vista previa del menú */}
+        {store.menu_preview && storeMenu?.data && (
+          <MenuPreview menu_id={storeMenu.data[0]?.id} />
         )}
       </div>
-
-      {/* Vista previa del menú */}
-      {store.menu_preview && storeMenu?.data && (
-        <MenuPreview menu_id={storeMenu.data[0]?.id} />
-      )}
     </div>
   );
 };

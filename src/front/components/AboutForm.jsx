@@ -176,7 +176,7 @@ const About = () => {
                   data-bs-interval="3000"
                 >
                   <div className="carousel-inner rounded-4 shadow-lg">
-                    
+
                     {[
                       "https://images.unsplash.com/photo-1464979681340-bdd28a61699e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                       "https://images.unsplash.com/photo-1728044849321-4cbffc50cc1d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -184,9 +184,8 @@ const About = () => {
                     ].map((img, index) => (
                       <div
                         key={index}
-                        className={`carousel-item ${
-                          index === 0 ? "active" : ""
-                        }`}
+                        className={`carousel-item ${index === 0 ? "active" : ""
+                          }`}
                       >
                         <img
                           src={img}

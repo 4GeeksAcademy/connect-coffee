@@ -172,76 +172,62 @@ const MiniMenu = ({ storeId, title = "Menú de la Cafetería" }) => {
                 </div>
             </div>
 
-            {/* Productos por categoría */}
-            <div className="row">
+            {/* Grid de categorías compacto */}
+            <div className="row g-3">
                 {Object.entries(menuData).map(([category, items]) => {
                     const activeItems = items.filter(item => item.is_active);
                     const inactiveItems = items.filter(item => !item.is_active);
                     const isExpanded = expandedCategories.has(category);
 
                     return (
-                        <div key={category} className="col-12 mb-4">
-                            <div className="card border-0 shadow-sm">
-                                {/* Header de categoría con badges */}
-                                <div className="card-header bg-brown text-white">
+                        <div key={category} className="col-lg-6 col-md-12">
+                            <div className="card border-0 shadow-sm h-100">
+                                {/* Header de categoría */}
+                                <div className="card-header bg-brown text-white py-2">
                                     <div className="d-flex justify-content-between align-items-center">
-                                        <div className="d-flex align-items-center">
-                                            <i className="fas fa-list me-2"></i>
-                                            <h6 className="mb-0 me-2">{category}</h6>
-                                        </div>
-                                        <div className="d-flex flex-wrap gap-1">
-                                            {activeItems.length > 0 && (
-                                                <span className="badge bg-success">
-                                                    {activeItems.length} disponibles
-                                                </span>
-                                            )}
-                                            {inactiveItems.length > 0 && (
-                                                <span className="badge bg-secondary">
-                                                    {inactiveItems.length} no disponible
-                                                </span>
-                                            )}
-                                        </div>
+                                        <h6 className="mb-0 fw-bold">{category}</h6>
+                                        {activeItems.length > 0 && (
+                                            <span className="badge bg-success">
+                                                {activeItems.length} disponibles
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="card-body bg-cream">
-                                    {/* Productos disponibles */}
+                                <div className="card-body p-0 bg-cream">
+                                    {/* Lista compacta de productos disponibles */}
                                     {activeItems.length === 0 ? (
-                                        <div className="text-center py-3">
-                                            <i className="fas fa-clock text-muted mb-2 fs-2"></i>
-                                            <p className="text-muted mb-0">
-                                                No hay productos disponibles en este momento
+                                        <div className="text-center py-4">
+                                            <i className="fas fa-clock text-muted mb-2"></i>
+                                            <p className="text-muted mb-0 small">
+                                                No hay productos disponibles
                                             </p>
                                         </div>
                                     ) : (
-                                        <div className="row">
-                                            {activeItems.map((item) => (
-                                                <div key={item.id} className="col-md-6 mb-3">
-                                                    <div className="card h-100 border-light-brown product-card">
-                                                        <div className="card-body p-3">
-                                                            <div className="d-flex justify-content-between align-items-start">
-                                                                <div className="flex-grow-1">
-                                                                    <h6 className="card-title mb-1 text-brown fw-bold">
-                                                                        {item.name}
-                                                                    </h6>
-                                                                    {item.description && (
-                                                                        <p className="card-text text-muted small mb-2 description-truncate">
-                                                                            {item.description}
-                                                                        </p>
-                                                                    )}
-                                                                    <div className="text-gold fw-bold">
-                                                                        {formatCurrency(item.price)}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="ms-2">
-                                                                    <span className="badge bg-brown text-white">
-                                                                        <i className="fas fa-check me-1"></i>
-                                                                        Disponible
-                                                                    </span>
-                                                                </div>
+                                        <div className="list-group list-group-flush">
+                                            {activeItems.map((item, index) => (
+                                                <div
+                                                    key={item.id}
+                                                    className="list-group-item bg-transparent border-0 py-2 px-3"
+                                                >
+                                                    <div className="d-flex justify-content-between align-items-start">
+                                                        <div className="flex-grow-1">
+                                                            <div className="fw-semibold text-brown mb-0">
+                                                                {item.name}
                                                             </div>
+                                                            {item.description && (
+                                                                <small className="text-muted d-block">
+                                                                    {item.description}
+                                                                </small>
+                                                            )}
+                                                        </div>
+                                                        <div className="text-gold fw-bold ms-2">
+                                                            {formatCurrency(item.price)}
                                                         </div>
                                                     </div>
+                                                    {index < activeItems.length - 1 && (
+                                                        <hr className="my-2 opacity-25" />
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
@@ -249,55 +235,48 @@ const MiniMenu = ({ storeId, title = "Menú de la Cafetería" }) => {
 
                                     {/* Productos no disponibles */}
                                     {inactiveItems.length > 0 && (
-                                        <div className="mt-3 border-top pt-3">
-                                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                                <h6 className="mb-0 text-muted">
-                                                    <i className="fas fa-times-circle me-2"></i>
-                                                    Productos no disponibles ({inactiveItems.length})
-                                                </h6>
+                                        <div className="border-top bg-light p-2">
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <small className="text-muted">
+                                                    <i className="fas fa-times-circle me-1"></i>
+                                                    {inactiveItems.length} no disponibles
+                                                </small>
                                                 <button
-                                                    className="btn btn-sm btn-outline-secondary"
+                                                    className="btn btn-sm btn-outline-secondary py-0 px-2"
                                                     onClick={() => toggleUnavailableProducts(category)}
                                                     type="button"
                                                 >
-                                                    {isExpanded ? (
-                                                        <>
-                                                            <i className="fas fa-eye-slash me-1"></i>
-                                                            Ocultar
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <i className="fas fa-eye me-1"></i>
-                                                            Mostrar
-                                                        </>
-                                                    )}
+                                                    <small>
+                                                        {isExpanded ? (
+                                                            <>
+                                                                <i className="fas fa-eye-slash me-1"></i>
+                                                                Ocultar
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <i className="fas fa-eye me-1"></i>
+                                                                Ver
+                                                            </>
+                                                        )}
+                                                    </small>
                                                 </button>
                                             </div>
 
-                                            {/* Lista colapsable  */}
+                                            {/* Lista colapsable de no disponibles */}
                                             <div className={`collapse ${isExpanded ? 'show' : ''}`}>
-                                                <div className="bg-light rounded p-3">
+                                                <div className="mt-2">
                                                     {inactiveItems.map((item, index) => (
                                                         <div
                                                             key={item.id}
-                                                            className={`d-flex justify-content-between align-items-center py-2 ${index !== inactiveItems.length - 1 ? 'border-bottom' : ''
+                                                            className={`d-flex justify-content-between align-items-center py-1 ${index !== inactiveItems.length - 1 ? 'border-bottom border-light' : ''
                                                                 }`}
                                                         >
-                                                            <div className="flex-grow-1">
-                                                                <span className="text-muted text-decoration-line-through">
-                                                                    {item.name}
-                                                                </span>
-                                                                {item.description && (
-                                                                    <div className="text-muted small">
-                                                                        {item.description}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div className="ms-2">
-                                                                <span className="badge bg-secondary">
-                                                                    No disponible
-                                                                </span>
-                                                            </div>
+                                                            <small className="text-muted text-decoration-line-through">
+                                                                {item.name}
+                                                            </small>
+                                                            <small className="badge bg-secondary">
+                                                                No disponible
+                                                            </small>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -312,17 +291,17 @@ const MiniMenu = ({ storeId, title = "Menú de la Cafetería" }) => {
             </div>
 
             {/* Footer */}
-            <div className="card border-0 shadow-sm">
-                <div className="card-footer bg-cream text-center border-0">
+            <div className="card border-0 shadow-sm mt-3">
+                <div className="card-footer bg-cream text-center border-0 py-2">
                     <button
-                        className="btn btn-brown"
+                        className="btn btn-brown btn-sm"
                         onClick={loadMenuFromAPI}
                         disabled={loading}
                     >
                         <i className="fas fa-sync-alt me-1"></i>
                         Actualizar menú
                     </button>
-                    <div className="mt-2">
+                    <div className="mt-1">
                         <small className="text-muted">
                             <i className="fas fa-info-circle me-1"></i>
                             Menú actualizado automáticamente
@@ -333,68 +312,65 @@ const MiniMenu = ({ storeId, title = "Menú de la Cafetería" }) => {
 
             {/* CSS */}
             <style jsx>{`
-        :root {
-          --brown-primary: #8B4513;
-          --brown-secondary: #A0522D;
-          --gold-color: #CD853F;
-          --cream-bg: #FFF8F0;
-          --light-brown: #E8D5C4;
-        }
+                :root {
+                    --brown-primary: #8B4513;
+                    --brown-secondary: #A0522D;
+                    --gold-color: #CD853F;
+                    --cream-bg: #FFF8F0;
+                    --light-brown: #E8D5C4;
+                }
 
-        .bg-brown {
-          background: linear-gradient(135deg, var(--brown-primary) 0%, var(--brown-secondary) 100%) !important;
-        }
+                .bg-brown {
+                    background: linear-gradient(135deg, var(--brown-primary) 0%, var(--brown-secondary) 100%) !important;
+                }
 
-        .bg-cream {
-          background-color: var(--cream-bg) !important;
-        }
+                .bg-cream {
+                    background-color: var(--cream-bg) !important;
+                }
 
-        .text-brown {
-          color: var(--brown-primary) !important;
-        }
+                .text-brown {
+                    color: var(--brown-primary) !important;
+                }
 
-        .text-gold {
-          color: var(--gold-color) !important;
-        }
+                .text-gold {
+                    color: var(--gold-color) !important;
+                }
 
-        .border-light-brown {
-          border-color: var(--light-brown) !important;
-        }
+                .btn-brown {
+                    background-color: var(--brown-primary);
+                    border-color: var(--brown-primary);
+                    color: white;
+                }
 
-        .btn-brown {
-          background-color: var(--brown-primary);
-          border-color: var(--brown-primary);
-          color: white;
-        }
+                .btn-brown:hover {
+                    background-color: var(--brown-secondary);
+                    border-color: var(--brown-secondary);
+                    color: white;
+                }
 
-        .btn-brown:hover {
-          background-color: var(--brown-secondary);
-          border-color: var(--brown-secondary);
-          color: white;
-        }
+                .list-group-item:hover {
+                    background-color: rgba(139, 69, 19, 0.05) !important;
+                }
 
-        .product-card {
-          transition: all 0.3s ease;
-          background: linear-gradient(145deg, #FFFFFF 0%, var(--cream-bg) 100%);
-        }
+                .collapse {
+                    transition: all 0.3s ease-in-out;
+                }
 
-        .product-card:hover {
-          border-color: var(--gold-color) !important;
-          box-shadow: 0 4px 12px rgba(139, 69, 19, 0.15);
-          transform: translateY(-2px);
-        }
+                .card {
+                    transition: transform 0.2s ease-in-out;
+                }
 
-        .description-truncate {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
+                .card:hover {
+                    transform: translateY(-2px);
+                }
 
-        .collapse {
-          transition: all 0.3s ease-in-out;
-        }
-      `}</style>
+                /* Responsive adjustments */
+                @media (max-width: 768px) {
+                    .col-lg-6 {
+                        margin-bottom: 1rem;
+                    }
+                }
+            `}</style>
         </div>
     );
 };
