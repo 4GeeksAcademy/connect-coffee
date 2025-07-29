@@ -84,7 +84,6 @@ class Store(db.Model):
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     fecha_de_pago: Mapped[Date] = mapped_column(Date, nullable=True)
     total_points: Mapped[int] = mapped_column(nullable=True)
-    description: Mapped[str] = mapped_column(String(200), nullable=True)
     menus = relationship("Menu", back_populates="store")
     user: Mapped["User"] = relationship("User", back_populates="stores")
     categories: Mapped[List["Category"]] = relationship(
