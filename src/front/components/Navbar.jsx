@@ -341,8 +341,8 @@ export const Navbar = () => {
 											Acerca de
 										</Link>
 									</li>
+								{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
 								</ul>
-
 								{/* Botones de acción */}
 								<div className="d-flex align-items-center gap-2">
 									{/* Botones cuando no hay una sesion iniciada */}
@@ -616,7 +616,7 @@ export const Navbar = () => {
 									)}
 								</div>
 							</div>
-							{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
+							
 						</div>
 					</nav>
 				)}
