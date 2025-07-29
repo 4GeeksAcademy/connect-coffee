@@ -4,7 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getFrontStoreMenu } from "../services/api_menu";
 import QrCode from './QrCode.jsx';
 
-const MenuPreview = ({ menu_id = null }) => {
+const MenuPreview = ({ store_id = null }) => { 
   const { store, dispatch } = useGlobalReducer();
   const [menuCategories, setMenuCategories] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState({
@@ -12,7 +12,7 @@ const MenuPreview = ({ menu_id = null }) => {
     logo: null,
     backgroundImage: null
   });
-  const [menuId, setMenuId] = useState(menu_id);
+  const [menuId, setMenuId] = useState(store_id);
   const { id } = useParams();
 
   const formatCurrency = (amount) => {
@@ -22,7 +22,7 @@ const MenuPreview = ({ menu_id = null }) => {
     }).format(amount);
   };
   const fetchMenu = async () => {
-    let realMenuId = menu_id ? menu_id : id;
+    let realMenuId = store_id ? store_id : id;
     setMenuId(realMenuId);
     const res = await getFrontStoreMenu(realMenuId);
     if (res && res.ok && res.data && res.data.length > 0) {
@@ -52,7 +52,7 @@ const MenuPreview = ({ menu_id = null }) => {
         }
         setRestaurantInfo({
           name: menu.store?.name || menu.store?.nombre || "Café Central",
-          logo: menu.store?.logo_url || null,
+          logo: menu.images?.url || null,
           backgroundImage: menu.store?.background_url || null
         });
       }
@@ -61,7 +61,7 @@ const MenuPreview = ({ menu_id = null }) => {
 
   useEffect(() => {
     fetchMenu();
-  }, [menu_id, id]);
+  }, [store_id, id]);
 
   return (
     <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
@@ -161,7 +161,7 @@ const MenuPreview = ({ menu_id = null }) => {
                               <div className="col-8">
                                 <span className={`fw-medium ${item.available ? 'text-dark' : 'text-muted text-decoration-line-through'}`}
                                   style={{ fontSize: '0.95rem' }}>
-                                  {item.name}
+                                  {item.name}| {item.description}
                                 </span>
                                 {!item.available && (
                                   <small className="d-block text-danger fst-italic">
