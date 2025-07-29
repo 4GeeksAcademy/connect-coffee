@@ -1,13 +1,13 @@
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const apikey =
-  "2136348ff926fcefd12680594f9ee1b413add849a6d437afac9f2b20d109dee9";
+const apikey = "2136348ff926fcefd12680594f9ee1b413add849a6d437afac9f2b20d109dee9";
 
 export const getCategories = async () => {
   try {
     const response = await fetch(backendUrl + "/api/category/list", {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-api-key": apikey
       },
     });
     const jsonResponse = await response.json();
