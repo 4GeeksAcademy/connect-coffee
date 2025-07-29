@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint, current_app
+from flask import Flask, request, jsonify, url_for, Blueprint, current_app, g
 from api.models import db, User, Store, Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -9,7 +9,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 import yaml
 from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE, APIKEY
-from api.helpers.users import user_has_role,user_has_product,require_user_product,require_user_role
+from api.helpers.users import user_has_role, user_has_product, require_user_product, require_user_role
 from api.helpers.users import user_has_role, require_user_role
 
 routes_category = Blueprint('categories', __name__, url_prefix='/api/category')
@@ -192,10 +192,6 @@ def remove_category(store_id):
         "store_id": store_id
     })
     return response, 200
-
-
-
-
 
 
 #  SEGUIR ACA

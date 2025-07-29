@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { favoriteGet, favoriteDelete, favoriteCreate } from '../services/api_favorite.js';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import ImageNotFound from "../assets/img/image-not-found.png"  // Import an image asset
+import ImageNotFound from "../assets/img/image-not-found.png"  
 
 const CafeteriaCard = ({ cafeteria, onSelect }) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -100,15 +100,16 @@ const CafeteriaCard = ({ cafeteria, onSelect }) => {
           {/* Imagen */}
           <img
             src={
+              cafeteria.images?.[0]?.url ||
               cafeteria.image_url ||
-              "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&h=400&fit=crop"
+              ImageNotFound
             }
             alt={cafeteria.name}
             className="card-img-top"
             style={{ height: "200px", objectFit: "cover" }}
             onError={(e) => {
               e.target.src =
-                { ImageNotFound };
+                 ImageNotFound ;
             }}
           />
 

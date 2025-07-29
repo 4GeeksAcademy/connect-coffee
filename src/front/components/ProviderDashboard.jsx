@@ -17,12 +17,9 @@ import {
   deactivateProduct,
   activateProduct
 } from "../services/api_product";
-import { favoriteGet } from "../services/api_favorite";
+import { favoriteGet, favoriteStoreGet } from "../services/api_favorite";
 import { setImage, setImageByType, ImageDelete } from "../services/api_image";
-
 import { getStorePoints } from "../services/api_userpoints";
-import { object } from 'prop-types';
-import storeReducer from '../store.js';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('cafe');
@@ -218,17 +215,37 @@ const ProviderDashboard = () => {
   const handleGetFavorites = async () => {
     try {
       setLoadingFavorites(true);
-      const response = await favoriteGet(store.token);
-      console.log('Respuesta favoritos:', response);
-
-      if (response && response.ok && response.data) {
-        setFavorites(response.data);
+      console.log('🔍 Cargando favoritos del usuario...');
+      if (!store.token) {
+        console.warn('⚠️ No hay token disponible para cargar favoritos');
+        favoriteStoreGet(store.token, id);
+        return;
+      }
+      const response = await favoriteStoreGet(store.token, id);
+      console.log('📊 Respuesta favoritos completa:', response);
+      if (response && response.ok) {
+        const favoritesData = response.data || [];
+        if (Array.isArray(favoritesData)) {
+          console.log('✅ Favoritos cargados exitosamente:', favoritesData.length);
+          setFavorites(favoritesData);
+          localStorage.setItem("favorites", JSON.stringify(favoritesData));
+          dispatch({ type: "favorites", payload: JSON.stringify(favoritesData) });
+        } else {
+          console.warn('⚠️ Los datos de favoritos no son un array:', favoritesData);
+          setFavorites([]);
+        }
       } else {
+        console.warn('⚠️ Error en respuesta de favoritos:', response?.msg || 'Error desconocido');
         setFavorites([]);
+        // 401 usuario no autorizado //
+        if (response?.status === 401) {
+          console.warn('🔐 Usuario no autorizado para ver favoritos');
+        }
       }
     } catch (err) {
-      console.error('Error cargando favoritos:', err);
+      console.error('❌ Error de conexión cargando favoritos:', err);
       setFavorites([]);
+      console.warn('Favoritos no disponibles, continuando sin ellos');
     } finally {
       setLoadingFavorites(false);
     }
@@ -341,7 +358,6 @@ const ProviderDashboard = () => {
         name: storeDetails.data.name || storeDetails.data.nombre || '',
         description: storeDetails.data.description || '',
         address: storeDetails.data.address || storeDetails.data.direccion || '',
-        opening_hours: storeDetails.data.opening_hours || '',
       });
     }
   };
@@ -449,20 +465,6 @@ const ProviderDashboard = () => {
       setProductCategories([...productCategories, newCat]);
       setNewProductCategory('');
     }
-  };
-  const handleDeleteProductCategory = async (categoryId) => {
-    const categoryToRemove = productCategories.find(cat => cat.id === categoryId);
-    if (categoryToRemove) {
-      for (const item of categoryToRemove.items) {
-        try {
-          await deactivateProduct(store.token, item.id);
-          await deleteProduct(store.token, item.id);
-        } catch (err) {
-          console.error('Error eliminando producto:', err);
-        }
-      }
-    }
-    setProductCategories(productCategories.filter(cat => cat.id !== categoryId));
   };
   const handleAddItem = async () => {
     if (newItem.name && newItem.price && newItem.category && storeMenu?.data?.[0]?.id) {
