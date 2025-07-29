@@ -21,18 +21,20 @@ const Subscription = () => {
     setLoading(true);
     if (store?.role != "ROLE_STORE"){
       navigate('/signup?type=Store')
+    }else{
+
+      const response = await fetch(backendUrl+'/api/donation/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: parseFloat(amount) }),
+      });
+      
+      const session = await response.json();
+      const stripe = await stripePromise;
+      await stripe.redirectToCheckout({ sessionId: session.id });
     }
-    const response = await fetch(backendUrl+'/api/donation/create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: parseFloat(amount) }),
-    });
-
-    const session = await response.json();
-    const stripe = await stripePromise;
-    await stripe.redirectToCheckout({ sessionId: session.id });
   };
-
+    
   return (
   <form onSubmit={handlePayment}>
     <div className="card mx-auto mt-5 shadow-lg border-0 rounded-4 overflow-hidden" 
