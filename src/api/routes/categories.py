@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 import yaml
-from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE
+from api.constants import ROLE_ADMIN, ROLE_USER, ROLE_STORE, APIKEY
 from api.helpers.users import user_has_role,user_has_product,require_user_product,require_user_role
 from api.helpers.users import user_has_role, require_user_role
 
@@ -74,8 +74,11 @@ def add_category():
 
 
 @routes_category.route('/list', methods=['GET'])
-@jwt_required()
 def categories_list():
+    apikey = request.headers.get('x-api-key')
+    if apikey != APIKEY:
+        return jsonify({"msg": "Usuario no autorizado"}), 400
+
     # if not existing_store:
     categories = Category.query.all()
 
@@ -189,6 +192,11 @@ def remove_category(store_id):
         "store_id": store_id
     })
     return response, 200
+
+
+
+
+
 
 #  SEGUIR ACA
 

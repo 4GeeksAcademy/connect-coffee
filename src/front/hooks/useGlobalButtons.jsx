@@ -11,26 +11,27 @@ const BotonDonar = () => (
       </Link>
     );
     const BotonSuscribir = () => (
-          <Link
-            to="/payment"
-            className="btn btn-sm px-3 py-2 shadow d-flex align-items-center"
-            style={{
-													backgroundColor: '#8b4513',
-													color: '#fff',
-													border: 'none',
-													borderRadius: '6px',
-													fontWeight: '500',
-													transition: 'all 0.2s ease'
-												}}
-												onMouseEnter={(e) => {
-													e.target.style.backgroundColor = '#6b4423';
-												}}
-												onMouseLeave={(e) => {
-													e.target.style.backgroundColor = '#8b4513';
-												}}
-          >
-            Suscribirse
+            <Link
+              to="/payment"
+              className="nav-link px-3 py-2 rounded"
+              style={{
+                color: '#6b4423',
+                fontWeight: '500',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#e8d5c4';
+                e.target.style.color = '#8b4513';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#6b4423';
+              }}
+            >
+              <i className="fa-solid fa-dollar-sign"></i>
+            Precios
           </Link>
         );
     return { BotonDonar,BotonSuscribir };
 }
+

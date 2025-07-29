@@ -25,6 +25,7 @@ import MenuPreview from "./components/MenuPreview.jsx";
 import AdminDetails from "./pages/AdminDetails";
 import StoreBuilder from "./pages/StoreBuilder.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
+import CafeMenu from "./components/CafeMenu.jsx";
 
 // Si tiene {} al importar es que esta llamando a un page especifico al importarlo y sino el default 
 
@@ -57,7 +58,8 @@ export const router = createBrowserRouter(
       <Route path="/payment" element={<Subscription />} />
       <Route path="/success" element={<PaymentSuccess />} />
       <Route path="/cancel" element={<div>❌ Cancelaste la donación.</div>} />
-      <Route path="/menu/:id" element={<MenuPreview />} />
+      {/* <Route path="/menu/:id" element={<MenuPreview />} /> */}
+      <Route path="/menu/:id" element={<CafeMenu />} />
       <Route path="/store-builder" element={<StoreBuilder />} />
       <Route path="/*" element={<NotFound />} />
 
