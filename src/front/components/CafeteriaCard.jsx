@@ -148,7 +148,7 @@ const CafeteriaCard = ({ cafeteria, onSelect }) => {
 
           <div className="d-flex justify-content-between align-items-center">
             <small className="text-muted">
-              {cafeteria.review_count || 0} reseñas
+              {cafeteria.points.length || 0} reseñas
             </small>
 
             <button

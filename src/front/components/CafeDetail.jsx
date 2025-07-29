@@ -7,15 +7,15 @@ import { favoriteGet, favoriteDelete, favoriteCreate } from '../services/api_fav
 import ImageNotFound from "../assets/img/image-not-found.png"
 
 const CafeDetail = ({ cafeData, onBack }) => {
-  const { store, dispatch } = useGlobalReducer();
-  const [activeTab, setActiveTab] = useState('info');
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [menuData, setMenuData] = useState({});
-  const [apiReviews, setApiReviews] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isUser, setIsUser] = useState(false);
-  const [disableFavorite, setDisableFavorite] = useState(false);
+    const { store, dispatch } = useGlobalReducer();
+    const [activeTab, setActiveTab] = useState('menu');
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [menuData, setMenuData] = useState({});
+    const [apiReviews, setApiReviews] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [isUser,setIsUser]= useState(false);
+    const [disableFavorite, setDisableFavorite] = useState(false);
 
   // Cargar menú desde la API cuando se monta el componente ** //
   useEffect(() => {
@@ -34,7 +34,15 @@ const CafeDetail = ({ cafeData, onBack }) => {
       }
     }
   }, [store.role]);
-
+    useEffect(() => {
+    const carouselElement = document.querySelector('#cafeImageCarousel');
+    if (carouselElement) {
+      const carousel = new Carousel(carouselElement, {
+        interval: 5000,
+        ride: 'carousel'
+      });
+    }
+  }, [cafeData.images]);
   const loadMenuFromAPI = async () => {
     try {
       setLoading(true);
@@ -354,7 +362,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                           ).toFixed(1)}
                         </span>
                         <span className="ms-1 text-muted">
-                          ({cafeData.review_count || 0} reseñas)
+                          ({cafeData.points.length || 0} reseñas)
                         </span>
                       </div>
                     </div>
@@ -364,7 +372,11 @@ const CafeDetail = ({ cafeData, onBack }) => {
                     {cafeData.description ||
                       "Cafetería acogedora con excelente ambiente"}
                   </p>
-
+                  <p className="text-muted mb-3">
+                    <strong>Dirección:</strong>{" "}
+                    {cafeData.address || "Dirección no disponible"}
+                  </p>
+                  
                   <div className="mb-3">
                     <span
                       className={`badge px-3 py-2 ${cafeData.is_open ? "bg-success" : "bg-danger"
@@ -406,37 +418,37 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         </div>
 
-        {/* Tabs de navegación */}
-        <div className="d-flex justify-content-center mb-4">
-          <div className="d-flex gap-2">
-            {[
-              { id: 'info', label: 'Información', icon: '📍' },
-              { id: 'menu', label: 'Menú', icon: '📋' },
-              { id: 'photos', label: 'Fotos', icon: '📸' },
-              { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' }
-            ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
-              <button
-                key={tab.id}
-                className="btn px-4 py-2"
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
-                  color: activeTab === tab.id ? 'white' : '#8B4513',
-                  border: '1px solid #8B4513',
-                  borderRadius: '20px'
-                }}
-              >
-                {tab.icon} {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
+                {/* Tabs de navegación */}
+                <div className="d-flex justify-content-center mb-4">
+                    <div className="d-flex gap-2">
+                        {[
+                          { id: 'menu', label: 'Menú', icon: '📋' },
+                          { id: 'photos', label: 'Fotos', icon: '📸' },
+                          { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' },
+                          { id: 'info', label: 'Contactanos', icon: '💬' }
+                        ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
+                            <button
+                                key={tab.id}
+                                className="btn px-4 py-2"
+                                onClick={() => setActiveTab(tab.id)}
+                                style={{
+                                    backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
+                                    color: activeTab === tab.id ? 'white' : '#8B4513',
+                                    border: '1px solid #8B4513',
+                                    borderRadius: '20px'
+                                }}
+                            >
+                                {tab.icon} {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
         {/* Contenido de tabs */}
         {activeTab === "info" && (
           <div className="row">
-            <div className="col-md-6 mb-4">
-              <div className="card border-0 shadow-sm">
+            <div className="col-md-2 mb-4">
+              {/* <div className="card border-0 shadow-sm">
                 <div
                   className="card-header"
                   style={{ backgroundColor: "#8B4513", color: "white" }}
@@ -444,11 +456,11 @@ const CafeDetail = ({ cafeData, onBack }) => {
                   <h5 className="mb-0">📍 Ubicación</h5>
                 </div>
                 <div className="card-body">
-                  <p className="mb-2">
+                 <p className="mb-2">
                     <strong>Dirección:</strong>{" "}
                     {cafeData.address || "Dirección no disponible"}
-                  </p>
-                  <div className="mt-3">
+                  </p> 
+                   <div className="mt-3">
                     <div
                       className="bg-light rounded p-4 text-center"
                       style={{ minHeight: "200px" }}
@@ -466,13 +478,42 @@ const CafeDetail = ({ cafeData, onBack }) => {
                         )}
                       </small>
                     </div>
+                  </div> 
+                </div>
+              </div>*/}
+            </div> 
+
+            <div className="col-md-12 mb-4">
+              <div className="card border-0 shadow-sm">
+                <div className="card-header text-white" 
+                  style={{ backgroundColor: "#8B4513", color: "white" }}
+                  >
+                  <h5 className="mb-0">💬 Chat con el cliente</h5>
+                </div>
+                <div className="card-body" style={{ maxHeight: "300px", overflowY: "auto" }}>
+                  {/* Mensajes simulados */}
+                  <div className="mb-2">
+                    <div className="text-muted small">Cliente:</div>
+                    <div className="p-2 bg-light rounded">Hola, ¿hay opciones sin cafeína?</div>
+                  </div>
+                  <div className="mb-2 text-end">
+                    <div className="text-muted small">Tienda:</div>
+                    <div className="p-2 bg-success bg-gradient text-white rounded d-inline-block">¡Hola! Sí, tenemos té y chocolate caliente ☕</div>
                   </div>
                 </div>
+                <div className="card-footer">
+                  <form className="d-flex">
+                    <input
+                      type="text"
+                      className="form-control me-2"
+                      placeholder="Pronto podras dejarnos tu mensaje... "
+                      disabled
+                    />
+                    <button type="submit" className="btn btn-dark disabled">Enviar</button>
+                  </form>
+                </div>
               </div>
-            </div>
-
-            <div className="col-md-6 mb-4">
-              <div className="card border-0 shadow-sm">
+              {/* <div className="card border-0 shadow-sm">
                 <div
                   className="card-header"
                   style={{ backgroundColor: "#8B4513", color: "white" }}
@@ -480,9 +521,9 @@ const CafeDetail = ({ cafeData, onBack }) => {
                   <h5 className="mb-0">🕒 Horarios</h5>
                 </div>
                 <div className="card-body">{renderHours()}</div>
-              </div>
+              </div> */}
 
-              <div className="card border-0 shadow-sm mt-4">
+              {/* <div className="card border-0 shadow-sm mt-4">
                 <div
                   className="card-header"
                   style={{ backgroundColor: "#8B4513", color: "white" }}
@@ -503,7 +544,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
                     {cafeData.website || "Sitio web no disponible"}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         )}
@@ -628,32 +669,69 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         )}
 
-        {activeTab === 'photos' && (
-          <div className="row">
+          {activeTab === 'photos' && (
+            <div className="d-flex justify-content-center mb-4">
             {cafeData.images && cafeData.images.length > 0 ? (
-              cafeData.images.map((image, index) => (
-                <div key={index} className="col-md-4 mb-4">
-                  <div className="card border-0 shadow-sm">
-                    <img
-                      src={typeof image === 'string' ? image : image.url}
-                      className="card-img-top"
-                      alt={`${cafeData.name} - Foto ${index + 1}`}
-                      style={{ height: '250px', objectFit: 'cover' }}
-                      onError={(e) => {
-                        e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=250&fit=crop";
-                      }}
-                    />
-                  </div>
+              <div
+                id="cafeImageCarousel"
+                className="carousel slide"
+                data-bs-ride="carousel"
+                data-bs-interval="1000"
+                style={{ maxWidth: '600px', width: '100%' }}
+              >
+                <div className="carousel-inner">
+                  {cafeData.images.map((image, index) => (
+                    <div
+                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                      key={index}
+                    >
+                      <img
+                        src={typeof image === 'string' ? image : image.url}
+                        className="d-block w-100"
+                        alt={`${cafeData.name} - Foto ${index + 1}`}
+                        style={{ height: '300px', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.target.src =
+                            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop';
+                        }}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))
-            ) : (
-              <div className="col-12 text-center py-5">
-                <i className="fas fa-camera fa-3x text-muted mb-3"></i>
-                <h5 className="text-muted">Fotos no disponibles</h5>
-                <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
+
+                {/* Controles */}
+                {cafeData.images.length > 1 && (
+                  <>
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#cafeImageCarousel"
+                      data-bs-slide="prev"
+                    >
+                      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Anterior</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target="#cafeImageCarousel"
+                      data-bs-slide="next"
+                    >
+                      <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span className="visually-hidden">Siguiente</span>
+                    </button>
+                  </>
+                )}
               </div>
-            )}
-          </div>
+            
+                ) : (
+                    <div className="col-12 text-center py-5">
+                        <i className="fas fa-camera fa-3x text-muted mb-3"></i>
+                        <h5 className="text-muted">Fotos no disponibles</h5>
+                        <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
+                    </div>
+                )}
+            </div>
         )}
         {activeTab === 'reviews' && (
           <div className="row">
