@@ -50,8 +50,8 @@ def register():
         if data['role'] in valid_types:
             new_user.role = data['role'].capitalize()
 
-    if role == ROLE_STORE or role == ROLE_USER:
-        db.session.add(new_user)
+
+    db.session.add(new_user)
     
 
     if role == ROLE_STORE:
