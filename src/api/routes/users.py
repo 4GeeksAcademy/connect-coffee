@@ -10,6 +10,7 @@ import json
 import yaml
 from api.constants import ROLE_ADMIN, ROLE_STORE, ROLE_USER
 from datetime import timedelta
+from api.helpers.api_key import require_api_key
 
 routes_user = Blueprint('users', __name__, url_prefix='/api/user')
 
@@ -29,7 +30,7 @@ def register():
     passsword_validate = data.get("password_validate")
     store_name = data.get("businessName")
     store_address = data.get("address")
-    role=data.get("role")
+    role = data.get("role")
 
     if password != passsword_validate:
         return jsonify({"msg": f"Las contraseñas no son iguales", "ok": False}), 400
@@ -50,21 +51,19 @@ def register():
         if data['role'] in valid_types:
             new_user.role = data['role'].capitalize()
 
-
     db.session.add(new_user)
-    
 
     if role == ROLE_STORE:
         if store_name and store_address:
             db.session.commit()
-            new_store=Store(nombre=store_name,direccion=store_address,is_active=False,user_id=new_user.id)
+            new_store = Store(nombre=store_name, direccion=store_address,
+                              is_active=False, user_id=new_user.id)
             db.session.add(new_store)
             db.session.commit()
         else:
             return jsonify({"msg": f"No se pueden evaluar los datos address:{store_address} BusenessName:{store_name} y ", "ok": False}), 409
 
     db.session.commit()
-
 
     access_token = create_access_token(identity=str(new_user.id))
 
@@ -84,23 +83,23 @@ def list_admin():
     # Access the identity of the current user with get_jwt_identity
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-    
+
     # Consistencia en id de usuario
-    if user.id is None or not isinstance(user.id,int):
-        return jsonify({"msg":f"No se pudo identificar el usuario","ok":False}),400
-    
+    if user.id is None or not isinstance(user.id, int):
+        return jsonify({"msg": f"No se pudo identificar el usuario", "ok": False}), 400
+
     # Solo Role Admin
-    if user.role != ROLE_ADMIN : 
-        return jsonify({"msg": f"Usuario no autorizado | {user.role}","ok": False}),401   
+    if user.role != ROLE_ADMIN:
+        return jsonify({"msg": f"Usuario no autorizado | {user.role}", "ok": False}), 401
 
     users = User.query.all()
-     # Aramamos la respuesta
-    response=jsonify({
+    # Aramamos la respuesta
+    response = jsonify({
         "msg": "Listado de usuario",
         "ok": True,
         "data": [user.serialize_register() for user in users]
     })
-    return response,200
+    return response, 200
     return jsonify([user.serialize_register() for user in users]), 200
 
 # Endpoint de Login
@@ -116,5 +115,89 @@ def create_token():
     if not user or not user.check_password(password):
         return jsonify({"msg": "Credenciales inválidas", "ok": False}), 401
 
-    access_token = create_access_token(identity=str(user.id),expires_delta=timedelta(hours=12))
-    return jsonify(access_token=access_token, username=user.username, role=user.role, ok=True,id=user.id), 200
+    access_token = create_access_token(identity=str(
+        user.id), expires_delta=timedelta(hours=12))
+    return jsonify(access_token=access_token, username=user.username, role=user.role, ok=True, id=user.id), 200
+
+
+# Obtener perfil de usuario por ID (público)
+
+@routes_user.route("/<int:user_id>", methods=["GET"])
+@require_api_key
+def get_user_profile(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado", "ok": False}), 404
+
+    # Contadores para estadísticas
+    favorites_count = len(user.favorite_stores)
+    reviews_count = UserPoint.query.filter_by(user_id=user_id).count()
+
+    return jsonify({
+        "msg": "Perfil de usuario",
+        "ok": True,
+        "data": {
+            "id": user.id,
+            "username": user.username,
+            "favorites_count": favorites_count,
+            "reviews_count": reviews_count,
+            # No incluimos email por privacidad
+            # No incluimos role por seguridad
+        }
+    }), 200
+
+# Obtener favoritos de un usuario específico (público)
+
+
+@routes_user.route("/<int:user_id>/favorites", methods=["GET"])
+@require_api_key
+def get_user_favorites(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado", "ok": False}), 404
+
+    # Obtener solo tiendas activas de los favoritos
+    active_favorites = [
+        store for store in user.favorite_stores if store.is_active]
+
+    return jsonify({
+        "msg": "Favoritos del usuario",
+        "ok": True,
+        "data": [store.serialize() for store in active_favorites]
+    }), 200
+
+# Obtener reseñas de un usuario específico (público)
+
+
+@routes_user.route("/<int:user_id>/reviews", methods=["GET"])
+@require_api_key
+def get_user_reviews(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado", "ok": False}), 404
+
+    # Obtener reseñas del usuario con información de la tienda
+    reviews = db.session.query(UserPoint, Store).join(
+        Store, UserPoint.store_id == Store.id
+    ).filter(
+        UserPoint.user_id == user_id,
+        Store.is_active == True  # Solo tiendas activas
+    ).order_by(UserPoint.created_at.desc()).all()
+
+    reviews_data = []
+    for review, store in reviews:
+        review_data = review.serialize()
+        review_data['store'] = {
+            'id': store.id,
+            'name': store.nombre,
+            'address': store.direccion,
+            # Solo primera imagen
+            'images': [img.serialize_store() for img in store.images[:1]]
+        }
+        reviews_data.append(review_data)
+
+    return jsonify({
+        "msg": "Reseñas del usuario",
+        "ok": True,
+        "data": reviews_data
+    }), 200

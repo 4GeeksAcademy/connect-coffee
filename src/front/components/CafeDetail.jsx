@@ -1,3 +1,5 @@
+// Código completo actualizado del CafeDetail.jsx
+
 import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getFrontStorePoints } from '../services/api_userpoints.js'
@@ -16,6 +18,15 @@ const CafeDetail = ({ cafeData, onBack }) => {
   const [error, setError] = useState(null);
   const [isUser, setIsUser] = useState(false);
   const [disableFavorite, setDisableFavorite] = useState(false);
+  const categoryIconMap = {
+    'WiFi': 'fas fa-wifi',
+    'Pet Friendly': 'fas fa-dog',
+    'Sin TACC': 'fas fa-leaf',
+    'Zona Fumadores': 'fas fa-smoking',
+    'Zona Fumadores lokos': 'fas fa-smoking',
+    'Espacios azules': 'fas fa-heart',
+    'Espacios Azules': 'fas fa-heart'
+  };
 
   useEffect(() => {
     if (cafeData?.id && store.token) {
@@ -270,23 +281,41 @@ const CafeDetail = ({ cafeData, onBack }) => {
                       </div>
                     </div>
                   </div>
-
-                  <p className="text-muted mb-3">
-                    {cafeData.description ||
-                      "Cafetería acogedora con excelente ambiente"}
-                  </p>
                   <p className="text-muted mb-3">
                     <strong>Dirección:</strong>{" "}
                     {cafeData.address || "Dirección no disponible"}
                   </p>
 
+                  {/* Mostrar categorías */}
                   <div className="mb-3">
-                    <span
-                      className={`badge px-3 py-2 ${cafeData.is_active ? "bg-success" : "bg-danger"
-                        }`}
-                    >
-                      {cafeData.is_active ? "🟢 Abierto ahora" : "🔴 Cerrado"}
-                    </span>
+                    {cafeData.categories && cafeData.categories.length > 0 ? (
+                      <div className="d-flex flex-wrap gap-2">
+                        {cafeData.categories.map((category) => {
+                          const icon = categoryIconMap[category.name] || 'fas fa-tag';
+                          return (
+                            <span
+                              key={category.id}
+                              className="badge bg-light text-warning me-1 mb-1"
+                            >
+                              <i className={`${icon} me-1`}></i>
+                              {category.name}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <span
+                        className="badge px-3 py-2"
+                        style={{
+                          backgroundColor: "#6c757d",
+                          color: "white",
+                          borderRadius: "15px"
+                        }}
+                      >
+                        <i className="fas fa-tag me-1"></i>
+                        Sin categorías definidas
+                      </span>
+                    )}
                   </div>
 
                   <div className="text-center">
@@ -331,6 +360,7 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         </div>
 
+        {/* El resto del componente permanece igual... */}
         {/* Tabs de navegación */}
         <div className="d-flex justify-content-center mb-4">
           <div className="d-flex gap-2">

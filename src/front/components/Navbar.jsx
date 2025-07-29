@@ -22,6 +22,7 @@ export const Navbar = () => {
 		logoutUser();
 		navigate('/login')
 	}
+
 	const getStoreIdForUser = async () => {
 		if (store?.role === 'Store' && store?.token && !storeId && !loadingStoreId) {
 			setLoadingStoreId(true);
@@ -47,13 +48,13 @@ export const Navbar = () => {
 	};
 	useEffect(() => {
 		getStoreIdForUser();
-		console.log("---STORE DESDE NAVBAR --- ",store)
+		console.log("---STORE DESDE NAVBAR --- ", store)
 	}, [store?.role, store?.token]);
 	useEffect(() => {
 		if (!store?.token) {
 			setStoreId(null);
 		}
-		console.log("---STORE DESDE NAVBAR 3do UseEFFEct --- ",store)
+		console.log("---STORE DESDE NAVBAR 3do UseEFFEct --- ", store)
 	}, [store?.token]);
 
 	if (location.pathname !== '/hero') {
@@ -340,7 +341,7 @@ export const Navbar = () => {
 											Acerca de
 										</Link>
 									</li>
-								{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
+									{(store?.role !== 'Store') && (<div className="d-flex align-items-center"> {BotonSuscribir()}</div>)}
 								</ul>
 								{/* Botones de acción */}
 								<div className="d-flex align-items-center gap-2">
@@ -563,7 +564,7 @@ export const Navbar = () => {
 
 														{/* Redireccion a perfil / dependiendo de rol */}
 														<Link
-															to={store?.role === 'Superadmin' ? '/AdminDetails' : '/UserDetails'}
+															to={store?.role === 'Superadmin' ? '/AdminDetails' : `/user/${store.userId}`}
 															className="dropdown-item rounded d-flex align-items-center text-decoration-none"
 															style={{
 																color: '#6b4423',
@@ -615,7 +616,7 @@ export const Navbar = () => {
 									)}
 								</div>
 							</div>
-							
+
 						</div>
 					</nav>
 				)}

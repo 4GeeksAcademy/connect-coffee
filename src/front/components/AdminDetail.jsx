@@ -118,57 +118,6 @@ const AdminDetail = () => {
         }
     };
 
-    const loadStoreDetail2 = (storeId) => {
-        return store.filter(storeItem => storeItem.id === storeId);
-    }
-
-    const loadStoreDetail = async (storeId) => {
-        setLoadingDetail(true);
-        setError(null);
-        try {
-            console.log('Cargando detalle de tienda:', storeId);
-            const response = await getAdminStoreDetail(store.token, storeId);
-            console.log('Respuesta detalle tienda:', response);
-
-            if (response && response.ok && response.data) {
-                // Se normalizo para poder transformar los datos y darle uso // 
-                const normalizedDetail = {
-                    id: response.data.id,
-                    name: response.data.nombre || response.data.name || 'Sin nombre',
-                    address: response.data.direccion || response.data.address || 'Sin dirección',
-                    owner: response.data.username || response.data.user?.username || 'Sin propietario',
-                    email: response.data.user?.email || 'Sin email',
-                    status: normalizeStatus(response.data.is_active),
-                    rating: response.data.total_points || 0,
-                    reviews_count: response.data.points?.length || 0,
-                    created_at: response.data.created_at,
-                    updated_at: response.data.updated_at,
-                    user_id: response.data.user_id,
-                    fecha_de_pago: response.data.fecha_de_pago,
-                    categories: response.data.categories || [],
-                    images: response.data.images || [],
-                    is_active: response.data.is_active,
-                    has_wifi: response.data.categories?.some(cat => cat.name?.toLowerCase().includes('wifi')) || false,
-                    pet_friendly: response.data.categories?.some(cat => cat.name?.toLowerCase().includes('pet')) || false,
-                    gluten_free: response.data.categories?.some(cat => cat.name?.toLowerCase().includes('tacc')) || false,
-                    smoking_area: response.data.categories?.some(cat => cat.name?.toLowerCase().includes('fumar')) || false,
-                    quiet_space: response.data.categories?.some(cat => cat.name?.toLowerCase().includes('azul')) || false
-                };
-
-                setStoreDetail(normalizedDetail);
-                setCurrentView('detail');
-            } else {
-                const errorMsg = response?.msg || 'Error al cargar el detalle de la tienda';
-                setError(errorMsg);
-            }
-        } catch (error) {
-            console.error('Error cargando detalle:', error);
-            setError('Error al cargar el detalle: ' + error.message);
-        } finally {
-            setLoadingDetail(false);
-        }
-    };
-
     const filterStores = () => {
         let filtered = stores;
 
@@ -559,16 +508,6 @@ const AdminDetail = () => {
                                                     </button>
 
                                                     <ul className="dropdown-menu">
-                                                        {/* Boton ver detalles */}
-                                                        <li>
-                                                            <button
-                                                                className="dropdown-item text-primary"
-                                                                onClick={() => loadStoreDetail2(storeItem.id)}
-                                                            >
-                                                                <i className="fas fa-eye me-2"></i>Ver Detalle
-                                                            </button>
-                                                        </li>
-                                                        <li><hr className="dropdown-divider" /></li>
                                                         {storeItem.status === 'suspended' && (
                                                             <li>
                                                                 <button

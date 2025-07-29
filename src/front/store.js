@@ -3,7 +3,8 @@ export const initialStore = () => {
     message: null,
     token: localStorage.getItem("token") || null,
     user: localStorage.getItem("user") || null,
-    role: localStorage.getItem("role") || null
+    role: localStorage.getItem("role") || null,
+    userId: localStorage.getItem("userId") || null
   };
 };
 

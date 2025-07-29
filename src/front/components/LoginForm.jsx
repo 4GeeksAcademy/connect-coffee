@@ -46,9 +46,13 @@ export const LoginForm = ({ setToken }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("message");
+    localStorage.removeItem("role");  // se agrega role al logout para que lo limpie **
+    localStorage.removeItem("userId"); // se agrega userid al logout para que lo limpie
     dispatch({ type: "token", payload: "" });
     dispatch({ type: "message", payload: "" });
     dispatch({ type: "user", payload: "" });
+    dispatch({ type: "role", payload: "" });
+    dispatch({ type: "userId", payload: "" });
     setLoading(false);
     navigate('/login')
   }
@@ -68,7 +72,7 @@ export const LoginForm = ({ setToken }) => {
         console.log('Usuario Store sin tienda, redirigiendo a crear tienda');
         showAlert('No tienes una tienda registrada. Serás redirigido para crear una.', 'warning');
         setTimeout(() => {
-          navigate('/create-store');
+          navigate('/create-store'); // CAMBIOS PARA QUE REEDIRIJA A PROVIDER ** //
         }, 2000);
       }
     } catch (error) {
@@ -115,9 +119,11 @@ export const LoginForm = ({ setToken }) => {
         localStorage.setItem("token", res?.access_token);
         localStorage.setItem("user", res?.username);
         localStorage.setItem("role", res?.role);
+        localStorage.setItem("userId", res?.id);
         dispatch({ type: "token", payload: res.access_token });
         dispatch({ type: "user", payload: res.username });
         dispatch({ type: "role", payload: res.role });
+        dispatch({ type: "userId", payload: res.id });
         setHasAuth(true);
         showAlert('¡Inicio de sesión exitoso!', 'success');
 
@@ -125,7 +131,7 @@ export const LoginForm = ({ setToken }) => {
           if (res.role === 'Store') {
             getUserStoreId(res.access_token);
           } else if (res.role === 'SuperAdmin') {
-            navigate('/AdminDetails');
+            navigate('/AdminDetails'); // CAMBIOS PARA QUE REDIRIJA A ADMINDETAILS CUANDO SE LOGEE SUPERADMIN ** //
           } else {
             navigate('/');
           }
