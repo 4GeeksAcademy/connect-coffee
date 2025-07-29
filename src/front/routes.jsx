@@ -61,6 +61,7 @@ export const router = createBrowserRouter(
       {/* <Route path="/menu/:id" element={<MenuPreview />} /> */}
       <Route path="/menu/:id" element={<CafeMenu />} />
       <Route path="/store-builder" element={<StoreBuilder />} />
+      <Route path="/home" element={<StoreIndex />} />
       <Route path="/*" element={<NotFound />} />
 
     </Route>

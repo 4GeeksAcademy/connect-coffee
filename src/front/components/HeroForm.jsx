@@ -4,7 +4,7 @@ import "../styles/hero.css";
 
 const Hero = () => (
   <section className="bg-warm-brown hero-section text-center text-lg-start py-5">
-    <div className="spacer-section" style={{ height: "50px" }}></div>
+    <div className="spacer-section" style={{ height: "50px" }} ></div>
 
     <div className="container-fluid">
       <div
@@ -20,7 +20,7 @@ const Hero = () => (
       >
         <div className="container h-100">
           <div className="row align-items-center h-100">
-            <div className="col-12 text-center text-white">
+            <div className="col-12 text-center text-white" >
               <div
                 className="hero-content p-4"
                 style={{
@@ -287,7 +287,7 @@ const Hero = () => (
             compartidos, risas entre sorbos y lugares que se sienten como casa.
           </p>
           <div className="d-flex gap-3">
-            <Link to="/about">
+            <Link to="/about#link">
               <button
                 className="btn btn-lg mt-3 px-5 py-2 d-inline-flex align-items-center"
                 style={{

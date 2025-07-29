@@ -19,7 +19,7 @@ const Subscription = () => {
     let amount=85
 
     setLoading(true);
-    if (store?.role != "ROLE_STORE"){
+    if (store?.role != "Store"){
       navigate('/signup?type=Store')
     }else{
 

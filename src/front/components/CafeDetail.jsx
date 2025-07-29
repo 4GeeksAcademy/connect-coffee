@@ -232,7 +232,8 @@ const CafeDetail = ({ cafeData, onBack }) => {
                 style={{
                   maxHeight: "100%",
                   maxWidth: "100%",
-                  objectFit: "contain"
+                  objectFit: "contain",
+                  minWidth: "100%"
                 }}
                 onError={(e) => {
                   e.target.src = ImageNotFound;
@@ -433,64 +434,222 @@ const CafeDetail = ({ cafeData, onBack }) => {
         )}
 
         {activeTab === 'photos' && (
-          <div className="d-flex justify-content-center mb-4">
-            {cafeData.images && cafeData.images.length > 0 ? (
-              <div
-                id="cafeImageCarousel"
-                className="carousel slide"
-                data-bs-ride="carousel"
-                style={{ maxWidth: '600px', width: '100%' }}
-              >
-                <div className="carousel-inner">
-                  {cafeData.images.map((image, index) => (
-                    <div
-                      className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                      key={index}
-                    >
-                      <img
-                        src={typeof image === 'string' ? image : image.url}
-                        className="d-block w-100"
-                        alt={`${cafeData.name} - Foto ${index + 1}`}
-                        style={{ height: '300px', objectFit: 'cover' }}
-                        onError={(e) => {
-                          e.target.src = ImageNotFound;
-                        }}
-                      />
+          <div className="row">
+            <div className="col-12">
+              {cafeData.images && cafeData.images.length > 0 ? (
+                <div className="d-flex justify-content-center">
+                  <div
+                    id="cafeImageCarousel"
+                    className="carousel slide shadow-lg"
+                    data-bs-ride="carousel"
+                    style={{
+                      maxWidth: '700px',
+                      width: '100%',
+                      borderRadius: '20px',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    {/* Indicadores del carousel */}
+                    {cafeData.images.length > 1 && (
+                      <div className="carousel-indicators">
+                        {cafeData.images.map((_, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            data-bs-target="#cafeImageCarousel"
+                            data-bs-slide-to={index}
+                            className={index === 0 ? 'active' : ''}
+                            aria-current={index === 0 ? 'true' : 'false'}
+                            aria-label={`Slide ${index + 1}`}
+                            style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              backgroundColor: index === 0 ? '#8B4513' : 'rgba(255,255,255,0.5)',
+                              border: '2px solid #8B4513'
+                            }}
+                          ></button>
+                        ))}
+                      </div>
+                    )}
+                    <div className="carousel-inner" style={{ borderRadius: '20px' }}>
+                      {cafeData.images.map((image, index) => (
+                        <div
+                          className={`carousel-item ${index === 0 ? 'active' : ''}`}
+                          key={index}
+                        >
+                          <div className="position-relative">
+                            <img
+                              src={typeof image === 'string' ? image : image.url}
+                              className="d-block w-100"
+                              alt={`${cafeData.name} - Foto ${index + 1}`}
+                              style={{
+                                height: '400px',
+                                objectFit: 'cover',
+                                filter: 'brightness(1.05) contrast(1.1)'
+                              }}
+                              onError={(e) => {
+                                e.target.src = ImageNotFound;
+                              }}
+                            />
+                            {/* Overlay con gradiente sutil */}
+                            <div
+                              className="position-absolute bottom-0 start-0 w-100"
+                              style={{
+                                background: 'linear-gradient(transparent, rgba(0,0,0,0.3))',
+                                height: '100px'
+                              }}
+                            ></div>
+                            {/* Contador de imágenes */}
+                            <div
+                              className="position-absolute top-0 end-0 m-3 px-3 py-1 rounded-pill"
+                              style={{
+                                backgroundColor: 'rgba(139, 69, 19, 0.8)',
+                                color: 'white',
+                                fontSize: '0.9rem',
+                                backdropFilter: 'blur(4px)'
+                              }}
+                            >
+                              <i className="fas fa-images me-1"></i>
+                              {index + 1} / {cafeData.images.length}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                    {/* Controles del carousel mejorados */}
+                    {cafeData.images.length > 1 && (
+                      <>
+                        <button
+                          className="carousel-control-prev"
+                          type="button"
+                          data-bs-target="#cafeImageCarousel"
+                          data-bs-slide="prev"
+                          style={{
+                            background: 'linear-gradient(90deg, rgba(139,69,19,0.7) 0%, transparent 100%)',
+                            border: 'none',
+                            width: '60px'
+                          }}
+                        >
+                          <span
+                            className="carousel-control-prev-icon"
+                            aria-hidden="true"
+                            style={{
+                              backgroundImage: 'none',
+                              fontSize: '1.5rem',
+                              color: 'white'
+                            }}
+                          >
+                            <i className="fas fa-chevron-left"></i>
+                          </span>
+                          <span className="visually-hidden">Anterior</span>
+                        </button>
+                        <button
+                          className="carousel-control-next"
+                          type="button"
+                          data-bs-target="#cafeImageCarousel"
+                          data-bs-slide="next"
+                          style={{
+                            background: 'linear-gradient(270deg, rgba(139,69,19,0.7) 0%, transparent 100%)',
+                            border: 'none',
+                            width: '60px'
+                          }}
+                        >
+                          <span
+                            className="carousel-control-next-icon"
+                            aria-hidden="true"
+                            style={{
+                              backgroundImage: 'none',
+                              fontSize: '1.5rem',
+                              color: 'white'
+                            }}
+                          >
+                            <i className="fas fa-chevron-right"></i>
+                          </span>
+                          <span className="visually-hidden">Siguiente</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
-
-                {/* Controles del carousel */}
-                {cafeData.images.length > 1 && (
-                  <>
-                    <button
-                      className="carousel-control-prev"
-                      type="button"
-                      data-bs-target="#cafeImageCarousel"
-                      data-bs-slide="prev"
+              ) : (
+                /* Estado vacío mejorado */
+                <div className="col-12">
+                  <div
+                    className="text-center py-5 mx-auto"
+                    style={{
+                      maxWidth: '500px',
+                      backgroundColor: 'rgba(255,255,255,0.7)',
+                      borderRadius: '20px',
+                      border: '2px dashed #D2B48C'
+                    }}
+                  >
+                    <div
+                      className="mb-4 mx-auto d-flex align-items-center justify-content-center"
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        backgroundColor: '#F5F5DC',
+                        borderRadius: '50%',
+                        border: '3px solid #D2B48C'
+                      }}
                     >
-                      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span className="visually-hidden">Anterior</span>
-                    </button>
-                    <button
-                      className="carousel-control-next"
-                      type="button"
-                      data-bs-target="#cafeImageCarousel"
-                      data-bs-slide="next"
-                    >
-                      <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span className="visually-hidden">Siguiente</span>
-                    </button>
-                  </>
-                )}
-              </div>
-            ) : (
-              <div className="col-12 text-center py-5">
-                <i className="fas fa-camera fa-3x text-muted mb-3"></i>
-                <h5 className="text-muted">Fotos no disponibles</h5>
-                <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
-              </div>
-            )}
+                      <i className="fas fa-camera fa-2x" style={{ color: '#8B4513' }}></i>
+                    </div>
+                    <h5 className="mb-3" style={{ color: '#8B4513' }}>
+                      Galería de fotos no disponible
+                    </h5>
+                    <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
+                      Esta cafetería aún no ha compartido fotos adicionales de su ambiente y productos.
+                      <br />
+                      <small>¡Pronto podrás ver más imágenes aquí!</small>
+                    </p>
+                    <div className="d-flex justify-content-center gap-2">
+                      <span className="badge px-3 py-2" style={{ backgroundColor: '#D2B48C', color: '#8B4513' }}>
+                        <i className="fas fa-clock me-1"></i>
+                        Próximamente
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {/* Información adicional de la galería */}
+              {cafeData.images && cafeData.images.length > 0 && (
+                <div className="mt-4">
+                  <div
+                    className="card border-0 mx-auto"
+                    style={{
+                      maxWidth: '700px',
+                      backgroundColor: 'rgba(255,255,255,0.9)',
+                      borderRadius: '15px'
+                    }}
+                  >
+                    <div className="card-body text-center py-3">
+                      <div className="row align-items-center">
+                        <div className="col-md-4">
+                          <small className="text-muted">
+                            <i className="fas fa-images me-1" style={{ color: '#8B4513' }}></i>
+                            {cafeData.images.length} foto{cafeData.images.length !== 1 ? 's' : ''} disponible{cafeData.images.length !== 1 ? 's' : ''}
+                          </small>
+                        </div>
+                        <div className="col-md-4">
+                          <small className="text-muted">
+                            <i className="fas fa-mouse-pointer me-1" style={{ color: '#8B4513' }}></i>
+                            Desliza para navegar
+                          </small>
+                        </div>
+                        <div className="col-md-4">
+                          <small className="text-muted">
+                            <i className="fas fa-expand-alt me-1" style={{ color: '#8B4513' }}></i>
+                            Toca para ampliar
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

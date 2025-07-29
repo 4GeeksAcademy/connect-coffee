@@ -9,7 +9,7 @@ const About = () => {
       style={{ backgroundColor: "var(--primary-bg-color)" }}
     >
       {/* Hero del About */}
-      <div className="about-hero py-5">
+      <div className="about-hero py-5" id="link">
         <div className="container py-5">
           <div className="row justify-content-center">
             <div
