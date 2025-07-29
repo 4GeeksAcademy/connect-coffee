@@ -101,8 +101,14 @@ def add_image_admin():
     # solo aceptamos una imagen index
     if img_type == 'index':
         existing_index = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='index').first()
-        if existing_index:
-            return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
+        db.session.delete(existing_index)
+        db.session.commit()
+    if img_type == 'menu':
+        existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
+        db.session.delete(existing_menu)
+        db.session.commit()
+        # if existing_index:
+        #     return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
 
     # Crear imagen
     image = Image(
@@ -194,8 +200,15 @@ def add_image():
     # solo aceptamos una imagen index
     if img_type == 'index':
         existing_index = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='index').first()
-        if existing_index:
-            return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
+        db.session.delete(existing_index)
+        db.session.commit()
+
+    if img_type == 'menu':
+        existing_menu = Image.query.filter_by(owner_type=owner_type,owner_id=owner_id,type='menu').first()
+        db.session.delete(existing_menu)
+        db.session.commit()
+        #if existing_index:
+        #    return jsonify({"msg":f"Ya existe una imagen de tipo 'index' para {owner_type} con ID {owner_id}.","ok":False}),400
 
     # solo aceptamos una imagen menu
     # if img_type == 'menu':

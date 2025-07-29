@@ -32,8 +32,8 @@ export const Navbar = () => {
 
 				if (storeData.ok && storeData.data && storeData.data.length > 0) {
 					const userStoreId = storeData.data[0].id;
-					setStoreId(userStoreId);
-					console.log('Store ID obtenido para navbar:', userStoreId);
+					setStoreId(storeData?.data[0]?.is_active?userStoreId:null)
+					console.log('Store ID obtenido para navbar:', userStoreId,storeData.data[0].is_active );
 				} else {
 					console.warn('Usuario Store sin tienda registrada');
 					setStoreId(null);
@@ -48,13 +48,12 @@ export const Navbar = () => {
 	};
 	useEffect(() => {
 		getStoreIdForUser();
-		console.log("---STORE DESDE NAVBAR --- ", store)
 	}, [store?.role, store?.token]);
 	useEffect(() => {
 		if (!store?.token) {
 			setStoreId(null);
 		}
-		console.log("---STORE DESDE NAVBAR 3do UseEFFEct --- ", store)
+		setShowProfile(false);
 	}, [store?.token]);
 
 	if (location.pathname !== '/hero') {
@@ -66,6 +65,7 @@ export const Navbar = () => {
 						backgroundColor: '#fce8d9',
 						borderBottom: '1px solid #e8d5c4'
 					}}
+					onMouseLeave={() => setShowProfile(false)}
 				>
 					<div className="container">
 						{/* Logo y título del proveedor */}
@@ -94,8 +94,8 @@ export const Navbar = () => {
 						</button>
 
 						{/* Menú de navegación para proveedores */}
-						<div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`}>
-							<ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+						<div className={`collapse navbar-collapse ${isMenuOpen ? 'show' : ''}`} >
+							<ul className="navbar-nav me-auto mb-2 mb-lg-0 ms-3" >
 								<li className="nav-item">
 									<Link
 										to="/"
@@ -267,7 +267,7 @@ export const Navbar = () => {
 					>
 						<div className="container">
 							{/* Logo y Título */}
-							<Link to="/" className="navbar-brand d-flex align-items-center">
+							<Link to="/hero" className="navbar-brand d-flex align-items-center">
 								<i className="fas fa-coffee me-2" style={{ fontSize: '1.4rem', color: '#8b4513' }}></i>
 								<span
 									className="fw-bold"

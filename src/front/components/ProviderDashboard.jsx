@@ -49,6 +49,8 @@ const ProviderDashboard = () => {
     category: ''
   });
   const [editingItem, setEditingItem] = useState(null);
+  const [indexImageUrl, setIndexImageUrl] = useState(null);
+  const [menuImageUrl, setMenuImageUrl] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
@@ -272,7 +274,10 @@ const ProviderDashboard = () => {
       if (response && response.ok && response.data) {
         setStoreDetails(response);
         console.log('📊 Categorías de la tienda:', response.data.categories);
-
+        const imgIdx = response?.data?.images?.find(img => img.type === "index")?.url || "https://via.placeholder.com/400x300?text=No+Image";
+        setIndexImageUrl(imgIdx);
+        const imgMnu = response?.data?.images?.find(img => img.type === "menu")?.url || "https://via.placeholder.com/400x300?text=No+Image";
+        setMenuImageUrl(imgMnu);
         if (!response.data.is_active) {
           console.log('⚠️ Tienda inactiva, redirigiendo a payment');
           navigate('/payment');
@@ -642,7 +647,7 @@ const ProviderDashboard = () => {
                 <div className="col-md-5">
                   <div className="position-relative h-100">
                     <img
-                      src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
+                      src={indexImageUrl}
                       className="img-fluid h-100 w-100"
                       alt={displayData.name || displayData.nombre}
                       style={{ objectFit: 'cover', minHeight: '450px' }}
@@ -941,7 +946,7 @@ const ProviderDashboard = () => {
                       <div className="col-4">
                         <small className="text-muted d-block mb-1">Tienda</small>
                         <img
-                          src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
+                          src={cafeData.images[0]?.url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
                           alt="Imagen tienda"
                           className="img-thumbnail"
                           style={{ maxWidth: '60px', height: '40px', objectFit: 'cover' }}
@@ -950,7 +955,7 @@ const ProviderDashboard = () => {
                       <div className="col-4">
                         <small className="text-muted d-block mb-1">Menú</small>
                         <img
-                          src={storeMenu?.data?.[0]?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                          src={menuImageUrl}
                           alt="Imagen menú"
                           className="img-thumbnail"
                           style={{ maxWidth: '60px', height: '40px', objectFit: 'cover' }}
@@ -959,7 +964,7 @@ const ProviderDashboard = () => {
                       <div className="col-4">
                         <small className="text-muted d-block mb-1">Index</small>
                         <img
-                          src={storeDetails?.data?.index_image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                          src={indexImageUrl}
                           alt="Imagen index"
                           className="img-thumbnail"
                           style={{ maxWidth: '60px', height: '40px', objectFit: 'cover' }}
@@ -996,7 +1001,12 @@ const ProviderDashboard = () => {
                 <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
                   <div className="modal-dialog modal-xl">
                     <div className="modal-content border-0 shadow-lg">
-                      <div className="modal-header bg-primary text-white border-0">
+                      <div className="modal-header text-white border-0"
+                        style={{
+                          backgroundColor: '#8B4513', // Mismo marrón del header del menú
+                          borderRadius: '5px 5px 0 0'
+                        }}
+                      >
                         <h5 className="modal-title d-flex align-items-center">
                           <i className="bi bi-images me-2"></i>
                           Gestionar Imágenes de la Tienda
@@ -1036,7 +1046,7 @@ const ProviderDashboard = () => {
                                 <div className="mb-3">
                                   <div className="position-relative d-inline-block">
                                     <img
-                                      src={cafeData.image_url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
+                                      src={cafeData.images[0]?.url || "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600"}
                                       alt="Imagen actual de la tienda"
                                       className="img-thumbnail w-100 rounded-3"
                                       style={{ maxHeight: '200px', objectFit: 'cover' }}
@@ -1056,7 +1066,7 @@ const ProviderDashboard = () => {
                                     label="Cambiar imagen de tienda"
                                   />
 
-                                  {cafeData.image_url && (
+                                  {cafeData.images[0]?.url && (
                                     <button
                                       className="btn btn-outline-danger btn-sm"
                                       onClick={() => handleImageDelete('store')}
@@ -1093,7 +1103,7 @@ const ProviderDashboard = () => {
                                     <div className="mb-3">
                                       <div className="position-relative d-inline-block">
                                         <img
-                                          src={storeMenu.data[0]?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                                          src={menuImageUrl}
                                           alt="Imagen actual del menú"
                                           className="img-thumbnail w-100 rounded-3"
                                           style={{ maxHeight: '200px', objectFit: 'cover' }}
@@ -1113,7 +1123,7 @@ const ProviderDashboard = () => {
                                         label="Cambiar imagen de menú"
                                       />
 
-                                      {storeMenu.data[0]?.image_url && (
+                                      {menuImageUrl && (
                                         <button
                                           className="btn btn-outline-danger btn-sm"
                                           onClick={() => handleImageDelete('menu')}
@@ -1170,7 +1180,7 @@ const ProviderDashboard = () => {
                                 <div className="mb-3">
                                   <div className="position-relative d-inline-block">
                                     <img
-                                      src={storeDetails?.data?.index_image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600"}
+                                      src={indexImageUrl}
                                       alt="Imagen actual del index"
                                       className="img-thumbnail w-100 rounded-3"
                                       style={{ maxHeight: '200px', objectFit: 'cover' }}
@@ -1190,7 +1200,7 @@ const ProviderDashboard = () => {
                                     label="Cambiar imagen de index"
                                   />
 
-                                  {storeDetails?.data?.index_image_url && (
+                                  {indexImageUrl && (
                                     <button
                                       className="btn btn-outline-danger btn-sm"
                                       onClick={() => handleImageDelete('index')}

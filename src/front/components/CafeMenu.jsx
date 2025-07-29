@@ -4,7 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getFrontStoreMenu } from "../services/api_menu";
 import QrCode from './QrCode.jsx';
 
-const MenuPreview = ({ store_id = null }) => {
+const CafeMenu = ({ store_id = null }) => {
   const { store, dispatch } = useGlobalReducer();
   const [menuCategories, setMenuCategories] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState({
@@ -63,176 +63,143 @@ const MenuPreview = ({ store_id = null }) => {
     fetchMenu();
   }, [store_id, id]);
 
-  return (
-    <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
-      <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div className="modal-content"
-          style={{
-            background: 'linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%)',
-            color: '#78350f',
-            borderRadius: '15px',
-            border: 'none'
+ return (
+<div className="modal show d-block" style={{ backgroundColor: '#4a3524', overflow: 'hidden' }}>
+  <div className="modal-dialog modal-lg modal-dialog-centered" style={{ maxHeight: '100vh', overflow: 'hidden' }}>
+    <div className="modal-content" style={{
+      backgroundColor: '#f5ebdc',
+      color: '#4a3524',
+      borderRadius: '0',
+      border: '2px solid #8b4513',
+      maxWidth: '800px',
+      margin: '0 auto',
+      overflow: 'hidden' 
+    }}>
+
+      {/* Header con logo a la izquierda y título centrado */}
+      <div className="modal-header border-0 py-4" style={{
+        borderBottom: '2px solid #8b4513',
+        padding: '20px',
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        {/* Logo alineado a la izquierda */}
+        {restaurantInfo.logo && (
+          <div style={{
+            position: 'absolute',
+            left: '20px',
+            top: '50%',
+            transform: 'translateY(-50%)'
           }}>
-
-          {/* Header elegante */}
-          <div className="modal-header border-0 position-relative"
-            style={{
-              background: 'linear-gradient(90deg, #fce8d9 0%, #f4d1ae 100%)',
-              borderRadius: '15px 15px 0 0',
-              borderBottom: '2px solid #d4a574'
-            }}>
-            <div className="container-fluid text-center" style={{ color: '#78350f' }}>
-              {restaurantInfo.logo && (
-                <img src={restaurantInfo.logo}
-                  alt="Logo"
-                  className="mb-2 border border-3"
-                  style={{
-                    width: '80px',
-                    height: '80px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    borderColor: '#d4a574 !important',
-                    boxShadow: '0 4px 15px rgba(212, 165, 116, 0.3)'
-                  }} />
-              )}
-              <h1 className="display-3 fw-bold mb-2"
-                style={{
-                  fontFamily: 'serif',
-                  textShadow: '2px 2px 4px rgba(212, 165, 116, 0.3)',
-                  letterSpacing: '3px',
-                  color: '#78350f'
-                }}>
-                MENÚ
-              </h1>
-              <h4 className="fw-light" style={{ opacity: 0.8, color: '#8b4513' }}>
-                {restaurantInfo.name}
-              </h4>
-            </div>
-
-            <button
-              className="btn-close position-absolute"
+            <img 
+              src={restaurantInfo.logo}
+              alt="Logo"
+              className="border border-2"
               style={{
-                top: '15px',
-                right: '15px',
-                fontSize: '1.2rem',
-                filter: 'invert(0.3)'
-              }}
-              onClick={() => dispatch({ type: "menu_preview", payload: false })}>
-            </button>
+                width: '70px',
+                height: '70px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                borderColor: '#8b4513',
+                boxShadow: '0 4px 15px rgba(139, 69, 19, 0.3)'
+              }} 
+            />
           </div>
+        )}
 
-          {/* Body del menú */}
-          <div className="p-4">
-            <div className="container-fluid">
-              <div className="row g-4">
-                {menuCategories.map((category, index) => (
-                  <div key={category.id} className="col-lg-6">
-                    <div className="card h-100 border-0 shadow-sm"
-                      style={{
-                        background: 'linear-gradient(145deg, #fff 0%, #faf7f2 100%)',
-                        borderRadius: '12px',
-                        border: '1px solid #e8d5c4'
-                      }}>
-
-                      {/* Header de categoría */}
-                      <div className="card-header text-center border-0 py-3"
-                        style={{
-                          background: 'linear-gradient(90deg, #fce8d9 0%, #f4d1ae 100%)',
-                          borderRadius: '12px 12px 0 0',
-                          borderBottom: '1px solid #e8d5c4'
-                        }}>
-                        <h5 className="fw-bold mb-0"
-                          style={{
-                            letterSpacing: '1.5px',
-                            fontSize: '1.1rem',
-                            color: '#78350f'
-                          }}>
-                          {category.name}
-                        </h5>
-                      </div>
-
-                      {/* Items de la categoría */}
-                      <div className="card-body p-3">
-                        {category.items.length > 0 ? (
-                          category.items.map((item, itemIndex) => (
-                            <div key={item.id}
-                              className={`row align-items-center py-2 ${itemIndex !== category.items.length - 1 ? 'border-bottom' : ''}`}
-                              style={{ borderColor: '#e8d5c4' }}>
-                              <div className="col-8">
-                                <span className={`fw-medium ${item.available ? 'text-dark' : 'text-muted text-decoration-line-through'}`}
-                                  style={{ fontSize: '0.95rem' }}>
-                                  {item.name}| {item.description}
-                                </span>
-                                {!item.available && (
-                                  <small className="d-block text-danger fst-italic">
-                                    No disponible
-                                  </small>
-                                )}
-                              </div>
-                              <div className="col-4 text-end">
-                                <span className={`fw-bold ${item.available ? '' : 'text-muted'}`}
-                                  style={{
-                                    fontSize: '0.9rem',
-                                    color: item.available ? '#8b4513' : undefined
-                                  }}>
-                                  {formatCurrency(item.price)}
-                                </span>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="text-center py-4">
-                            <i className="fas fa-utensils mb-2"
-                              style={{ fontSize: '2rem', color: '#d4a574' }}></i>
-                            <p className="text-muted fst-italic mb-0">Sin productos disponibles</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Footer elegante */}
-          <div className="modal-footer border-0 flex-column"
-            style={{
-              background: 'linear-gradient(90deg, #fce8d9 0%, #f4d1ae 100%)',
-              borderRadius: '0 0 15px 15px',
-              borderTop: '2px solid #d4a574'
-            }}>
-
-            <div className="text-center mb-3" style={{ color: '#78350f' }}>
-              <h6 className="fw-bold mb-2" style={{ letterSpacing: '1px' }}>
-                <i className="fas fa-utensils me-2"></i>
-                DISPONIBLE EN TU MESA
-              </h6>
-              <p className="mb-2 fw-light" style={{ color: '#8b4513' }}>
-                <i className="fas fa-phone me-2"></i>
-                312-692-6732
-              </p>
-              <p className="mb-3 fw-light" style={{ color: '#8b4513' }}>
-                <i className="fas fa-globe me-2"></i>
-                www.companyname.com
-              </p>
-            </div>
-
-            {/* QR Code con estilo */}
-            <div className="text-center">
-              <div className="d-inline-block p-3 bg-white rounded-3 shadow-sm border"
-                style={{ borderColor: '#d4a574' }}>
-                <QrCode id_menu={menuId} />
-              </div>
-              <p className="mt-2 mb-0 small fw-light" style={{ color: '#8b4513' }}>
-                Escanea para ver el menú digital
-              </p>
-            </div>
-          </div>
+        {/* Contenedor del título centrado */}
+        <div style={{
+          maxWidth: 'calc(100% - 100px)',
+          textAlign: 'center'
+        }}>
+          <h1 className="mb-1" style={{
+            fontFamily: "'Courier New', monospace",
+            fontWeight: 'bold',
+            fontSize: '2rem',
+            letterSpacing: '2px',
+            color: '#4a3524'
+          }}>
+            {restaurantInfo.name.toUpperCase()}
+          </h1>
+          <p className="mb-0" style={{
+            fontFamily: "'Courier New', monospace",
+            fontSize: '0.8rem',
+            letterSpacing: '4px',
+            color: '#8b4513'
+          }}>
+            ― MENÚ ―
+          </p>
         </div>
       </div>
+
+      {/* Body - Items centrados y compactos */}
+      <div className="modal-body px-4 py-3" style={{ 
+        overflowY: 'auto', // Permite scroll interno si es necesario
+        maxHeight: 'calc(100vh - 200px)', // Ajusta según tu header/footer
+        scrollbarWidth: 'none', // Para Firefox
+        msOverflowStyle: 'none' // Para IE/Edge
+      }}>
+        {/* Esto oculta el scrollbar  */}
+        <style>{`
+          .modal-body::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+        
+        {menuCategories.map((category) => (
+          <div key={category.id} className="text-center mb-4">
+            <h2 className="mb-3" style={{
+              fontFamily: "'Courier New', monospace",
+              fontSize: '1.1rem',
+              letterSpacing: '3px',
+              color: '#8b4513',
+              borderBottom: '1px dashed #8b4513',
+              display: 'inline-block',
+              padding: '0 10px'
+            }}>
+              {category.name.toUpperCase()}
+            </h2>
+
+            <div className="mx-auto" style={{ maxWidth: '500px' }}>
+              {category.items.map((item) => (
+                <div key={item.id} className="d-flex justify-content-between py-2 px-3"
+                  style={{
+                    borderBottom: '1px dotted #a05c38',
+                    margin: '0 auto'
+                  }}>
+                  <span style={{
+                    fontFamily: "'Courier New', monospace",
+                    fontSize: '0.9rem',
+                    color: item.available ? '#4a3524' : '#a08b7a',
+                    textAlign: 'left'
+                  }}>
+                    {item.name}
+                    {!item.available && (
+                      <span className="ms-2" style={{ color: '#d2691e', fontSize: '0.7rem' }}>
+                        (AGOTADO)
+                      </span>
+                    )}
+                  </span>
+                  <span style={{
+                    fontFamily: "'Courier New', monospace",
+                    fontSize: '0.9rem',
+                    color: item.available ? '#8b4513' : '#a08b7a',
+                    fontWeight: 'bold'
+                  }}>
+                    {formatCurrency(item.price)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
+  </div>
+</div>
   );
 };
 
-export default MenuPreview;
+export default CafeMenu;
