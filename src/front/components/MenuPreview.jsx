@@ -197,7 +197,7 @@ const MenuPreview = ({ menu_id = null }) => {
           </div>
 
           {/* Footer elegante */}
-          <div className="modal-footer border-0 flex-column"
+          {/* <div className="modal-footer border-0 flex-column"
             style={{
               background: 'linear-gradient(90deg, #fce8d9 0%, #f4d1ae 100%)',
               borderRadius: '0 0 15px 15px',
@@ -219,7 +219,6 @@ const MenuPreview = ({ menu_id = null }) => {
               </p>
             </div>
 
-            {/* QR Code con estilo */}
             <div className="text-center">
               <div className="d-inline-block p-3 bg-white rounded-3 shadow-sm border"
                 style={{ borderColor: '#d4a574' }}>
@@ -229,7 +228,7 @@ const MenuPreview = ({ menu_id = null }) => {
                 Escanea para ver el menú digital
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -57,9 +57,9 @@ export const LoginForm = ({ setToken }) => {
     try {
       console.log('Obteniendo tienda del usuario...');
       const storeData = await getUserStore(token);
-      
+
       console.log('Respuesta getUserStore:', storeData);
-      
+
       if (storeData.ok && storeData.data && storeData.data.length > 0) {
         const storeId = storeData.data[0].id;
         console.log('Redirigiendo a /provider/' + storeId);
@@ -125,7 +125,7 @@ export const LoginForm = ({ setToken }) => {
           if (res.role === 'Store') {
             getUserStoreId(res.access_token);
           } else if (res.role === 'SuperAdmin') {
-            navigate('/');
+            navigate('/AdminDetails');
           } else {
             navigate('/');
           }
@@ -303,7 +303,7 @@ export const LoginForm = ({ setToken }) => {
           </div>
         </div>
       </div>
-       <div className="spacer-section" style={{ height: "80px" }}></div>
+      <div className="spacer-section" style={{ height: "80px" }}></div>
     </>
   );
 }

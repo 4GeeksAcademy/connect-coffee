@@ -4,7 +4,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { getFrontStoreMenu } from "../services/api_menu";
 import QrCode from './QrCode.jsx';
 
-const MenuPreview = ({ store_id = null }) => { 
+const MenuPreview = ({ store_id = null }) => {
   const { store, dispatch } = useGlobalReducer();
   const [menuCategories, setMenuCategories] = useState([]);
   const [restaurantInfo, setRestaurantInfo] = useState({

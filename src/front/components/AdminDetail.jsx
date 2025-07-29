@@ -27,7 +27,7 @@ const AdminDetail = () => {
     useEffect(() => {
         if (store.token) {
             loadStores();
-
+            loadStats();
         } else {
             setError('Token de autenticación no disponible');
         }
@@ -117,6 +117,10 @@ const AdminDetail = () => {
             }
         }
     };
+
+    const loadStoreDetail2 = (storeId) => {
+        return store.filter(storeItem => storeItem.id === storeId);
+    }
 
     const loadStoreDetail = async (storeId) => {
         setLoadingDetail(true);
@@ -300,7 +304,7 @@ const AdminDetail = () => {
             {/* Estadísticas principales */}
             <div className="row mb-4">
                 <div className="col-lg-3 col-md-6 mb-3">
-                    <div className="card bg-primary text-white h-100">
+                    <div className="card bg-primary text-danger-emphasis h-100">
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
                                 <div>
@@ -316,7 +320,7 @@ const AdminDetail = () => {
                 </div>
 
                 <div className="col-lg-3 col-md-6 mb-3">
-                    <div className="card bg-success text-white h-100">
+                    <div className="card bg-success text-danger-emphasis h-100">
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
                                 <div>
@@ -335,7 +339,7 @@ const AdminDetail = () => {
                 </div>
 
                 <div className="col-lg-3 col-md-6 mb-3">
-                    <div className="card bg-warning text-white h-100">
+                    <div className="card bg-warning text-danger-emphasis h-100">
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
                                 <div>
@@ -354,7 +358,7 @@ const AdminDetail = () => {
                 </div>
 
                 <div className="col-lg-3 col-md-6 mb-3">
-                    <div className="card bg-info text-white h-100">
+                    <div className="card bg-info text-danger-emphasis h-100">
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
                                 <div>
@@ -553,7 +557,18 @@ const AdminDetail = () => {
                                                         <i className="fas fa-cog me-1"></i>
                                                         Acciones
                                                     </button>
+
                                                     <ul className="dropdown-menu">
+                                                        {/* Boton ver detalles */}
+                                                        <li>
+                                                            <button
+                                                                className="dropdown-item text-primary"
+                                                                onClick={() => loadStoreDetail2(storeItem.id)}
+                                                            >
+                                                                <i className="fas fa-eye me-2"></i>Ver Detalle
+                                                            </button>
+                                                        </li>
+                                                        <li><hr className="dropdown-divider" /></li>
                                                         {storeItem.status === 'suspended' && (
                                                             <li>
                                                                 <button
