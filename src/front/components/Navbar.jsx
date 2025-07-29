@@ -220,7 +220,6 @@ export const Navbar = () => {
 											<div className="dropdown-header" style={{ color: '#8b4513' }}>
 												<strong>{store.user}</strong><br />
 												<small className="text-muted">Proveedor de Cafetería</small>
-												{storeId && <small className="text-muted d-block">ID: {storeId}</small>}
 											</div>
 											<div className="dropdown-divider" style={{ borderColor: '#e8d5c4' }}></div>
 

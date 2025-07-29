@@ -1,47 +1,47 @@
 import React, { useState, useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-import { getStoreMenu,getFrontStoreMenu } from '../services/api_menu.js';
+import { getStoreMenu, getFrontStoreMenu } from '../services/api_menu.js';
 import { getFrontStorePoints } from '../services/api_userpoints.js'
 import ReviewForm from './ReviewForm.jsx';
-import {favoriteGet,favoriteDelete,favoriteCreate} from '../services/api_favorite.js'
+import { favoriteGet, favoriteDelete, favoriteCreate } from '../services/api_favorite.js'
+import ImageNotFound from "../assets/img/image-not-found.png"
 
 const CafeDetail = ({ cafeData, onBack }) => {
-    const { store, dispatch } = useGlobalReducer();
-    const [activeTab, setActiveTab] = useState('info');
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [menuData, setMenuData] = useState({});
-    const [apiReviews, setApiReviews] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [isUser,setIsUser]= useState(false);
-    const [disableFavorite, setDisableFavorite] = useState(false);
+  const { store, dispatch } = useGlobalReducer();
+  const [activeTab, setActiveTab] = useState('info');
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [menuData, setMenuData] = useState({});
+  const [apiReviews, setApiReviews] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isUser, setIsUser] = useState(false);
+  const [disableFavorite, setDisableFavorite] = useState(false);
 
-    // Cargar menú desde la API cuando se monta el componente ** //
-    useEffect(() => {
-        if (cafeData?.id && store.token) {
-            loadMenuFromAPI();
-        }
-    }, [cafeData?.id, store.token]);
-    useEffect(() => {
-        if (cafeData?.id && store.token) {
-            if (store?.role=='User'){
-              loadApiReviews();
-              loadFavorite(); 
-              setIsUser(true);
-              setDisableFavorite(false)
-            }else{
-              setDisableFavorite(true)
-            }
-        }
-    }, [store.role]);
+  // Cargar menú desde la API cuando se monta el componente ** //
+  useEffect(() => {
+    if (cafeData?.id && store.token) {
+      loadMenuFromAPI();
+    }
+  }, [cafeData?.id, store.token]);
+  useEffect(() => {
+    if (cafeData?.id && store.token) {
+      if (store?.role == 'User') {
+        loadApiReviews();
+        loadFavorite();
+        setDisableFavorite(false)
+      } else {
+        setDisableFavorite(true)
+      }
+    }
+  }, [store.role]);
 
   const loadMenuFromAPI = async () => {
     try {
       setLoading(true);
       console.log("Cargando menú para tienda:", cafeData.id);
 
-            const response = await getFrontStoreMenu(cafeData?.id);
-            console.log('Respuesta menú:', response);
+      const response = await getFrontStoreMenu(cafeData?.id);
+      console.log('Respuesta menú:', response);
 
       if (response && response.ok && response.data) {
         // Filtrar menú por store_id ** //
@@ -62,113 +62,137 @@ const CafeDetail = ({ cafeData, onBack }) => {
           return acc;
         }, {});
 
-                setMenuData(groupedMenu);
-                console.log('Menú cargado:', groupedMenu);
-            }
-        } catch (error) {
-            console.error('Error cargando menú:', error);
-        } finally {
-            setLoading(false);
+        setMenuData(groupedMenu);
+        console.log('Menú cargado:', groupedMenu);
+      }
+    } catch (error) {
+      console.error('Error cargando menú:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const loadApiReviews = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('Cargando reseñas...');
+      const response = await getFrontStorePoints(cafeData?.id);
+      console.log('Respuesta de API TEST:', response);
+      
+      if (response && response.ok && response.data) {
+        setApiReviews(response.data);
+        console.log('Tiendas reseñas:', response.data);
+        setIsUser(true);
+      } else {
+        const errorMsg = response?.msg || 'Error al cargar las reseñas';
+        console.error('Error en respuesta:', errorMsg);
+        setError(errorMsg);
+      }
+    } catch (err) {
+      console.error('Error de conexión:', err);
+      setError('Error de conexión: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const reloadReviews = async () => {
+    try {
+      console.log('🔄 Recargando reseñas...');
+      const response = await getFrontStorePoints(cafeData?.id);
+
+      if (response && response.ok && response.data) {
+        setApiReviews(response.data);
+        console.log('✅ Reseñas recargadas:', response.data.length);
+      }
+    } catch (err) {
+      console.error('❌ Error recargando reseñas:', err);
+    }
+  };
+  const handleReviewSubmitted = (response) => {
+    console.log('Nueva reseña enviada:', response);
+    reloadReviews();
+    setTimeout(() => {
+      document.getElementById('reviews-list')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 1000);
+  };
+  //const apiReviews = getStorePoints(store.token)
+  const loadFavorite = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log('Cargando favoritos...');
+      const response = await favoriteGet(store.token);
+      console.log('Respuesta de API FAV:', response);
+
+      if (response && response.ok && response.data) {
+        const isInFavorites = response.data.some(store => store.id === cafeData?.id);
+        if (isInFavorites) {
+          setIsFavorite(true)
+          console.log('Es Favorito');
         }
-    };
-    const loadApiReviews = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            console.log('Cargando reseñas...');
-            const response = await getFrontStorePoints(cafeData?.id);
-            console.log('Respuesta de API TEST:', response);
+      } else {
+        const errorMsg = response?.msg || 'Error al cargar las reseñas';
+        console.error('Error en respuesta:', errorMsg);
+        setError(errorMsg);
+      }
+    } catch (err) {
+      console.error('Error de conexión:', err);
+      setError('Error de conexión: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            if (response && response.ok && response.data) {
-            setApiReviews(response.data);
-            console.log('Tiendas reseñas:', response.data);
-            } else {
-            const errorMsg = response?.msg || 'Error al cargar las reseñas';
-            console.error('Error en respuesta:', errorMsg);
-            setError(errorMsg);
-            }
-        } catch (err) {
-            console.error('Error de conexión:', err);
-            setError('Error de conexión: ' + err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    //const apiReviews = getStorePoints(store.token)
-    const loadFavorite = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            console.log('Cargando favoritos...');
-            const response = await favoriteGet(store.token);
-            console.log('Respuesta de API FAV:', response);
-
-            if (response && response.ok && response.data) {
-                const isInFavorites = response.data.some(store => store.id === cafeData?.id);
-                if(isInFavorites){
-                    setIsFavorite(true)
-                    console.log('Es Favorito');
-                }
-            } else {
-                const errorMsg = response?.msg || 'Error al cargar las reseñas';
-                console.error('Error en respuesta:', errorMsg);
-                setError(errorMsg);
-            }
-        } catch (err) {
-            console.error('Error de conexión:', err);
-            setError('Error de conexión: ' + err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-    const filterConfig = {
-        wifi: { icon: '📶', label: 'WiFi', field: 'wifi' },
-        pet_friendly: { icon: '🐕', label: 'Pet Friendly', field: 'pet_friendly' },
-        gluten_free: { icon: '🚫', label: 'Sin TACC', field: 'gluten_free' },
-        smoking_area: { icon: '🚬', label: 'Zona Fumadores', field: 'smoking_area' },
-        quiet_space: { icon: '🤫', label: 'Espacios Tranquilos', field: 'quiet_space' }
-    };
+  const filterConfig = {
+    wifi: { icon: '📶', label: 'WiFi', field: 'wifi' },
+    pet_friendly: { icon: '🐕', label: 'Pet Friendly', field: 'pet_friendly' },
+    gluten_free: { icon: '🚫', label: 'Sin TACC', field: 'gluten_free' },
+    smoking_area: { icon: '🚬', label: 'Zona Fumadores', field: 'smoking_area' },
+    quiet_space: { icon: '🤫', label: 'Espacios Tranquilos', field: 'quiet_space' }
+  };
 
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('es-CL', {
-            style: 'currency',
-            currency: 'CLP'
-        }).format(amount);
-    };
-    // Llamar a rating ** //
-    const renderStars = (rating) => {
-        return Array.from({ length: 5 }, (_, i) => (
-            <span key={i} className={i < Math.floor(rating) ? 'text-warning' : 'text-muted'}>
-                ★
-            </span>
-        ));
-    };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP'
+    }).format(amount);
+  };
+  // Llamar a rating ** //
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <span key={i} className={i < Math.floor(rating) ? 'text-warning' : 'text-muted'}>
+        ★
+      </span>
+    ));
+  };
 
   const toggleFavorite = async () => {
-    const form={
-      "store_id":cafeData?.id
+    const form = {
+      "store_id": cafeData?.id
     }
 
-    if(isFavorite){
-      const response=await favoriteDelete(store.token,form);
-      if (response?.ok){
-        localStorage.setItem("favorites",JSON.stringify(response?.data));
+    if (isFavorite) {
+      const response = await favoriteDelete(store.token, form);
+      if (response?.ok) {
+        localStorage.setItem("favorites", JSON.stringify(response?.data));
         dispatch({ type: "favorites", payload: JSON.stringify(response?.data) });
         setIsFavorite(false);
       }
-    }else{
-       const response=await favoriteCreate(store.token,form);
-      if (response?.ok){
-        localStorage.setItem("favorites",JSON.stringify(response?.data));
+    } else {
+      const response = await favoriteCreate(store.token, form);
+      if (response?.ok) {
+        localStorage.setItem("favorites", JSON.stringify(response?.data));
         dispatch({ type: "favorites", payload: JSON.stringify(response?.data) });
         setIsFavorite(true);
       }
@@ -279,17 +303,16 @@ const CafeDetail = ({ cafeData, onBack }) => {
           <div className="row g-0">
             <div className="col-md-8">
               <img
-                src={
-                  cafeData.images?.[0]?.url ||
-                  cafeData.image_url ||
-                  "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop"
-                }
-                className="img-fluid w-100"
+                src={cafeData.images?.[0]?.url || ImageNotFound}
+                className="img-fluid"
                 alt={cafeData.name}
-                style={{ height: "400px", objectFit: "cover" }}
+                style={{
+                  maxHeight: "100%",
+                  maxWidth: "100%",
+                  objectFit: "contain"
+                }}
                 onError={(e) => {
-                  e.target.src =
-                    "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop";
+                  e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop";
                 }}
               />
             </div>
@@ -344,9 +367,8 @@ const CafeDetail = ({ cafeData, onBack }) => {
 
                   <div className="mb-3">
                     <span
-                      className={`badge px-3 py-2 ${
-                        cafeData.is_open ? "bg-success" : "bg-danger"
-                      }`}
+                      className={`badge px-3 py-2 ${cafeData.is_open ? "bg-success" : "bg-danger"
+                        }`}
                     >
                       {cafeData.is_open ? "🟢 Abierto ahora" : "🔴 Cerrado"}
                     </span>
@@ -384,31 +406,31 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         </div>
 
-                {/* Tabs de navegación */}
-                <div className="d-flex justify-content-center mb-4">
-                    <div className="d-flex gap-2">
-                        {[
-                            { id: 'info', label: 'Información', icon: '📍' },
-                            { id: 'menu', label: 'Menú', icon: '📋' },
-                            { id: 'photos', label: 'Fotos', icon: '📸' },
-                            { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' }
-                        ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
-                            <button
-                                key={tab.id}
-                                className="btn px-4 py-2"
-                                onClick={() => setActiveTab(tab.id)}
-                                style={{
-                                    backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
-                                    color: activeTab === tab.id ? 'white' : '#8B4513',
-                                    border: '1px solid #8B4513',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                {tab.icon} {tab.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+        {/* Tabs de navegación */}
+        <div className="d-flex justify-content-center mb-4">
+          <div className="d-flex gap-2">
+            {[
+              { id: 'info', label: 'Información', icon: '📍' },
+              { id: 'menu', label: 'Menú', icon: '📋' },
+              { id: 'photos', label: 'Fotos', icon: '📸' },
+              { id: 'reviews', label: 'Reseñas', icon: 'ℹ️' }
+            ].filter(tab => tab.id !== 'reviews' || isUser).map(tab => (
+              <button
+                key={tab.id}
+                className="btn px-4 py-2"
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  backgroundColor: activeTab === tab.id ? '#8B4513' : 'transparent',
+                  color: activeTab === tab.id ? 'white' : '#8B4513',
+                  border: '1px solid #8B4513',
+                  borderRadius: '20px'
+                }}
+              >
+                {tab.icon} {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Contenido de tabs */}
         {activeTab === "info" && (
@@ -606,65 +628,214 @@ const CafeDetail = ({ cafeData, onBack }) => {
           </div>
         )}
 
-                {activeTab === 'photos' && (
-                    <div className="row">
-                        {cafeData.images && cafeData.images.length > 0 ? (
-                            cafeData.images.map((image, index) => (
-                                <div key={index} className="col-md-4 mb-4">
-                                    <div className="card border-0 shadow-sm">
-                                        <img
-                                            src={typeof image === 'string' ? image : image.url}
-                                            className="card-img-top"
-                                            alt={`${cafeData.name} - Foto ${index + 1}`}
-                                            style={{ height: '250px', objectFit: 'cover' }}
-                                            onError={(e) => {
-                                                e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=250&fit=crop";
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="col-12 text-center py-5">
-                                <i className="fas fa-camera fa-3x text-muted mb-3"></i>
-                                <h5 className="text-muted">Fotos no disponibles</h5>
-                                <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
-                            </div>
-                        )}
+        {activeTab === 'photos' && (
+          <div className="row">
+            {cafeData.images && cafeData.images.length > 0 ? (
+              cafeData.images.map((image, index) => (
+                <div key={index} className="col-md-4 mb-4">
+                  <div className="card border-0 shadow-sm">
+                    <img
+                      src={typeof image === 'string' ? image : image.url}
+                      className="card-img-top"
+                      alt={`${cafeData.name} - Foto ${index + 1}`}
+                      style={{ height: '250px', objectFit: 'cover' }}
+                      onError={(e) => {
+                        e.target.src = "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=250&fit=crop";
+                      }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-12 text-center py-5">
+                <i className="fas fa-camera fa-3x text-muted mb-3"></i>
+                <h5 className="text-muted">Fotos no disponibles</h5>
+                <p className="text-muted">Esta cafetería aún no ha subido fotos adicionales</p>
+              </div>
+            )}
+          </div>
+        )}
+        {activeTab === 'reviews' && (
+          <div className="row">
+            <div className="col-12">
+              {/* Header de reseñas */}
+              <div className="card border-0 shadow-sm mb-4">
+                <div className="card-header d-flex justify-content-between align-items-center"
+                  style={{ backgroundColor: "#8B4513", color: "white" }}>
+                  <h5 className="mb-0">
+                    <i className="fas fa-star me-2"></i>
+                    Reseñas ({apiReviews?.length || 0})
+                  </h5>
+                  <div className="d-flex align-items-center">
+                    {renderStars(cafeData.rating || cafeData.total_points || 0)}
+                    <span className="ms-2 fw-bold">
+                      {(cafeData.rating || cafeData.total_points || 0).toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* ✅ Formulario de reseña mejorado */}
+                <div className="card-body">
+                  {isUser ? (
+                    <div className="mb-4 p-3 bg-light rounded">
+                      <h6 className="mb-3">
+                        <i className="fas fa-edit me-2"></i>
+                        Comparte tu experiencia
+                      </h6>
+                      <ReviewForm
+                        store_id={cafeData?.id}
+                        onReviewSubmitted={handleReviewSubmitted}
+                      />
                     </div>
-                )}
-                {activeTab === 'reviews' && (
-                    <div className="row">
-                        <div className="row mt-4">
-                        <ReviewForm store_id={cafeData?.id}/>
-                        {apiReviews?.map((review) => (
-                            <div key={review.id} className="col-12 mb-4">
-                                <div className="col-md-12">
-                                    <div className="d-flex justify-content-between align-items-start mb-2">
-                                        <small className="text-muted">{formatDate(review.created_at)}</small>
-                                    </div>
-                                    <div className="card" style={{ borderRadius: '15px' }}>
-                                        <div className="card-body">
-                                            <div className="row align-items-center">
-                                                <div className="mb-2">
-                                                        {renderStars(review.points)}
-                                                        <span className="ms-2 fw-bold">{review.points}/5</span>
-                                                    </div>
+                  ) : (
+                    <div className="alert alert-info mb-4">
+                      <i className="fas fa-info-circle me-2"></i>
+                      <strong>¿Quieres escribir una reseña?</strong>
+                      <a href="/login" className="ms-2 text-decoration-none">
+                        Inicia sesión
+                      </a> para compartir tu experiencia.
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                                                <p className="mb-0">{review.description}</p>
-                                            </div>
-                                        </div>
+              {/* ✅ Lista de reseñas mejorada */}
+              <div id="reviews-list">
+                {loading ? (
+                  <div className="text-center py-5">
+                    <div className="spinner-border text-warning" role="status">
+                      <span className="visually-hidden">Cargando reseñas...</span>
+                    </div>
+                    <p className="mt-3 text-muted">Cargando reseñas...</p>
+                  </div>
+                ) : !apiReviews || apiReviews.length === 0 ? (
+                  <div className="card border-0 shadow-sm">
+                    <div className="card-body text-center py-5">
+                      <i className="fas fa-comments fa-3x text-muted mb-3"></i>
+                      <h5 className="text-muted">No hay reseñas aún</h5>
+                      <p className="text-muted">
+                        ¡Sé el primero en compartir tu experiencia en esta cafetería!
+                      </p>
+                      {!isUser && (
+                        <a href="/login" className="btn btn-outline-primary">
+                          <i className="fas fa-sign-in-alt me-2"></i>
+                          Iniciar sesión para reseñar
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row">
+                    {apiReviews.map((review, index) => (
+                      <div key={review.id || index} className="col-12 mb-4">
+                        <div className="card border-0 shadow-sm" style={{ borderRadius: '15px' }}>
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-md-12">
+                                {/* Header de la reseña */}
+                                <div className="d-flex justify-content-between align-items-start mb-3">
+                                  <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                      <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center"
+                                        style={{ width: '40px', height: '40px' }}>
+                                        <i className="fas fa-user text-white"></i>
+                                      </div>
                                     </div>
+                                    <div>
+                                      <h6 className="mb-1" style={{ color: "#8B4513" }}>
+                                        {review.user?.username || `Usuario ${index + 1}`}
+                                      </h6>
+                                      <div className="d-flex align-items-center">
+                                        {renderStars(review.points)}
+                                        <span className="ms-2 fw-bold text-warning">
+                                          {review.points}/5
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <small className="text-muted">
+                                    <i className="fas fa-calendar-alt me-1"></i>
+                                    {formatDate(review.created_at)}
+                                  </small>
                                 </div>
 
+                                {/* Contenido de la reseña */}
+                                <div className="ms-5">
+                                  <p className="mb-0" style={{ lineHeight: '1.6' }}>
+                                    "{review.description}"
+                                  </p>
+                                </div>
+                              </div>
                             </div>
-                        ))}
+                          </div>
                         </div>
-                    </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
+              </div>
+
+              {/* ✅ Estadísticas de reseñas */}
+              {apiReviews && apiReviews.length > 0 && (
+                <div className="card border-0 shadow-sm mt-4">
+                  <div className="card-header" style={{ backgroundColor: "#8B4513", color: "white" }}>
+                    <h6 className="mb-0">
+                      <i className="fas fa-chart-bar me-2"></i>
+                      Distribución de Calificaciones
+                    </h6>
+                  </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-md-6">
+                        <div className="text-center">
+                          <div className="display-4 text-warning">⭐</div>
+                          <div className="h2">
+                            {apiReviews.length > 0
+                              ? (apiReviews.reduce((sum, review) => sum + (review.points || 0), 0) / apiReviews.length).toFixed(1)
+                              : '0.0'
+                            }
+                          </div>
+                          <div className="text-muted">
+                            Promedio de {apiReviews.length} reseña{apiReviews.length !== 1 ? 's' : ''}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-md-6">
+                        {[5, 4, 3, 2, 1].map(stars => {
+                          const count = apiReviews.filter(review => Math.floor(review.points || 0) === stars).length;
+                          const percentage = apiReviews.length > 0 ? (count / apiReviews.length) * 100 : 0;
+
+                          return (
+                            <div key={stars} className="d-flex align-items-center mb-2">
+                              <span className="me-2" style={{ minWidth: '60px' }}>
+                                {stars} ⭐
+                              </span>
+                              <div className="progress flex-grow-1 me-2" style={{ height: '8px' }}>
+                                <div
+                                  className="progress-bar"
+                                  style={{
+                                    width: `${percentage}%`,
+                                    backgroundColor: '#8B4513'
+                                  }}
+                                ></div>
+                              </div>
+                              <small className="text-muted" style={{ minWidth: '40px' }}>
+                                {count}
+                              </small>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-        </div>
-    );
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default CafeDetail;

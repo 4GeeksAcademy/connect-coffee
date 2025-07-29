@@ -2,7 +2,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint, current_app
+from flask import Flask, request, jsonify, url_for, Blueprint, current_app, g
 from api.models import db, User, Store, Image, Product, UserPoint, Menu, Category
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -258,7 +258,7 @@ def update_store(id: int):
     address = body['direccion']
     description = body['description']
     # Se validan datos requeridos
-    if name is None or address is None or address is None:
+    if name is None or address is None or name == "" or address == "":
         return jsonify({"msg": f"Hay datos faltantes necesarios para poder actualizar la tienda.", "ok": False}), 400
     # Si ya existe la tienda damos error
     existing_store = Store.query.filter_by(id=id, user_id=user.id).first()
